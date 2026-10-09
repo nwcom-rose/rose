@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>西北語薇星際艙</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="app" class="app-container">
+      <div class="stars-bg" id="starsBg"></div>
+      <!-- Header Bar -->
+      <header class="header-bar">
+        <div class="header-logo">
+          <svg class="logo-bowtie" viewBox="0 0 64 64" aria-hidden="true">
+            <defs>
+              <pattern id="stripeRedBlack" patternUnits="userSpaceOnUse" width="14" height="14" patternTransform="rotate(45)">
+                <rect width="7" height="14" fill="#d32f2f"/>
+                <rect x="7" width="7" height="14" fill="#1a1a1a"/>
+              </pattern>
+            </defs>
+            <path d="M8 16 Q28 26 32 32 Q36 26 56 16 L56 48 Q36 38 32 32 Q28 38 8 48 Z" fill="url(#stripeRedBlack)" stroke="#8b0000" stroke-width="1"/>
+            <rect x="26" y="26" width="12" height="12" rx="2" fill="url(#stripeRedBlack)" stroke="#8b0000" stroke-width="1"/>
+          </svg>
+          <span class="header-title">西北語薇 · 星際艙</span>
+        </div>
+        <div class="header-user">
+          <div class="starlight-cert" id="starlightCert" style="display:none;">
+            <span class="level-badge" id="userLevel">LV1 見習艙員</span>
+            <div class="exp-bar-wrap"><div class="exp-bar" id="userExpBar"></div></div>
+            <span class="coins">✦ <span id="userCoins">0</span></span>
+          </div>
+          <button class="btn btn-ghost" id="installBtn" style="display:none;">↓ 安裝</button>
+          <button class="btn" id="authBtn">登入 / 註冊</button>
+        </div>
+      </header>
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Home Page -->
+        <section class="page page-transition active" id="page-home" data-level="0">
+          <div class="home-hero">
+            <div class="hero-portrait-wrap">
+              <!-- 人物頭像以SVG占位呈現星際人物風格，實際圖片可替換為Base64 -->
+              <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#1a1a3a"/>
+                    <stop offset="100%" stop-color="#0a0a1a"/>
+                  </linearGradient>
+                  <linearGradient id="suitGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#e53935"/>
+                    <stop offset="100%" stop-color="#8b0000"/>
+                  </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#bgGrad)"/>
+                <circle cx="100" cy="75" r="36" fill="#ffdbac"/>
+                <path d="M40 200 Q40 130 100 130 Q160 130 160 200 Z" fill="url(#suitGrad)"/>
+                <path d="M82 130 L100 110 L118 130 Z" fill="#1a1a1a"/>
+                <rect x="78" y="40" width="44" height="18" rx="6" fill="#1a1a1a" stroke="#d32f2f" stroke-width="2"/>
+                <rect x="82" y="44" width="16" height="10" rx="3" fill="#2a1a1a" opacity="0.9"/>
+                <rect x="102" y="44" width="16" height="10" rx="3" fill="#2a1a1a" opacity="0.9"/>
+                <path d="M62 42 Q62 18 100 18 Q138 18 138 42 L138 50 Q100 32 62 50 Z" fill="#1a1a1a"/>
+                <circle cx="88" cy="82" r="3" fill="#1a1a1a"/>
+                <circle cx="112" cy="82" r="3" fill="#1a1a1a"/>
+                <path d="M92 96 Q100 100 108 96" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
+                <path d="M80 135 L70 200 M120 135 L130 200" stroke="#1a1a1a" stroke-width="2"/>
+                <circle cx="40" cy="30" r="1.5" fill="#fff" opacity="0.9"/>
+                <circle cx="170" cy="60" r="1" fill="#fff" opacity="0.7"/>
+                <circle cx="160" cy="180" r="1.2" fill="#ff8888" opacity="0.9"/>
+                <circle cx="30" cy="170" r="1" fill="#fff" opacity="0.6"/>
+              </svg>
+            </div>
+            <h1 class="hero-title">西北<span>語薇</span> · 星際穿越時空艙</h1>
+            <p class="hero-subtitle">2107 未來AI · 社區智慧守護大使 · 與你共創星光日常</p>
+          </div>
+          <div class="menu-3d-wrap">
+            <div class="menu-3d-grid" id="menuGrid"></div>
+          </div>
+        </section>
+        <!-- Sub pages will be injected via JS -->
+      </main>
+      <!-- Login / Register Modal -->
+      <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+          <h2 class="modal-title" id="authModalTitle">登入星光艙</h2>
+          <p class="modal-subtitle" id="authModalSubtitle">與語薇一起展開星際冒險</p>
+          <form id="authForm">
+            <div class="form-group" id="nameGroup" style="display:none;">
+              <label>艙員暱稱</label>
+              <input type="text" id="inputName" placeholder="輸入你的星際名號" maxlength="20"/>
+            </div>
+            <div class="form-group">
+              <label>電子郵件</label>
+              <input type="email" id="inputEmail" placeholder="star@nwrose.tw" required/>
+            </div>
+            <div class="form-group">
+              <label>密碼</label>
+              <input type="password" id="inputPassword" placeholder="至少 6 個字元" minlength="6" required/>
+            </div>
+            <button type="submit" class="btn btn-block" id="authSubmitBtn">登入</button>
+          </form>
+          <div class="modal-divider">或</div>
+          <button class="btn-google" id="googleSignInBtn">
+            <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.795 2.255-2.251 4.188-4.085 5.57l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+            以 Google 帳號繼續
+          </button>
+          <div class="modal-switch">
+            <span id="authModeSwitch">還沒有星光證？立即註冊</span>
+          </div>
+        </div>
+      </div>
+      <!-- Level Up Overlay -->
+      <div class="level-up-overlay" id="levelUpOverlay">
+        <div class="level-up-content">
+          <div class="level-up-badge" id="levelUpBadge">LV UP!</div>
+          <div class="level-up-title" id="levelUpTitle">升級為見習艙員</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAH3dKwLLlg5-5jPwEbIZ2WKP41TaV68EY",
+            authDomain: "nw-rose.firebaseapp.com",
+            projectId: "nw-rose",
+            storageBucket: "nw-rose.firebasestorage.app",
+            messagingSenderId: "308252489419",
+            appId: "1:308252489419:web:455d75bcc6398e78660d4e",
+            measurementId: "G-3W3PYCF1D8"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker 註冊成功:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker 註冊失敗:', error);
+                    });
+            });
+        }
+    </script>
+    <script src="js/app.js"></script>
+</body>
+</html>
