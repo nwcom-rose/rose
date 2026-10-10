@@ -555,18 +555,92 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============ PWA INSTALL ============
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    state.installPromptEvent = e;
-    const btn = document.getElementById('installBtn');
-    if (btn) btn.style.display = 'inline-block';
-  });
-  const installBtn = document.getElementById('installBtn');
-  if (installBtn) installBtn.addEventListener('click', async () => {
-    if (!state.installPromptEvent) return;
-    state.installPromptEvent.prompt();
-    const choice = await state.installPromptEvent.userChoice;
-    if (choice.outcome === 'accepted') installBtn.style.display = 'none';
-    state.installPromptEvent = null;
-  });
+  // 偵測是否已安裝為獨立應用（standalone 模式 / iOS standalone）
+  function isAppInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
+  }
+
+  // 若已安裝，隱藏所有安裝提示並結束
+  if (isAppInstalled()) {
+    const headerInstallBtn = document.getElementById('installBtn');
+    if (headerInstallBtn) headerInstallBtn.style.display = 'none';
+  } else {
+    // 安裝提示關閉記憶（24 小時內不再自動彈出）
+    const PWA_DISMISS_KEY = 'nwrose_pwa_dismissed_until';
+    function shouldShowPwaPrompt() {
+      const until = parseInt(localStorage.getItem(PWA_DISMISS_KEY) || '0', 10);
+      return Date.now() > until;
+    }
+    function dismissPwaPromptFor(hours) {
+      localStorage.setItem(PWA_DISMISS_KEY, String(Date.now() + hours * 3600 * 1000));
+    }
+
+    function showPwaInstallModal() {
+      const modal = document.getElementById('pwaInstallModal');
+      if (modal) modal.classList.add('active');
+    }
+    function hidePwaInstallModal() {
+      const modal = document.getElementById('pwaInstallModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    // beforeinstallprompt 觸發：儲存事件、顯示 header 按鈕、延遲自動彈窗
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      state.installPromptEvent = e;
+      const headerBtn = document.getElementById('installBtn');
+      if (headerBtn) headerBtn.style.display = 'inline-block';
+      // 若使用者最近沒關閉過，延遲 2.5 秒自動彈出安裝提示
+      if (shouldShowPwaPrompt()) {
+        setTimeout(showPwaInstallModal, 2500);
+      }
+    });
+
+    // 安裝完成事件：隱藏所有安裝提示
+    window.addEventListener('appinstalled', () => {
+      state.installPromptEvent = null;
+      const headerBtn = document.getElementById('installBtn');
+      if (headerBtn) headerBtn.style.display = 'none';
+      hidePwaInstallModal();
+      dismissPwaPromptFor(24 * 365); // 安裝後一年內不再提示
+    });
+
+    // 立即安裝按鈕（modal 內）
+    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+    if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', async () => {
+      if (!state.installPromptEvent) {
+        // 若 beforeinstallprompt 未觸發（例如 iOS Safari），提示手動安裝方式
+        alert('請點擊瀏覽器分享按鈕 →「加入主畫面」來安裝西北語薇');
+        return;
+      }
+      state.installPromptEvent.prompt();
+      const choice = await state.installPromptEvent.userChoice;
+      state.installPromptEvent = null;
+      hidePwaInstallModal();
+      if (choice.outcome === 'accepted') {
+        const headerBtn = document.getElementById('installBtn');
+        if (headerBtn) headerBtn.style.display = 'none';
+      } else {
+        dismissPwaPromptFor(24); // 使用者拒絕，24 小時內不再提示
+      }
+    });
+
+    // 稍後再說按鈕
+    const pwaLaterBtn = document.getElementById('pwaLaterBtn');
+    if (pwaLaterBtn) pwaLaterBtn.addEventListener('click', () => {
+      hidePwaInstallModal();
+      dismissPwaPromptFor(24); // 24 小時內不再自動彈出
+    });
+
+    // Header 安裝按鈕點擊：直接觸發安裝（不彈 modal）
+    const installBtn = document.getElementById('installBtn');
+    if (installBtn) installBtn.addEventListener('click', async () => {
+      if (!state.installPromptEvent) return;
+      state.installPromptEvent.prompt();
+      const choice = await state.installPromptEvent.userChoice;
+      if (choice.outcome === 'accepted') installBtn.style.display = 'none';
+      state.installPromptEvent = null;
+    });
+  }
 });

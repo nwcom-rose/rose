@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>西北語薇星際艙</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261010-realbg-04">
+    <link rel="stylesheet" href="css/styles.css?v=20261011-logo-file">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -13,16 +13,8 @@
       <!-- Header Bar -->
       <header class="header-bar">
         <div class="header-logo">
-          <svg class="logo-bowtie" viewBox="0 0 64 64" aria-hidden="true">
-            <defs>
-              <pattern id="stripeRedBlack" patternUnits="userSpaceOnUse" width="14" height="14" patternTransform="rotate(45)">
-                <rect width="7" height="14" fill="#d32f2f"/>
-                <rect x="7" width="7" height="14" fill="#1a1a1a"/>
-              </pattern>
-            </defs>
-            <path d="M8 16 Q28 26 32 32 Q36 26 56 16 L56 48 Q36 38 32 32 Q28 38 8 48 Z" fill="url(#stripeRedBlack)" stroke="#8b0000" stroke-width="1"/>
-            <rect x="26" y="26" width="12" height="12" rx="2" fill="url(#stripeRedBlack)" stroke="#8b0000" stroke-width="1"/>
-          </svg>
+          <img class="logo-bowtie" src="assets/logo.svg" alt="西北語薇 LOGO"
+               onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><pattern id=%22s%22 patternUnits=%22userSpaceOnUse%22 width=%2212%22 height=%2212%22 patternTransform=%22rotate(45)%22><rect width=%226%22 height=%2212%22 fill=%22%23e53935%22/><rect x=%226%22 width=%226%22 height=%2212%22 fill=%22%23141414%22/></pattern></defs><path d=%22M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/></svg>'"/>
           <span class="header-title">西北語薇 · 星際艙</span>
         </div>
         <div class="header-user">
@@ -44,25 +36,43 @@
             <img src="assets/cockpit-bg.jpg" alt="西北語薇星際駕駛艙"
                  onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Interior%20of%20a%20futuristic%20sci-fi%20spacecraft%20cockpit%20control%20room%20with%20dark%20red%20and%20black%20color%20scheme%2C%20multiple%20HUD%20screens%20on%20top%2C%20a%20steering%20wheel%20console%20in%20the%20middle%2C%20pilot%20seat%20on%20right%2C%20storage%20locker%20box%20on%20left%2C%20holographic%20community%20map%20projector%20in%20bottom%20center%2C%20double%20unboxing%20screens%20bottom%20left%2C%20news%20ticker%20screen%20and%20shield%20honor%20display%20bottom%20right%2C%20space%20nebula%20red%20swirl%20outside%20the%20window%2C%20anime%20illustration%20style%2C%20cinematic%20lighting%2C%20highly%20detailed&image_size=portrait_16_9';"
                  referrerpolicy="no-referrer" />
+            <!-- 駕駛艙窗外景色動畫：星際穿越流動星點 + 星雲脈動光暈 -->
+            <div class="cockpit-window-anim">
+              <div class="star-layer star-layer-1"></div>
+              <div class="star-layer star-layer-2"></div>
+              <div class="star-layer star-layer-3"></div>
+              <div class="nebula-glow nebula-red"></div>
+              <div class="nebula-glow nebula-purple"></div>
+              <div class="floating-particles">
+                <span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
             <div class="cockpit-vignette"></div>
+          </div>
+          <!-- 西北語薇人物 — 優先載入 assets/yuwei.png，否則 fallback 生成圖 -->
+          <div class="cockpit-figures">
+            <img class="yuwei-figure" src="assets/yuwei.png" alt="西北語薇"
+                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%20in%20high%20ponytail%2C%20wearing%20red%20sci-fi%20goggles%20on%20forehead%2C%20red%20and%20black%20tech%20jacket%20with%20red%20black%20striped%20bow%20tie%2C%20badge%20on%20left%20chest%2C%20glowing%20device%20on%20left%20forearm%2C%20black%20pants%2C%20black%20boots%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style%2C%20high%20detail&image_size=portrait_16_9';"
+                 referrerpolicy="no-referrer" />
           </div>
           <div class="cockpit-hotspots">
             <button class="hotspot-btn hs-about" data-topic="about">
-              <span class="hs-text hs-big">關於語薇</span><span class="hs-arrow">▶</span></button>
+              <span class="hs-text">關於語薇</span></button>
             <button class="hotspot-btn hs-music" data-topic="music">
-              <span class="hs-arrow music-note">🎵</span><span class="hs-text">語薇創作曲</span></button>
+              <span class="hs-text">語薇創作曲</span></button>
             <button class="hotspot-btn hs-daily" data-topic="daily">
-              <span class="hs-arrow">📱</span><span class="hs-text">語薇日常</span></button>
+              <span class="hs-text">語薇日常</span></button>
             <button class="hotspot-btn hs-toolbox" data-topic="toolbox">
-              <span class="hs-arrow">🧰</span><span class="hs-text">社區百寶箱</span></button>
+              <span class="hs-text">社區百寶箱</span></button>
             <button class="hotspot-btn hs-unbox" data-topic="unbox">
-              <span class="hs-text hs-big">語薇開箱去</span><span class="hs-arrow">▶</span></button>
+              <span class="hs-text">語薇開箱去</span></button>
             <button class="hotspot-btn hs-neighbor" data-topic="neighbor">
-              <span class="hs-text hs-big">鄰里好生活</span><span class="hs-arrow">▶</span></button>
+              <span class="hs-text">鄰里好生活</span></button>
             <button class="hotspot-btn hs-news" data-topic="news">
-              <span class="hs-text hs-big">社區快訊</span><span class="hs-arrow">▶</span></button>
+              <span class="hs-text">社區快訊</span></button>
             <button class="hotspot-btn hs-hero" data-topic="hero">
-              <span class="hs-arrow">🛡️</span><span class="hs-text hs-big">社區英雄</span></button>
+              <span class="hs-text">社區英雄</span></button>
           </div>
           <!-- 舊元素保留以防止 JS 報錯，但 CSS 強制隱藏 -->
           <div class="home-hero" style="display:none"></div>
@@ -70,6 +80,35 @@
         </section>
         <!-- Sub pages will be injected via JS -->
       </main>
+      <!-- PWA 安裝提示 Modal -->
+      <div class="modal-overlay" id="pwaInstallModal">
+        <div class="modal-box pwa-install-box">
+          <div class="pwa-install-icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <defs>
+                <pattern id="pwaBowtie" patternUnits="userSpaceOnUse" width="12" height="12" patternTransform="rotate(45)">
+                  <rect width="6" height="12" fill="#e53935"/>
+                  <rect x="6" width="6" height="12" fill="#141414"/>
+                </pattern>
+              </defs>
+              <path d="M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z" fill="url(#pwaBowtie)" stroke="#5a0000" stroke-width="1.2"/>
+              <path d="M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z" fill="url(#pwaBowtie)" stroke="#5a0000" stroke-width="1.2"/>
+              <path d="M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z" fill="url(#pwaBowtie)" stroke="#5a0000" stroke-width="1.2"/>
+            </svg>
+          </div>
+          <h2 class="modal-title">安裝西北語薇</h2>
+          <p class="modal-subtitle">將星際艙安裝到你的裝置，隨時與語薇展開冒險</p>
+          <ul class="pwa-features">
+            <li>🚀 一鍵開啟，離線也能暢遊星際</li>
+            <li>📱 全螢幕沉浸式體驗</li>
+            <li>⭐ 專屬西北語薇 APP 圖示</li>
+          </ul>
+          <div class="pwa-install-actions">
+            <button class="btn btn-block" id="pwaInstallBtn">立即安裝</button>
+            <button class="btn btn-ghost" id="pwaLaterBtn">稍後再說</button>
+          </div>
+        </div>
+      </div>
       <!-- Login / Register Modal -->
       <div class="modal-overlay" id="authModal">
         <div class="modal-box">
@@ -137,6 +176,6 @@
             });
         }
     </script>
-    <script src="js/app.js?v=20261010-realbg-02"></script>
+    <script src="js/app.js?v=20261011-pwa-install"></script>
 </body>
 </html>

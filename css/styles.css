@@ -95,28 +95,36 @@ html, body {
 }
 
 .header-bar {
-    position: relative;
-    z-index: 10;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.2vh 3vw;
-    background: linear-gradient(180deg, rgba(10,10,20,0.95) 0%, rgba(10,10,20,0.6) 100%);
-    border-bottom: 1px solid rgba(211,47,47,0.3);
-    backdrop-filter: blur(6px);
+    padding: 1vh 3vw;
+    background: linear-gradient(180deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
+    border-bottom: 1px solid rgba(211,47,47,0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     flex-shrink: 0;
-    height: 8vh;
+    height: 7vh;
+    min-height: 44px;
+    box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
     .header-bar {
-        height: 7vh;
+        height: 6vh;
+        min-height: 52px;
     }
 }
 
 @media (min-width: 1200px) {
     .header-bar {
-        height: 6vh;
+        height: 5.5vh;
+        min-height: 56px;
     }
 }
 
@@ -130,6 +138,8 @@ html, body {
     width: 40px;
     height: 40px;
     display: inline-block;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
 
 .header-title {
@@ -165,6 +175,63 @@ html, body {
 .btn-ghost {
     background: transparent;
     border: 1px solid rgba(211,47,47,0.6);
+}
+
+/* 登入/註冊按鈕 — 與首頁熱區按鈕同款：80×26 紅黑漸層 + 雙層發光 + 脈衝呼吸邊框 */
+#authBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    height: 26px;
+    min-height: 26px;
+    padding: 0 8px;
+    font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 1.1;
+    color: #fff6ef;
+    text-shadow: 0 0 5px rgba(255,60,60,0.6), 0 1px 2px rgba(0,0,0,0.9);
+    background: linear-gradient(135deg, rgba(211,47,47,0.92) 0%, rgba(120,10,10,0.92) 100%);
+    border: 1.2px solid rgba(255,120,120,0.5);
+    border-radius: 7px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,220,220,0.35),
+        inset 0 -1px 0 rgba(80,0,0,0.5),
+        0 2px 6px rgba(0,0,0,0.55),
+        0 0 10px rgba(211,47,47,0.5);
+    backdrop-filter: blur(1.5px);
+    -webkit-backdrop-filter: blur(1.5px);
+    cursor: pointer;
+    transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    text-align: center;
+    animation: hsPulse 2.4s ease-in-out infinite;
+}
+#authBtn:hover {
+    transform: translateY(-2px) scale(1.04);
+    filter: brightness(1.2);
+    box-shadow:
+        inset 0 1px 0 rgba(255,220,220,0.35),
+        inset 0 -1px 0 rgba(80,0,0,0.5),
+        0 4px 10px rgba(0,0,0,0.6),
+        0 0 18px rgba(211,47,47,0.75);
+}
+#authBtn:active {
+    transform: scale(0.98);
+}
+@media (min-width: 768px) {
+    #authBtn { width: 100px; height: 30px; font-size: 11px; }
+}
+@media (min-width: 1200px) {
+    #authBtn { width: 120px; height: 32px; font-size: 12px; }
+}
+@media (max-width: 360px) {
+    #authBtn { width: 72px; height: 24px; font-size: 9px; }
 }
 
 .starlight-cert {
@@ -211,6 +278,13 @@ html, body {
     flex: 1;
     position: relative;
     overflow: hidden;
+    padding-top: 7vh;
+}
+@media (min-width: 768px) {
+    .main-content { padding-top: 6vh; }
+}
+@media (min-width: 1200px) {
+    .main-content { padding-top: 5.5vh; }
 }
 
 .home-hero {
@@ -802,13 +876,19 @@ body {
    ======================================================= */
 #page-home.cockpit-page {
   position: fixed;
-  top: 0; left: 0;
+  top: 7vh; left: 0;
   padding: 0 !important;
   margin: 0 !important;
   width: 100vw;
-  height: 100vh;
+  height: 93vh;
   background: #0a0608;
   overflow: hidden;
+}
+@media (min-width: 768px) {
+  #page-home.cockpit-page { top: 6vh; height: 94vh; }
+}
+@media (min-width: 1200px) {
+  #page-home.cockpit-page { top: 5.5vh; height: 94.5vh; }
 }
 #page-home.cockpit-page .home-hero,
 #page-home.cockpit-page .menu-3d-wrap {
@@ -831,6 +911,130 @@ body {
   user-select: none;
   -webkit-user-drag: none;
 }
+/* ===== 駕駛艙窗外景色動畫：星際穿越 + 星雲脈動 ===== */
+.cockpit-window-anim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+/* 三層星點，不同速度與密度，營造深度穿越感 */
+.star-layer {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-repeat: repeat;
+  will-change: transform;
+}
+.star-layer-1 {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 80px 120px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 160px 60px, #fff, transparent),
+    radial-gradient(1px 1px at 240px 180px, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 320px 90px, #fff, transparent),
+    radial-gradient(1px 1px at 400px 200px, rgba(255,255,255,0.9), transparent),
+    radial-gradient(1px 1px at 500px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 600px 150px, rgba(255,255,255,0.6), transparent);
+  background-size: 700px 300px;
+  opacity: 0.7;
+  animation: starWarp 8s linear infinite;
+}
+.star-layer-2 {
+  background-image:
+    radial-gradient(1.5px 1.5px at 60px 80px, #ffe0e0, transparent),
+    radial-gradient(1.5px 1.5px at 180px 40px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 300px 160px, rgba(255,220,220,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 450px 100px, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 550px 220px, rgba(255,240,240,0.8), transparent);
+  background-size: 650px 280px;
+  opacity: 0.85;
+  animation: starWarp 5s linear infinite;
+}
+.star-layer-3 {
+  background-image:
+    radial-gradient(2px 2px at 100px 120px, #ffb3b3, transparent),
+    radial-gradient(2px 2px at 350px 60px, #fff, transparent),
+    radial-gradient(2px 2px at 520px 180px, rgba(255,180,180,0.9), transparent);
+  background-size: 600px 260px;
+  opacity: 0.95;
+  animation: starWarp 3s linear infinite;
+}
+@keyframes starWarp {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-350px, -150px, 0); }
+}
+/* 星雲脈動光暈 */
+.nebula-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  will-change: opacity, transform;
+}
+.nebula-red {
+  top: 8%;
+  left: -10%;
+  width: 60%;
+  height: 35%;
+  background: radial-gradient(circle, rgba(255,40,40,0.45) 0%, rgba(180,0,0,0.25) 40%, transparent 70%);
+  animation: nebulaPulseRed 6s ease-in-out infinite;
+}
+.nebula-purple {
+  top: 20%;
+  right: -15%;
+  width: 55%;
+  height: 40%;
+  background: radial-gradient(circle, rgba(140,40,200,0.35) 0%, rgba(80,0,120,0.2) 40%, transparent 70%);
+  animation: nebulaPulsePurple 7.5s ease-in-out infinite;
+}
+@keyframes nebulaPulseRed {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.9; transform: scale(1.15); }
+}
+@keyframes nebulaPulsePurple {
+  0%, 100% { opacity: 0.4; transform: scale(1.1); }
+  50%      { opacity: 0.75; transform: scale(0.95); }
+}
+/* 飄浮粒子 */
+.floating-particles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.floating-particles span {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255,220,220,0.9);
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(255,120,120,0.8);
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: particleFloat 6s ease-in-out infinite;
+}
+.floating-particles span:nth-child(1)  { left: 12%; top: 30%; animation-delay: 0s;   width:2px; height:2px; }
+.floating-particles span:nth-child(2)  { left: 25%; top: 18%; animation-delay: 0.8s; width:3px; height:3px; }
+.floating-particles span:nth-child(3)  { left: 38%; top: 42%; animation-delay: 1.6s; width:2px; height:2px; }
+.floating-particles span:nth-child(4)  { left: 55%; top: 22%; animation-delay: 2.4s; width:3px; height:3px; }
+.floating-particles span:nth-child(5)  { left: 68%; top: 35%; animation-delay: 3.2s; width:2px; height:2px; }
+.floating-particles span:nth-child(6)  { left: 78%; top: 15%; animation-delay: 4.0s; width:3px; height:3px; }
+.floating-particles span:nth-child(7)  { left: 18%; top: 50%; animation-delay: 0.4s; width:2px; height:2px; }
+.floating-particles span:nth-child(8)  { left: 45%; top: 28%; animation-delay: 1.2s; width:2px; height:2px; }
+.floating-particles span:nth-child(9)  { left: 62%; top: 48%; animation-delay: 2.0s; width:3px; height:3px; }
+.floating-particles span:nth-child(10) { left: 82%; top: 40%; animation-delay: 2.8s; width:2px; height:2px; }
+@keyframes particleFloat {
+  0%   { opacity: 0; transform: translateY(0) scale(0.5); }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+}
 .cockpit-vignette {
   position: absolute;
   inset: 0;
@@ -838,6 +1042,45 @@ body {
   background:
     radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%),
     linear-gradient(180deg, rgba(10,4,8,0.35) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 85%, rgba(10,4,8,0.55) 100%);
+}
+/* ===== 西北語薇人物圖層 ===== */
+.cockpit-figures {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+.yuwei-figure {
+  height: clamp(75vh, 88vh, 94vh);
+  max-height: 96vh;
+  width: auto;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 12px rgba(211,47,47,0.35));
+  animation: yuweiFloat 5s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+@keyframes yuweiFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@media (min-width: 768px) {
+  .yuwei-figure { height: clamp(78vh, 90vh, 95vh); }
+}
+@media (min-width: 1200px) {
+  .yuwei-figure { height: clamp(80vh, 92vh, 96vh); }
+}
+@media (max-width: 360px) {
+  .yuwei-figure { height: clamp(70vh, 82vh, 88vh); }
 }
 .cockpit-hotspots {
   position: absolute;
@@ -852,38 +1095,55 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
-  min-height: clamp(28px, 5.5vw, 42px);
-  max-width: clamp(110px, 28vw, 210px);
+  padding: clamp(3px, 0.7vw, 6px) clamp(8px, 1.6vw, 12px);
+  min-height: 26px;
+  height: 26px;
+  min-width: 80px;
+  width: 80px;
+  max-width: 80px;
   font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   font-weight: 700;
-  font-size: clamp(11px, 2.8vw, 15px);
-  line-height: 1.2;
+  font-size: clamp(9px, 2.2vw, 11px);
+  line-height: 1.1;
   color: #fff6ef;
-  text-shadow: 0 0 6px rgba(255,60,60,0.65), 0 1px 2px rgba(0,0,0,0.9);
-  background: linear-gradient(135deg, rgba(211,47,47,0.90) 0%, rgba(120,10,10,0.90) 100%);
-  border: 1.5px solid rgba(255,120,120,0.55);
-  border-radius: clamp(6px, 1.3vw, 10px);
+  text-shadow: 0 0 5px rgba(255,60,60,0.6), 0 1px 2px rgba(0,0,0,0.9);
+  background: linear-gradient(135deg, rgba(211,47,47,0.92) 0%, rgba(120,10,10,0.92) 100%);
+  border: 1.2px solid rgba(255,120,120,0.5);
+  border-radius: clamp(5px, 1vw, 7px);
   box-shadow:
-    inset 0 1px 0 rgba(255,220,220,0.4),
+    inset 0 1px 0 rgba(255,220,220,0.35),
     inset 0 -1px 0 rgba(80,0,0,0.5),
-    0 2px 8px rgba(0,0,0,0.55),
-    0 0 14px rgba(211,47,47,0.55);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+    0 2px 6px rgba(0,0,0,0.55),
+    0 0 10px rgba(211,47,47,0.5);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
   cursor: pointer;
   transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   white-space: nowrap;
+  box-sizing: border-box;
+  text-align: center;
+  flex-direction: row;
+}
+
+/* 鄰里好生活 hover 時保留水平置中位移 */
+.hotspot-btn.hs-neighbor {
+  transform: translateX(-50%);
+  will-change: transform;
+}
+.hotspot-btn.hs-neighbor:hover {
+  transform: translate(-50%, -2px) scale(1.04);
+}
+.hotspot-btn.hs-neighbor:active {
+  transform: translateX(-50%) scale(1);
 }
 .hotspot-btn::after {
   content: "";
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   border-radius: inherit;
   pointer-events: none;
-  border: 1px solid rgba(255,80,80,0.25);
+  border: 1px solid rgba(255,80,80,0.2);
   animation: hsPulse 2.2s ease-in-out infinite;
 }
 @keyframes hsPulse {
@@ -891,42 +1151,27 @@ body {
   50%     { opacity: 1;   transform: scale(1.03); }
 }
 .hotspot-btn:hover {
-  transform: translateY(-3px) scale(1.05);
-  filter: brightness(1.22) saturate(1.1);
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.2) saturate(1.1);
   box-shadow:
     inset 0 1px 0 rgba(255,220,220,0.5),
     inset 0 -1px 0 rgba(80,0,0,0.5),
-    0 6px 16px rgba(0,0,0,0.6),
-    0 0 22px rgba(255,60,60,0.8);
+    0 4px 12px rgba(0,0,0,0.6),
+    0 0 18px rgba(255,60,60,0.75);
 }
 .hotspot-btn:active { transform: translateY(0) scale(1); filter: brightness(0.9); }
-.hs-text { pointer-events: none; }
-.hs-text.hs-big {
-  font-size: clamp(12px, 3.2vw, 16px);
-  font-weight: 800;
-}
-.hs-arrow {
-  pointer-events: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(14px, 3.2vw, 18px);
-  height: clamp(14px, 3.2vw, 18px);
-  font-size: clamp(10px, 2.6vw, 13px);
-  color: #ffe9b0;
-  text-shadow: 0 0 6px rgba(255,180,40,0.9);
-}
-.hs-arrow.music-note { color: #ff9ecb; text-shadow: 0 0 8px rgba(255,80,180,0.9); }
+.hs-text { pointer-events: none; text-align: center; flex: 0 1 auto; }
+.hs-arrow { display: none !important; }
 
 /* ===== Mobile-first 8 熱區定位 (精準對應參考圖設備位置) ===== */
-/* 0. 關於語薇 - 頂部左上 HUD 大型螢幕 */
-.hs-about    { top: 3%;    left: 6%; }
+/* 0. 關於語薇 - 頂部左上 HUD 大型螢幕（避開固定頁首） */
+.hs-about    { top: 9%;    left: 6%; }
 /* 1. 語薇創作曲 - 右舷上方浮動音樂面板 */
-.hs-music    { top: 23%;   right: 5%; }
+.hs-music    { top: 22%;   right: 5%; }
 /* 2. 語薇日常 - 右舷平板（音樂面板下方） */
-.hs-daily    { top: 32%;   right: 22%; flex-direction: row; max-width: clamp(140px, 32vw, 200px); }
+.hs-daily    { top: 31%;   right: 22%; }
 /* 3. 社區百寶箱 - 左側抽屜置物箱（畫面中間偏下，開箱去上方） */
-.hs-toolbox  { top: 55%;   left: 4%;  flex-direction: column; align-items: flex-start; gap: 2px; max-width: clamp(130px, 32vw, 180px); }
+.hs-toolbox  { top: 54%;   left: 4%; }
 /* 4. 語薇開箱去 - 底部左側雙螢幕工作站 */
 .hs-unbox    { bottom: 8%; left: 4%; }
 /* 5. 鄰里好生活 - 底部中央全息投影台 */
@@ -939,62 +1184,149 @@ body {
 /* ===== Tablet 768px+ ===== */
 @media (min-width: 768px) {
   .hotspot-btn {
-    padding: 10px 18px;
-    min-height: 46px;
-    max-width: 230px;
-    font-size: 15px;
-    gap: 8px;
-    border-width: 2px;
-    border-radius: 10px;
+    padding: 5px 10px;
+    min-height: 30px;
+    height: 30px;
+    min-width: 100px;
+    width: 100px;
+    max-width: 100px;
+    font-size: 10px;
+    border-width: 1.4px;
+    border-radius: 7px;
+    justify-content: center;
+    flex-direction: row;
   }
-  .hs-text.hs-big { font-size: 17px; }
-  .hs-arrow { width: 20px; height: 20px; font-size: 14px; }
-  .hs-about    { top: 3%;    left: 9%; }
-  .hs-music    { top: 21%;   right: 9%; }
-  .hs-daily    { top: 31%;   right: 26%; }
-  .hs-toolbox  { top: 55%;   left: 6%; }
+  .hotspot-btn.hs-neighbor:hover {
+    transform: translate(-50%, -2px) scale(1.04);
+  }
+  .hotspot-btn.hs-neighbor:active {
+    transform: translateX(-50%) scale(1);
+  }
+  .hs-about    { top: 8%;    left: 9%; }
+  .hs-music    { top: 20%;   right: 9%; }
+  .hs-daily    { top: 29%;   right: 26%; }
+  .hs-toolbox  { top: 53%;   left: 6%; }
   .hs-unbox    { bottom: 10%; left: 6%; }
   .hs-neighbor { bottom: 14%; }
-  .hs-news     { bottom: 32%; right: 6%; }
+  .hs-news     { bottom: 31%; right: 6%; }
   .hs-hero     { bottom: 3%;  right: 8%; }
 }
 
 /* ===== Desktop 1200px+ ===== */
 @media (min-width: 1200px) {
   .hotspot-btn {
-    padding: 12px 22px;
-    min-height: 52px;
-    max-width: 260px;
-    font-size: 16px;
+    padding: 6px 12px;
+    min-height: 32px;
+    height: 32px;
+    min-width: 120px;
+    width: 120px;
+    max-width: 120px;
+    font-size: 11px;
+    justify-content: center;
+    flex-direction: row;
   }
-  .hs-text.hs-big { font-size: 18px; }
-  .hs-about    { top: 4%;    left: 10%; }
-  .hs-music    { top: 20%;   right: 11%; }
-  .hs-daily    { top: 30%;   right: 28%; }
-  .hs-toolbox  { top: 55%;   left: 7%; }
+  .hotspot-btn.hs-neighbor:hover {
+    transform: translate(-50%, -2px) scale(1.04);
+  }
+  .hotspot-btn.hs-neighbor:active {
+    transform: translateX(-50%) scale(1);
+  }
+  .hs-about    { top: 8%;    left: 10%; }
+  .hs-music    { top: 19%;   right: 11%; }
+  .hs-daily    { top: 28%;   right: 28%; }
+  .hs-toolbox  { top: 52%;   left: 7%; }
   .hs-unbox    { bottom: 11%; left: 7%; }
   .hs-neighbor { bottom: 15%; }
-  .hs-news     { bottom: 33%; right: 7%; }
+  .hs-news     { bottom: 32%; right: 7%; }
   .hs-hero     { bottom: 4%;  right: 9%; }
 }
 
 /* ===== 超小手機 <360px ===== */
 @media (max-width: 360px) {
   .hotspot-btn {
-    padding: 5px 8px;
-    min-height: 26px;
-    max-width: 98px;
-    font-size: 10px;
-    gap: 4px;
+    padding: 3px 6px;
+    min-height: 24px;
+    height: 24px;
+    min-width: 72px;
+    width: 72px;
+    max-width: 72px;
+    font-size: 9px;
+    justify-content: center;
+    flex-direction: row;
   }
-  .hs-text.hs-big { font-size: 11px; }
-  .hs-arrow { width: 12px; height: 12px; font-size: 9px; }
-  .hs-about    { top: 1.5%;  left: 4%; }
+  .hotspot-btn.hs-neighbor:hover {
+    transform: translate(-50%, -2px) scale(1.04);
+  }
+  .hotspot-btn.hs-neighbor:active {
+    transform: translateX(-50%) scale(1);
+  }
+  .hs-about    { top: 10%;   left: 4%; }
   .hs-music    { top: 22%;   right: 3%; }
-  .hs-daily    { top: 33%;   right: 20%; }
-  .hs-toolbox  { top: 56%;   left: 2%; }
+  .hs-daily    { top: 32%;   right: 20%; }
+  .hs-toolbox  { top: 55%;   left: 2%; }
   .hs-unbox    { bottom: 8%; left: 2%; }
   .hs-neighbor { bottom: 12%; }
   .hs-news     { bottom: 30%; right: 2%; }
   .hs-hero     { bottom: 1%;  right: 3%; }
+}
+
+/* ===== PWA 安裝提示 Modal ===== */
+#pwaInstallModal {
+  display: none;
+  z-index: 150;
+}
+#pwaInstallModal.active {
+  display: flex;
+}
+.pwa-install-box {
+  max-width: 340px;
+  width: 86vw;
+  text-align: center;
+  padding: 28px 22px 22px;
+  animation: pwaSlideIn 0.5s cubic-bezier(.2,1.4,.4,1);
+}
+@keyframes pwaSlideIn {
+  0%   { opacity: 0; transform: translateY(30px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.pwa-install-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 14px;
+  filter: drop-shadow(0 4px 12px rgba(211,47,47,0.6));
+  animation: pwaIconFloat 3s ease-in-out infinite;
+}
+.pwa-install-icon svg {
+  width: 100%;
+  height: 100%;
+}
+@keyframes pwaIconFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.pwa-features {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 20px;
+  text-align: left;
+}
+.pwa-features li {
+  font-size: clamp(12px, 2.6vw, 14px);
+  color: rgba(255,255,255,0.85);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(211,47,47,0.15);
+}
+.pwa-features li:last-child {
+  border-bottom: none;
+}
+.pwa-install-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pwa-install-actions .btn {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .pwa-install-box { max-width: 380px; }
 }
