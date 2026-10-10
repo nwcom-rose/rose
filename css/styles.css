@@ -796,3 +796,205 @@ body {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
   cursor: not-allowed;
 }
+
+/* =======================================================
+   COCKPIT REAL BG (v3 - 真實圖片背景 + 8 熱區)
+   ======================================================= */
+#page-home.cockpit-page {
+  position: fixed;
+  top: 0; left: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  background: #0a0608;
+  overflow: hidden;
+}
+#page-home.cockpit-page .home-hero,
+#page-home.cockpit-page .menu-3d-wrap {
+  display: none !important;
+}
+.cockpit-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+.cockpit-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.cockpit-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(180deg, rgba(10,4,8,0.35) 0%, rgba(0,0,0,0) 12%, rgba(0,0,0,0) 85%, rgba(10,4,8,0.55) 100%);
+}
+.cockpit-hotspots {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: block;
+}
+.hotspot-btn {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: clamp(6px, 1.2vw, 10px) clamp(10px, 2vw, 16px);
+  min-height: clamp(28px, 5.5vw, 42px);
+  max-width: clamp(110px, 28vw, 210px);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  font-weight: 700;
+  font-size: clamp(11px, 2.8vw, 15px);
+  line-height: 1.2;
+  color: #fff6ef;
+  text-shadow: 0 0 6px rgba(255,60,60,0.65), 0 1px 2px rgba(0,0,0,0.9);
+  background: linear-gradient(135deg, rgba(211,47,47,0.90) 0%, rgba(120,10,10,0.90) 100%);
+  border: 1.5px solid rgba(255,120,120,0.55);
+  border-radius: clamp(6px, 1.3vw, 10px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,220,220,0.4),
+    inset 0 -1px 0 rgba(80,0,0,0.5),
+    0 2px 8px rgba(0,0,0,0.55),
+    0 0 14px rgba(211,47,47,0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
+  transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.hotspot-btn::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 1px solid rgba(255,80,80,0.25);
+  animation: hsPulse 2.2s ease-in-out infinite;
+}
+@keyframes hsPulse {
+  0%,100% { opacity: 0.5; transform: scale(1); }
+  50%     { opacity: 1;   transform: scale(1.03); }
+}
+.hotspot-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  filter: brightness(1.22) saturate(1.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255,220,220,0.5),
+    inset 0 -1px 0 rgba(80,0,0,0.5),
+    0 6px 16px rgba(0,0,0,0.6),
+    0 0 22px rgba(255,60,60,0.8);
+}
+.hotspot-btn:active { transform: translateY(0) scale(1); filter: brightness(0.9); }
+.hs-text { pointer-events: none; }
+.hs-text.hs-big {
+  font-size: clamp(12px, 3.2vw, 16px);
+  font-weight: 800;
+}
+.hs-arrow {
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(14px, 3.2vw, 18px);
+  height: clamp(14px, 3.2vw, 18px);
+  font-size: clamp(10px, 2.6vw, 13px);
+  color: #ffe9b0;
+  text-shadow: 0 0 6px rgba(255,180,40,0.9);
+}
+.hs-arrow.music-note { color: #ff9ecb; text-shadow: 0 0 8px rgba(255,80,180,0.9); }
+
+/* ===== Mobile-first 8 熱區定位 (精準對應參考圖設備位置) ===== */
+/* 0. 關於語薇 - 頂部左上 HUD 大型螢幕 */
+.hs-about    { top: 3%;    left: 6%; }
+/* 1. 語薇創作曲 - 右舷上方浮動音樂面板 */
+.hs-music    { top: 23%;   right: 5%; }
+/* 2. 語薇日常 - 右舷平板（音樂面板下方） */
+.hs-daily    { top: 32%;   right: 22%; flex-direction: row; max-width: clamp(140px, 32vw, 200px); }
+/* 3. 社區百寶箱 - 左側抽屜置物箱（畫面中間偏下，開箱去上方） */
+.hs-toolbox  { top: 55%;   left: 4%;  flex-direction: column; align-items: flex-start; gap: 2px; max-width: clamp(130px, 32vw, 180px); }
+/* 4. 語薇開箱去 - 底部左側雙螢幕工作站 */
+.hs-unbox    { bottom: 8%; left: 4%; }
+/* 5. 鄰里好生活 - 底部中央全息投影台 */
+.hs-neighbor { bottom: 14%; left: 50%; transform: translateX(-50%); }
+/* 6. 社區快訊 - 底部右側上方快訊跑馬燈（盾牌上方） */
+.hs-news     { bottom: 30%; right: 4%; }
+/* 7. 社區英雄 - 底部右下盾牌徽章區 */
+.hs-hero     { bottom: 3%;  right: 5%; }
+
+/* ===== Tablet 768px+ ===== */
+@media (min-width: 768px) {
+  .hotspot-btn {
+    padding: 10px 18px;
+    min-height: 46px;
+    max-width: 230px;
+    font-size: 15px;
+    gap: 8px;
+    border-width: 2px;
+    border-radius: 10px;
+  }
+  .hs-text.hs-big { font-size: 17px; }
+  .hs-arrow { width: 20px; height: 20px; font-size: 14px; }
+  .hs-about    { top: 3%;    left: 9%; }
+  .hs-music    { top: 21%;   right: 9%; }
+  .hs-daily    { top: 31%;   right: 26%; }
+  .hs-toolbox  { top: 55%;   left: 6%; }
+  .hs-unbox    { bottom: 10%; left: 6%; }
+  .hs-neighbor { bottom: 14%; }
+  .hs-news     { bottom: 32%; right: 6%; }
+  .hs-hero     { bottom: 3%;  right: 8%; }
+}
+
+/* ===== Desktop 1200px+ ===== */
+@media (min-width: 1200px) {
+  .hotspot-btn {
+    padding: 12px 22px;
+    min-height: 52px;
+    max-width: 260px;
+    font-size: 16px;
+  }
+  .hs-text.hs-big { font-size: 18px; }
+  .hs-about    { top: 4%;    left: 10%; }
+  .hs-music    { top: 20%;   right: 11%; }
+  .hs-daily    { top: 30%;   right: 28%; }
+  .hs-toolbox  { top: 55%;   left: 7%; }
+  .hs-unbox    { bottom: 11%; left: 7%; }
+  .hs-neighbor { bottom: 15%; }
+  .hs-news     { bottom: 33%; right: 7%; }
+  .hs-hero     { bottom: 4%;  right: 9%; }
+}
+
+/* ===== 超小手機 <360px ===== */
+@media (max-width: 360px) {
+  .hotspot-btn {
+    padding: 5px 8px;
+    min-height: 26px;
+    max-width: 98px;
+    font-size: 10px;
+    gap: 4px;
+  }
+  .hs-text.hs-big { font-size: 11px; }
+  .hs-arrow { width: 12px; height: 12px; font-size: 9px; }
+  .hs-about    { top: 1.5%;  left: 4%; }
+  .hs-music    { top: 22%;   right: 3%; }
+  .hs-daily    { top: 33%;   right: 20%; }
+  .hs-toolbox  { top: 56%;   left: 2%; }
+  .hs-unbox    { bottom: 8%; left: 2%; }
+  .hs-neighbor { bottom: 12%; }
+  .hs-news     { bottom: 30%; right: 2%; }
+  .hs-hero     { bottom: 1%;  right: 3%; }
+}

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>西北語薇星際艙</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=20261010-realbg-04">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -37,46 +37,36 @@
       </header>
       <!-- Main Content -->
       <main class="main-content">
-        <!-- Home Page -->
-        <section class="page page-transition active" id="page-home" data-level="0">
-          <div class="home-hero">
-            <div class="hero-portrait-wrap">
-              <!-- 人物頭像以SVG占位呈現星際人物風格，實際圖片可替換為Base64 -->
-              <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#1a1a3a"/>
-                    <stop offset="100%" stop-color="#0a0a1a"/>
-                  </linearGradient>
-                  <linearGradient id="suitGrad" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#e53935"/>
-                    <stop offset="100%" stop-color="#8b0000"/>
-                  </linearGradient>
-                </defs>
-                <rect width="200" height="200" fill="url(#bgGrad)"/>
-                <circle cx="100" cy="75" r="36" fill="#ffdbac"/>
-                <path d="M40 200 Q40 130 100 130 Q160 130 160 200 Z" fill="url(#suitGrad)"/>
-                <path d="M82 130 L100 110 L118 130 Z" fill="#1a1a1a"/>
-                <rect x="78" y="40" width="44" height="18" rx="6" fill="#1a1a1a" stroke="#d32f2f" stroke-width="2"/>
-                <rect x="82" y="44" width="16" height="10" rx="3" fill="#2a1a1a" opacity="0.9"/>
-                <rect x="102" y="44" width="16" height="10" rx="3" fill="#2a1a1a" opacity="0.9"/>
-                <path d="M62 42 Q62 18 100 18 Q138 18 138 42 L138 50 Q100 32 62 50 Z" fill="#1a1a1a"/>
-                <circle cx="88" cy="82" r="3" fill="#1a1a1a"/>
-                <circle cx="112" cy="82" r="3" fill="#1a1a1a"/>
-                <path d="M92 96 Q100 100 108 96" stroke="#1a1a1a" stroke-width="2" fill="none" stroke-linecap="round"/>
-                <path d="M80 135 L70 200 M120 135 L130 200" stroke="#1a1a1a" stroke-width="2"/>
-                <circle cx="40" cy="30" r="1.5" fill="#fff" opacity="0.9"/>
-                <circle cx="170" cy="60" r="1" fill="#fff" opacity="0.7"/>
-                <circle cx="160" cy="180" r="1.2" fill="#ff8888" opacity="0.9"/>
-                <circle cx="30" cy="170" r="1" fill="#fff" opacity="0.6"/>
-              </svg>
-            </div>
-            <h1 class="hero-title">西北<span>語薇</span> · 星際穿越時空艙</h1>
-            <p class="hero-subtitle">2107 未來AI · 社區智慧守護大使 · 與你共創星光日常</p>
+        <!-- Home Page - Cockpit Full BG -->
+        <section class="page page-transition cockpit-page active" id="page-home" data-level="0">
+          <div class="cockpit-bg">
+            <!-- 優先讀取使用者放置的真實背景圖 -->
+            <img src="assets/cockpit-bg.jpg" alt="西北語薇星際駕駛艙"
+                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Interior%20of%20a%20futuristic%20sci-fi%20spacecraft%20cockpit%20control%20room%20with%20dark%20red%20and%20black%20color%20scheme%2C%20multiple%20HUD%20screens%20on%20top%2C%20a%20steering%20wheel%20console%20in%20the%20middle%2C%20pilot%20seat%20on%20right%2C%20storage%20locker%20box%20on%20left%2C%20holographic%20community%20map%20projector%20in%20bottom%20center%2C%20double%20unboxing%20screens%20bottom%20left%2C%20news%20ticker%20screen%20and%20shield%20honor%20display%20bottom%20right%2C%20space%20nebula%20red%20swirl%20outside%20the%20window%2C%20anime%20illustration%20style%2C%20cinematic%20lighting%2C%20highly%20detailed&image_size=portrait_16_9';"
+                 referrerpolicy="no-referrer" />
+            <div class="cockpit-vignette"></div>
           </div>
-          <div class="menu-3d-wrap">
-            <div class="menu-3d-grid" id="menuGrid"></div>
+          <div class="cockpit-hotspots">
+            <button class="hotspot-btn hs-about" data-topic="about">
+              <span class="hs-text hs-big">關於語薇</span><span class="hs-arrow">▶</span></button>
+            <button class="hotspot-btn hs-music" data-topic="music">
+              <span class="hs-arrow music-note">🎵</span><span class="hs-text">語薇創作曲</span></button>
+            <button class="hotspot-btn hs-daily" data-topic="daily">
+              <span class="hs-arrow">📱</span><span class="hs-text">語薇日常</span></button>
+            <button class="hotspot-btn hs-toolbox" data-topic="toolbox">
+              <span class="hs-arrow">🧰</span><span class="hs-text">社區百寶箱</span></button>
+            <button class="hotspot-btn hs-unbox" data-topic="unbox">
+              <span class="hs-text hs-big">語薇開箱去</span><span class="hs-arrow">▶</span></button>
+            <button class="hotspot-btn hs-neighbor" data-topic="neighbor">
+              <span class="hs-text hs-big">鄰里好生活</span><span class="hs-arrow">▶</span></button>
+            <button class="hotspot-btn hs-news" data-topic="news">
+              <span class="hs-text hs-big">社區快訊</span><span class="hs-arrow">▶</span></button>
+            <button class="hotspot-btn hs-hero" data-topic="hero">
+              <span class="hs-arrow">🛡️</span><span class="hs-text hs-big">社區英雄</span></button>
           </div>
+          <!-- 舊元素保留以防止 JS 報錯，但 CSS 強制隱藏 -->
+          <div class="home-hero" style="display:none"></div>
+          <div class="menu-3d-wrap" style="display:none"><div class="menu-3d-grid" id="menuGrid"></div></div>
         </section>
         <!-- Sub pages will be injected via JS -->
       </main>
@@ -147,6 +137,6 @@
             });
         }
     </script>
-    <script src="js/app.js"></script>
+    <script src="js/app.js?v=20261010-realbg-02"></script>
 </body>
 </html>

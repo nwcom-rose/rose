@@ -233,37 +233,19 @@ document.addEventListener('DOMContentLoaded', () => {
   createStars();
 
   // ============ ROUTER & PAGES ============
-  function renderMenu() {
-    const grid = document.getElementById('menuGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-    APP_CONFIG.topics.forEach((t, idx) => {
-      const card = document.createElement('div');
-      card.className = 'menu-card';
-      card.dataset.topicId = t.id;
-      card.dataset.index = idx;
-      const isLocked = t.requiredLevel > 1;
-      const enterBtnText = isLocked ? `🔒 LV${t.requiredLevel}解鎖` : '▶ 進入';
-      card.innerHTML = `
-        <div class="cockpit-item">${t.itemSvg}</div>
-        <div class="menu-card-text">
-          <div class="menu-card-item-name">${t.itemName}</div>
-          <div class="menu-card-title">${t.name}</div>
-          <button class="cockpit-enter-btn ${isLocked ? 'locked' : ''}" data-topic="${t.id}">
-            ${enterBtnText}
-          </button>
-        </div>
-      `;
-      const btn = card.querySelector('.cockpit-enter-btn');
+  function bindCockpitHotspots() {
+    const btns = document.querySelectorAll('.cockpit-hotspots .hotspot-btn');
+    btns.forEach(btn => {
+      const topicId = btn.dataset.topic;
+      if (!topicId) return;
       btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
         ev.stopPropagation();
-        navigateToSubpage(t.id);
+        navigateToSubpage(topicId);
       });
-      card.addEventListener('click', () => navigateToSubpage(t.id));
-      grid.appendChild(card);
     });
   }
-  renderMenu();
+  bindCockpitHotspots();
 
   function ensureSubpageDom(topic) {
     let page = document.getElementById('page-' + topic.id);
