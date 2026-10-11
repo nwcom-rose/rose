@@ -177,10 +177,11 @@ html, body {
     transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
     box-shadow: 0 2px 6px rgba(0,0,0,0.5);
 }
-.social-btn svg {
+.social-btn .social-icon {
     width: 18px;
     height: 18px;
     display: block;
+    object-fit: contain;
 }
 .social-btn:hover {
     transform: translateY(-2px) scale(1.1);
@@ -196,11 +197,11 @@ html, body {
 .social-line { background: #06C755; }
 @media (max-width: 360px) {
     .social-btn { width: 28px; height: 28px; }
-    .social-btn svg { width: 16px; height: 16px; }
+    .social-btn .social-icon { width: 16px; height: 16px; }
 }
 @media (min-width: 768px) {
     .social-btn { width: 36px; height: 36px; }
-    .social-btn svg { width: 20px; height: 20px; }
+    .social-btn .social-icon { width: 20px; height: 20px; }
 }
 
 .logo-bowtie {
@@ -1127,8 +1128,8 @@ body {
   overflow: hidden;
 }
 .yuwei-figure {
-  height: clamp(75vh, 88vh, 94vh);
-  max-height: 96vh;
+  height: clamp(62vh, 72vh, 82vh);
+  max-height: 82vh;
   width: auto;
   object-fit: contain;
   object-position: center bottom;
@@ -1144,13 +1145,13 @@ body {
   50%      { transform: translateY(-6px); }
 }
 @media (min-width: 768px) {
-  .yuwei-figure { height: clamp(78vh, 90vh, 95vh); }
+  .yuwei-figure { height: clamp(64vh, 74vh, 82vh); }
 }
 @media (min-width: 1200px) {
-  .yuwei-figure { height: clamp(80vh, 92vh, 96vh); }
+  .yuwei-figure { height: clamp(66vh, 76vh, 82vh); }
 }
 @media (max-width: 360px) {
-  .yuwei-figure { height: clamp(70vh, 82vh, 88vh); }
+  .yuwei-figure { height: clamp(56vh, 64vh, 74vh); }
 }
 .cockpit-hotspots {
   position: absolute;

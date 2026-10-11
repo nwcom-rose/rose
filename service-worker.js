@@ -1,9 +1,11 @@
-const CACHE_NAME = 'rose-star-cache-v1';
+const CACHE_NAME = 'rose-star-cache-v5';
 const CACHE_ASSETS = [
     './index.html',
     './css/styles.css',
     './js/app.js',
-    './manifest.json'
+    './manifest.json',
+    './assets/icon-192.png',
+    './assets/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,6 +32,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
+// Cache-first strategy: return cached response if available, otherwise fetch from network
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
@@ -37,7 +40,19 @@ self.addEventListener('fetch', (event) => {
                 if (response) {
                     return response;
                 }
-                return fetch(event.request);
+                return fetch(event.request).then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const clone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, clone);
+                        });
+                    }
+                    return networkResponse;
+                }).catch(() => {
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('./index.html');
+                    }
+                });
             })
     );
 });
