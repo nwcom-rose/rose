@@ -134,6 +134,75 @@ html, body {
     gap: 10px;
 }
 
+/* ===== Footer — 社群媒體連結列（固定底部、最上層） ===== */
+.footer-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.8vh 3vw;
+    background: linear-gradient(0deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
+    border-top: 1px solid rgba(211,47,47,0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    height: 6.5vh;
+    min-height: 42px;
+    box-sizing: border-box;
+}
+@media (min-width: 768px) {
+    .footer-bar { height: 6vh; min-height: 48px; }
+}
+@media (min-width: 1200px) {
+    .footer-bar { height: 5.5vh; min-height: 52px; }
+}
+.footer-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 3vw, 24px);
+}
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    transition: transform 0.22s ease, filter 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+.social-btn svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+.social-btn:hover {
+    transform: translateY(-2px) scale(1.1);
+    filter: brightness(1.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.6), 0 0 12px rgba(211,47,47,0.4);
+}
+.social-btn:active { transform: scale(0.95); }
+.social-yt   { background: #FF0000; }
+.social-fb   { background: #1877F2; }
+.social-ig   { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.social-th   { background: #000000; border: 1px solid rgba(255,255,255,0.25); }
+.social-tt   { background: #000000; }
+.social-line { background: #06C755; }
+@media (max-width: 360px) {
+    .social-btn { width: 28px; height: 28px; }
+    .social-btn svg { width: 16px; height: 16px; }
+}
+@media (min-width: 768px) {
+    .social-btn { width: 36px; height: 36px; }
+    .social-btn svg { width: 20px; height: 20px; }
+}
+
 .logo-bowtie {
     width: 40px;
     height: 40px;
@@ -187,10 +256,10 @@ html, body {
     max-width: 80px;
     height: 26px;
     min-height: 26px;
-    padding: 0 8px;
+    padding: 0 4px;
     font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
     font-weight: 700;
-    font-size: 10px;
+    font-size: clamp(12px, 2.9vw, 14px);
     line-height: 1.1;
     color: #fff6ef;
     text-shadow: 0 0 5px rgba(255,60,60,0.6), 0 1px 2px rgba(0,0,0,0.9);
@@ -225,13 +294,13 @@ html, body {
     transform: scale(0.98);
 }
 @media (min-width: 768px) {
-    #authBtn { width: 100px; height: 30px; font-size: 11px; }
+    #authBtn { width: 100px; height: 30px; font-size: 14px; }
 }
 @media (min-width: 1200px) {
-    #authBtn { width: 120px; height: 32px; font-size: 12px; }
+    #authBtn { width: 120px; height: 32px; font-size: 15px; }
 }
 @media (max-width: 360px) {
-    #authBtn { width: 72px; height: 24px; font-size: 9px; }
+    #authBtn { width: 72px; height: 24px; font-size: 11px; }
 }
 
 .starlight-cert {
@@ -279,12 +348,13 @@ html, body {
     position: relative;
     overflow: hidden;
     padding-top: 7vh;
+    padding-bottom: 6.5vh;
 }
 @media (min-width: 768px) {
-    .main-content { padding-top: 6vh; }
+    .main-content { padding-top: 6vh; padding-bottom: 6vh; }
 }
 @media (min-width: 1200px) {
-    .main-content { padding-top: 5.5vh; }
+    .main-content { padding-top: 5.5vh; padding-bottom: 5.5vh; }
 }
 
 .home-hero {
@@ -1095,7 +1165,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(3px, 0.7vw, 6px) clamp(8px, 1.6vw, 12px);
+  padding: clamp(3px, 0.7vw, 6px) clamp(4px, 1vw, 8px);
   min-height: 26px;
   height: 26px;
   min-width: 80px;
@@ -1103,7 +1173,7 @@ body {
   max-width: 80px;
   font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   font-weight: 700;
-  font-size: clamp(9px, 2.2vw, 11px);
+  font-size: clamp(12px, 2.9vw, 14px);
   line-height: 1.1;
   color: #fff6ef;
   text-shadow: 0 0 5px rgba(255,60,60,0.6), 0 1px 2px rgba(0,0,0,0.9);
@@ -1124,6 +1194,7 @@ body {
   box-sizing: border-box;
   text-align: center;
   flex-direction: row;
+  animation: hsBtnPulse 2.4s ease-in-out infinite;
 }
 
 /* 鄰里好生活 hover 時保留水平置中位移 */
@@ -1133,9 +1204,11 @@ body {
 }
 .hotspot-btn.hs-neighbor:hover {
   transform: translate(-50%, -2px) scale(1.04);
+  animation-play-state: paused;
 }
 .hotspot-btn.hs-neighbor:active {
   transform: translateX(-50%) scale(1);
+  animation-play-state: paused;
 }
 .hotspot-btn::after {
   content: "";
@@ -1150,16 +1223,21 @@ body {
   0%,100% { opacity: 0.5; transform: scale(1); }
   50%     { opacity: 1;   transform: scale(1.03); }
 }
+@keyframes hsBtnPulse {
+  0%,100% { opacity: 0.9; filter: brightness(1); }
+  50%     { opacity: 1;   filter: brightness(1.4); }
+}
 .hotspot-btn:hover {
   transform: translateY(-2px) scale(1.04);
   filter: brightness(1.2) saturate(1.1);
+  animation-play-state: paused;
   box-shadow:
     inset 0 1px 0 rgba(255,220,220,0.5),
     inset 0 -1px 0 rgba(80,0,0,0.5),
     0 4px 12px rgba(0,0,0,0.6),
     0 0 18px rgba(255,60,60,0.75);
 }
-.hotspot-btn:active { transform: translateY(0) scale(1); filter: brightness(0.9); }
+.hotspot-btn:active { transform: translateY(0) scale(1); filter: brightness(0.9); animation-play-state: paused; }
 .hs-text { pointer-events: none; text-align: center; flex: 0 1 auto; }
 .hs-arrow { display: none !important; }
 
@@ -1184,13 +1262,13 @@ body {
 /* ===== Tablet 768px+ ===== */
 @media (min-width: 768px) {
   .hotspot-btn {
-    padding: 5px 10px;
+    padding: 5px 8px;
     min-height: 30px;
     height: 30px;
     min-width: 100px;
     width: 100px;
     max-width: 100px;
-    font-size: 10px;
+    font-size: 14px;
     border-width: 1.4px;
     border-radius: 7px;
     justify-content: center;
@@ -1215,13 +1293,13 @@ body {
 /* ===== Desktop 1200px+ ===== */
 @media (min-width: 1200px) {
   .hotspot-btn {
-    padding: 6px 12px;
+    padding: 6px 10px;
     min-height: 32px;
     height: 32px;
     min-width: 120px;
     width: 120px;
     max-width: 120px;
-    font-size: 11px;
+    font-size: 15px;
     justify-content: center;
     flex-direction: row;
   }
@@ -1244,13 +1322,13 @@ body {
 /* ===== 超小手機 <360px ===== */
 @media (max-width: 360px) {
   .hotspot-btn {
-    padding: 3px 6px;
+    padding: 3px 4px;
     min-height: 24px;
     height: 24px;
     min-width: 72px;
     width: 72px;
     max-width: 72px;
-    font-size: 9px;
+    font-size: 11px;
     justify-content: center;
     flex-direction: row;
   }
