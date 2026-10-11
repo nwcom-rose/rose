@@ -199,6 +199,24 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.APP_CONFIG = APP_CONFIG;
 
+  // ============ ROLE CONFIG ============
+  // 預設管理員帳號（不分大小寫）。登入後自動導向 admin.html。
+  const ADMIN_EMAILS = ['istage.eason@gmail.com'];
+  function resolveRole(email) {
+    if (!email) return 'member';
+    return ADMIN_EMAILS.includes(String(email).toLowerCase()) ? 'admin' : 'member';
+  }
+  // 判斷當前是否為管理後台頁面，避免重複跳轉
+  function isOnAdminPage() {
+    return /admin\.html/i.test(location.pathname + location.hash);
+  }
+  // 依角色執行頁面導向（管理員 → admin.html；其餘留在此站）
+  function handleRoleRedirect() {
+    if (state.userData && state.userData.role === 'admin' && !isOnAdminPage()) {
+      window.location.replace('admin.html');
+    }
+  }
+
   // ============ STATE ============
   const state = {
     user: null,
@@ -510,11 +528,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const snap = await db.collection('users').doc(user.uid).get();
     if (snap.exists) {
       state.userData = snap.data();
+      // 舊用戶若缺少 role 欄位，依 email 補登（預設 istage.eason@gmail.com 為管理員）
+      if (!state.userData.role) {
+        const role = resolveRole(user.email);
+        state.userData.role = role;
+        await db.collection('users').doc(user.uid).update({ role }).catch(() => {});
+      }
       const today = getTodayKey();
       const inter = state.userData.interactions || [];
       const hasDaily = inter.some(x => x.key === `DAILY_LOGIN:${today}`);
       if (!hasDaily) await grantReward('DAILY_LOGIN').catch(()=>{});
       else renderUserCard();
+      handleRoleRedirect();
       return;
     }
     const displayName = displayNameOverride || user.displayName || user.email.split('@')[0];
@@ -523,6 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayName,
       photoURL: user.photoURL || '',
       email: user.email || '',
+      role: resolveRole(user.email),
       level: 1,
       exp: 0,
       coins: 0,
@@ -533,6 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.userData = data;
     renderUserCard();
     await grantReward('DAILY_LOGIN').catch(()=>{});
+    handleRoleRedirect();
   }
 
   if (window.auth) {
@@ -541,8 +568,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (user) {
         try {
           const snap = await db.collection('users').doc(user.uid).get();
-          if (snap.exists) state.userData = snap.data();
-          else await ensureUserDoc(user);
+          if (snap.exists) {
+            state.userData = snap.data();
+            // 補登缺少 role 的既有帳號，並做角色導向
+            if (!state.userData.role) {
+              const role = resolveRole(user.email);
+              state.userData.role = role;
+              db.collection('users').doc(user.uid).update({ role }).catch(() => {});
+            }
+            handleRoleRedirect();
+          } else {
+            await ensureUserDoc(user);
+          }
         } catch (e) { console.warn('用戶資料讀取失敗', e); }
       } else {
         state.userData = null;

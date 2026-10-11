@@ -1,6 +1,7 @@
-const CACHE_NAME = 'rose-star-cache-v5';
+const CACHE_NAME = 'rose-star-cache-v7';
 const CACHE_ASSETS = [
     './index.html',
+    './admin.html',
     './css/styles.css',
     './js/app.js',
     './manifest.json',

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#d32f2f">
+    <title>西北語薇 · 管理後台</title>
+    <link rel="stylesheet" href="css/styles.css?v=20261011-admin">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* ===== admin.html 版面：頁首 8% / 頁中 84% / 頁尾 8%，單頁不捲動 ===== */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
+        }
+        .admin-app {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(ellipse at 20% 10%, rgba(211,47,47,0.22) 0%, transparent 55%),
+                        radial-gradient(ellipse at 80% 90%, rgba(211,47,47,0.14) 0%, transparent 55%),
+                        linear-gradient(180deg, #050510 0%, #0a0a1a 50%, #0f0508 100%);
+            color: #fff;
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .admin-app::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 70% 60%, rgba(255,200,200,0.6), transparent),
+                radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 85% 20%, rgba(255,255,255,0.6), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== 頁首 8% ===== */
+        .admin-header {
+            flex: 0 0 8%;
+            min-height: 48px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3vw;
+            background: linear-gradient(180deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
+            border-bottom: 1px solid rgba(211,47,47,0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+        .admin-header .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .admin-header .brand .logo-bowtie {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 6px rgba(211,47,47,0.6));
+        }
+        .admin-header .brand-title {
+            font-size: clamp(14px, 3.8vw, 20px);
+            font-weight: 700;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .admin-header .brand-title .role-tag {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 1px 8px;
+            font-size: clamp(10px, 2.6vw, 13px);
+            color: #fff;
+            background: #d32f2f;
+            border-radius: 10px;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+        .admin-header .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .admin-header .admin-email {
+            font-size: clamp(11px, 3vw, 14px);
+            opacity: 0.85;
+            max-width: 28vw;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== 頁中 84% ===== */
+        .admin-main {
+            flex: 1 1 84%;
+            position: relative;
+            z-index: 1;
+            padding: 2vh 3vw;
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            overflow: hidden;
+        }
+        .admin-stats {
+            flex: 0 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5vh 3vw;
+        }
+        .stat-card {
+            background: rgba(20,20,32,0.75);
+            border: 1px solid rgba(211,47,47,0.35);
+            border-radius: 10px;
+            padding: 1.4vh 3vw;
+            box-shadow: 0 0 12px rgba(211,47,47,0.15) inset;
+        }
+        .stat-card .stat-label {
+            font-size: clamp(11px, 3vw, 14px);
+            opacity: 0.75;
+            margin-bottom: 0.4vh;
+        }
+        .stat-card .stat-value {
+            font-size: clamp(22px, 7vw, 38px);
+            font-weight: 800;
+            color: #ff5252;
+            line-height: 1.1;
+        }
+
+        .admin-modules {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5vh 3vw;
+            align-content: start;
+            overflow: hidden;
+        }
+        .module-card {
+            background: linear-gradient(145deg, rgba(30,30,44,0.85), rgba(15,15,26,0.85));
+            border: 1px solid rgba(211,47,47,0.3);
+            border-radius: 12px;
+            padding: 2vh 3vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0.8vh;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .module-card::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(211,47,47,0.12), transparent);
+            transition: left 0.5s;
+        }
+        .module-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(211,47,47,0.7);
+            box-shadow: 0 6px 20px rgba(211,47,47,0.25);
+        }
+        .module-card:hover::after { left: 100%; }
+        .module-card .module-icon {
+            font-size: clamp(22px, 7vw, 34px);
+            line-height: 1;
+        }
+        .module-card .module-name {
+            font-size: clamp(14px, 4vw, 18px);
+            font-weight: 700;
+            color: #fff;
+        }
+        .module-card .module-desc {
+            font-size: clamp(11px, 3vw, 13px);
+            opacity: 0.6;
+            line-height: 1.3;
+        }
+        .module-card .module-coming {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 10px;
+            padding: 2px 6px;
+            background: rgba(211,47,47,0.2);
+            border: 1px solid rgba(211,47,47,0.4);
+            border-radius: 8px;
+            opacity: 0.8;
+        }
+
+        /* ===== 頁尾 8% — 分頁按鈕 ===== */
+        .admin-footer {
+            flex: 0 0 8%;
+            min-height: 48px;
+            position: relative;
+            display: flex;
+            align-items: stretch;
+            justify-content: center;
+            padding: 0;
+            background: linear-gradient(0deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
+            border-top: 1px solid rgba(211,47,47,0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+        .tab-btn {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            background: transparent;
+            border: none;
+            border-right: 1px solid rgba(211,47,47,0.15);
+            color: rgba(255,255,255,0.6);
+            font-family: inherit;
+            font-size: clamp(12px, 3.2vw, 15px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+            position: relative;
+            padding: 0 2vw;
+            text-align: center;
+        }
+        .tab-btn:last-child { border-right: none; }
+        .tab-btn .tab-icon {
+            font-size: clamp(16px, 4.5vw, 22px);
+            line-height: 1;
+        }
+        .tab-btn:hover {
+            color: rgba(255,255,255,0.9);
+            background: rgba(211,47,47,0.08);
+        }
+        .tab-btn.active {
+            color: #fff;
+            background: linear-gradient(180deg, rgba(211,47,47,0.18) 0%, rgba(211,47,47,0.05) 100%);
+            box-shadow: inset 0 3px 0 #d32f2f;
+        }
+        .tab-btn.active .tab-icon {
+            filter: drop-shadow(0 0 6px rgba(211,47,47,0.8));
+        }
+
+        /* ===== 分頁內容面板 ===== */
+        .tab-panel {
+            display: none;
+            flex: 1 1 auto;
+            min-height: 0;
+            flex-direction: column;
+            gap: 2vh;
+            overflow: hidden;
+        }
+        .tab-panel.active {
+            display: flex;
+        }
+
+        /* ===== 分頁面板標題列 ===== */
+        .panel-header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5vh;
+        }
+        .panel-title {
+            font-size: clamp(15px, 4vw, 20px);
+            font-weight: 700;
+            color: #fff;
+        }
+        .btn-primary {
+            background: linear-gradient(180deg, #e53935, #b71c1c);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.8vh 3vw;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: clamp(12px, 3.2vw, 14px);
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(211,47,47,0.35);
+        }
+        .btn-primary:active { transform: scale(0.97); }
+
+        /* ===== 主題列表 ===== */
+        .topic-list, .member-list, .settings-list {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+            overflow-y: auto;
+            padding-right: 1vw;
+        }
+        .topic-list::-webkit-scrollbar,
+        .member-list::-webkit-scrollbar,
+        .settings-list::-webkit-scrollbar { width: 4px; }
+        .topic-list::-webkit-scrollbar-thumb,
+        .member-list::-webkit-scrollbar-thumb,
+        .settings-list::-webkit-scrollbar-thumb { background: rgba(211,47,47,0.4); border-radius: 2px; }
+
+        .topic-row, .member-row, .setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.4vh 3vw;
+            background: rgba(20,20,32,0.75);
+            border: 1px solid rgba(211,47,47,0.25);
+            border-radius: 8px;
+            font-size: clamp(13px, 3.6vw, 15px);
+        }
+        .topic-name, .member-name, .setting-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        .topic-status {
+            font-size: clamp(11px, 3vw, 13px);
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .status-on { background: rgba(76,175,80,0.2); color: #81c784; border: 1px solid rgba(76,175,80,0.4); }
+        .status-off { background: rgba(158,158,158,0.2); color: #bdbdbd; border: 1px solid rgba(158,158,158,0.4); }
+
+        /* ===== 會員列表 ===== */
+        .member-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.4vh;
+        }
+        .member-name { font-size: clamp(14px, 3.8vw, 16px); }
+        .member-email { font-size: clamp(11px, 3vw, 13px); opacity: 0.6; }
+        .member-role {
+            font-size: clamp(10px, 2.8vw, 12px);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+        .role-admin { background: rgba(211,47,47,0.2); color: #ff8a80; border: 1px solid rgba(211,47,47,0.4); }
+        .role-member { background: rgba(33,150,243,0.2); color: #64b5f6; border: 1px solid rgba(33,150,243,0.4); }
+
+        /* ===== 設定列表 ===== */
+        .setting-row { flex-direction: column; align-items: flex-start; gap: 0.3vh; }
+        .setting-name { font-size: clamp(12px, 3.2vw, 14px); opacity: 0.7; }
+        .setting-value { font-size: clamp(13px, 3.6vw, 15px); font-weight: 600; color: #ff8a80; }
+
+        /* ===== 響應式：平板 / 電腦（直屏或橫屏） ===== */
+        @media (min-width: 600px) {
+            .admin-stats { grid-template-columns: repeat(4, 1fr); }
+            .admin-modules { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1024px) {
+            .admin-app { max-width: 100%; }
+            .admin-main { padding: 2vh 4vw; }
+            .admin-stats { grid-template-columns: repeat(4, 1fr); gap: 2vh 2vw; }
+            .admin-modules { grid-template-columns: repeat(4, 1fr); gap: 2vh 2vw; }
+            .stat-card, .module-card { padding: 2vh 1.5vw; }
+        }
+        /* 橫屏手機：壓縮上下 padding，維持單屏 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .admin-header { min-height: 40px; padding: 0 2vw; }
+            .admin-footer { min-height: 40px; }
+            .admin-main { padding: 1vh 3vw; gap: 1vh; }
+            .stat-card { padding: 1vh 2vw; }
+            .module-card { padding: 1.2vh 2vw; }
+        }
+
+        /* 共用按鈕（沿用主站 .btn 風格並補強） */
+        .admin-app .btn {
+            font-size: clamp(12px, 3.2vw, 14px);
+            padding: 0.6vh 2.5vw;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-app">
+        <!-- 頁首 8% -->
+        <header class="admin-header">
+            <div class="brand">
+                <img class="logo-bowtie" src="assets/logo.svg" alt="西北語薇 LOGO"
+                     onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><pattern id=%22s%22 patternUnits=%22userSpaceOnUse%22 width=%2212%22 height=%2212%22 patternTransform=%22rotate(45)%22><rect width=%226%22 height=%2212%22 fill=%22%23e53935%22/><rect x=%226%22 width=%226%22 height=%2212%22 fill=%22%23141414%22/></pattern></defs><path d=%22M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/></svg>'"/>
+                <div class="brand-title">西北語薇<span class="role-tag">管理後台</span></div>
+            </div>
+            <div class="admin-user">
+                <span class="admin-email" id="adminEmail">載入中…</span>
+                <button class="btn" id="adminLogoutBtn" type="button">登出</button>
+            </div>
+        </header>
+
+        <!-- 頁中 84% — 分頁內容 -->
+        <main class="admin-main">
+            <!-- 分頁：總覽（預設） -->
+            <section class="tab-panel active" data-panel="overview">
+                <!-- 數據儀表板 -->
+                <section class="admin-stats" aria-label="數據概覽">
+                    <div class="stat-card">
+                        <div class="stat-label">會員總數</div>
+                        <div class="stat-value" id="statMembers">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">今日活躍</div>
+                        <div class="stat-value" id="statActive">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">內容數量</div>
+                        <div class="stat-value" id="statContent">—</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">系統訊息</div>
+                        <div class="stat-value" id="statAlerts">—</div>
+                    </div>
+                </section>
+
+                <!-- 功能模組 -->
+                <section class="admin-modules" aria-label="管理功能">
+                    <div class="module-card" data-module="members">
+                        <span class="module-coming">即將上線</span>
+                        <div class="module-icon">👥</div>
+                        <div class="module-name">會員管理</div>
+                        <div class="module-desc">檢視與管理所有會員帳號與角色權限</div>
+                    </div>
+                    <div class="module-card" data-module="content">
+                        <span class="module-coming">即將上線</span>
+                        <div class="module-icon">📝</div>
+                        <div class="module-name">內容管理</div>
+                        <div class="module-desc">編輯主題內容、公告與推播訊息</div>
+                    </div>
+                    <div class="module-card" data-module="analytics">
+                        <span class="module-coming">即將上線</span>
+                        <div class="module-icon">📊</div>
+                        <div class="module-name">數據分析</div>
+                        <div class="module-desc">查看造訪、互動與獎勵統計報表</div>
+                    </div>
+                    <div class="module-card" data-module="settings">
+                        <span class="module-coming">即將上線</span>
+                        <div class="module-icon">⚙️</div>
+                        <div class="module-name">系統設定</div>
+                        <div class="module-desc">站點資訊、主題風格與進階配置</div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 分頁：主題 -->
+            <section class="tab-panel" data-panel="topics">
+                <div class="panel-header">
+                    <h2 class="panel-title">主題管理</h2>
+                    <button class="btn btn-primary" type="button">＋ 新增主題</button>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-row"><span class="topic-name">關於語薇</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">語薇創作曲</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">語薇日常</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">社區百寶箱</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">語薇開箱去</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">鄰里好生活</span><span class="topic-status status-off">停用</span></div>
+                    <div class="topic-row"><span class="topic-name">社區快訊</span><span class="topic-status status-on">啟用</span></div>
+                    <div class="topic-row"><span class="topic-name">社區英雄</span><span class="topic-status status-on">啟用</span></div>
+                </div>
+            </section>
+
+            <!-- 分頁：會員 -->
+            <section class="tab-panel" data-panel="members">
+                <div class="panel-header">
+                    <h2 class="panel-title">會員管理</h2>
+                    <button class="btn btn-primary" type="button">＋ 新增會員</button>
+                </div>
+                <div class="member-list">
+                    <div class="member-row">
+                        <span class="member-name">istage.eason</span>
+                        <span class="member-email">istage.eason@gmail.com</span>
+                        <span class="member-role role-admin">管理員</span>
+                    </div>
+                    <div class="member-row">
+                        <span class="member-name">範例會員</span>
+                        <span class="member-email">demo@nwrose.tw</span>
+                        <span class="member-role role-member">會員</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 分頁：設定 -->
+            <section class="tab-panel" data-panel="settings">
+                <div class="panel-header">
+                    <h2 class="panel-title">系統設定</h2>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-row">
+                        <span class="setting-name">站點名稱</span>
+                        <span class="setting-value">西北語薇 · 星際艙</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">主題色</span>
+                        <span class="setting-value">#d32f2f</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">PWA 安裝提示</span>
+                        <span class="setting-value">啟用</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">每日登入獎勵</span>
+                        <span class="setting-value">20 EXP / 15 星幣</span>
+                    </div>
+                    <div class="setting-row">
+                        <span class="setting-name">管理員白名單</span>
+                        <span class="setting-value">istage.eason@gmail.com</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 頁尾 8% — 分頁按鈕（總覽 / 主題 / 會員 / 設定） -->
+        <footer class="admin-footer">
+            <button class="tab-btn active" data-tab="overview" type="button">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">總覽</span>
+            </button>
+            <button class="tab-btn" data-tab="topics" type="button">
+                <span class="tab-icon">📁</span>
+                <span class="tab-label">主題</span>
+            </button>
+            <button class="tab-btn" data-tab="members" type="button">
+                <span class="tab-icon">👥</span>
+                <span class="tab-label">會員</span>
+            </button>
+            <button class="tab-btn" data-tab="settings" type="button">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">設定</span>
+            </button>
+        </footer>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAH3dKwLLlg5-5jPwEbIZ2WKP41TaV68EY",
+            authDomain: "nw-rose.firebaseapp.com",
+            projectId: "nw-rose",
+            storageBucket: "nw-rose.firebasestorage.app",
+            messagingSenderId: "308252489419",
+            appId: "1:308252489419:web:455d75bcc6398e78660d4e",
+            measurementId: "G-3W3PYCF1D8"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const ADMIN_EMAILS = ['istage.eason@gmail.com'];
+        function isAdminEmail(email) {
+            return !!email && ADMIN_EMAILS.includes(String(email).toLowerCase());
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const emailEl = document.getElementById('adminEmail');
+        const logoutBtn = document.getElementById('adminLogoutBtn');
+
+        logoutBtn.addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.replace('index.html');
+            }).catch(err => console.warn('登出失敗', err));
+        });
+
+        // ===== 分頁切換邏輯 =====
+        function switchTab(tabName) {
+            // 切換分頁按鈕 active 狀態
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
+            });
+            // 切換分頁面板顯示
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.toggle('active', panel.dataset.panel === tabName);
+            });
+        }
+        // 綁定頁尾分頁按鈕
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // 總覽頁的功能模組卡片：點擊導向對應分頁
+        const moduleToTab = {
+            members: 'members',
+            content: 'topics',
+            analytics: 'overview',
+            settings: 'settings'
+        };
+        document.querySelectorAll('.module-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const target = moduleToTab[card.dataset.module];
+                if (target) switchTab(target);
+            });
+        });
+
+        // 載入統計數據（暫以模擬資料展示版面，後續接 Firestore）
+        function loadStats() {
+            document.getElementById('statMembers').textContent = '0';
+            document.getElementById('statActive').textContent = '0';
+            document.getElementById('statContent').textContent = '0';
+            document.getElementById('statAlerts').textContent = '0';
+        }
+
+        // 驗證登入態與角色：以 email 白名單為權威來源，非管理員一律導回 index.html
+        auth.onAuthStateChanged(async user => {
+            if (!user) {
+                window.location.replace('index.html');
+                return;
+            }
+            // 權威判定：只有白名單 email 才是管理員（避免用戶篡改 Firestore role 欄位）
+            const isAdmin = isAdminEmail(user.email);
+            if (!isAdmin) {
+                window.location.replace('index.html');
+                return;
+            }
+            try {
+                const snap = await db.collection('users').doc(user.uid).get();
+                // 同步確保 Firestore 內 role 為 admin
+                if (!snap.exists || snap.data().role !== 'admin') {
+                    db.collection('users').doc(user.uid).set(
+                        { role: 'admin' },
+                        { merge: true }
+                    ).catch(() => {});
+                }
+                emailEl.textContent = user.email || user.displayName || '管理員';
+                loadStats();
+            } catch (e) {
+                console.warn('管理後台驗證失敗', e);
+                // 已通過 email 白名單，仍顯示頁面，僅略過資料同步
+                emailEl.textContent = user.email || user.displayName || '管理員';
+                loadStats();
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => console.log('Service Worker 註冊成功:', registration))
+                    .catch(error => console.log('Service Worker 註冊失敗:', error));
+            });
+        }
+    </script>
+</body>
+</html>
