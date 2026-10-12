@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#d32f2f">
     <title>西北語薇 · 管理後台</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261011-admin">
+    <link rel="stylesheet" href="css/styles.css?v=20261013-safearea">
     <link rel="manifest" href="manifest.json">
     <style>
         /* ===== admin.html 版面：頁首 8% / 頁中 84% / 頁尾 8%，單頁不捲動 ===== */
@@ -15,8 +15,9 @@
             overscroll-behavior: none;
         }
         .admin-app {
-            width: 100vw;
+            width: 100%;
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             background: radial-gradient(ellipse at 20% 10%, rgba(211,47,47,0.22) 0%, transparent 55%),
@@ -42,41 +43,45 @@
 
         /* ===== 頁首 8% ===== */
         .admin-header {
-            flex: 0 0 8%;
+            flex: 0 0 auto;
+            height: calc(8vh + env(safe-area-inset-top, 0px));
             min-height: 48px;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 3vw;
+            padding: env(safe-area-inset-top, 0px) 3vw 0 3vw;
             background: linear-gradient(180deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
             border-bottom: 1px solid rgba(211,47,47,0.35);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            z-index: 10;
+            z-index: 9999;
+            box-sizing: border-box;
         }
-        .admin-header .brand {
+        .admin-header .header-logo {
             display: flex;
             align-items: center;
             gap: 10px;
             min-width: 0;
         }
-        .admin-header .brand .logo-bowtie {
-            width: 36px;
-            height: 36px;
+        .admin-header .header-logo .logo-bowtie {
+            width: 40px;
+            height: 40px;
             object-fit: contain;
             flex-shrink: 0;
-            filter: drop-shadow(0 0 6px rgba(211,47,47,0.6));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
-        .admin-header .brand-title {
-            font-size: clamp(14px, 3.8vw, 20px);
+        .admin-header .header-title {
+            font-size: clamp(14px, 2.2vw, 20px);
             font-weight: 700;
-            letter-spacing: 1px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            background: linear-gradient(90deg, #fff, #ff8888);
+            -webkit-background-clip: text;
+            color: transparent;
         }
-        .admin-header .brand-title .role-tag {
+        .admin-header .header-title .role-tag {
             display: inline-block;
             margin-left: 8px;
             padding: 1px 8px;
@@ -86,6 +91,8 @@
             border-radius: 10px;
             vertical-align: middle;
             font-weight: 600;
+            -webkit-background-clip: initial;
+            -webkit-text-fill-color: #fff;
         }
         .admin-header .admin-user {
             display: flex;
@@ -204,18 +211,20 @@
 
         /* ===== 頁尾 8% — 分頁按鈕 ===== */
         .admin-footer {
-            flex: 0 0 8%;
+            flex: 0 0 auto;
+            height: calc(8vh + env(safe-area-inset-bottom, 0px));
             min-height: 48px;
             position: relative;
             display: flex;
             align-items: stretch;
             justify-content: center;
-            padding: 0;
+            padding: 0 0 env(safe-area-inset-bottom, 0px) 0;
             background: linear-gradient(0deg, rgba(10,10,20,0.97) 0%, rgba(10,10,20,0.7) 100%);
             border-top: 1px solid rgba(211,47,47,0.35);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
-            z-index: 10;
+            z-index: 9999;
+            box-sizing: border-box;
         }
         .tab-btn {
             flex: 1 1 0;
@@ -897,10 +906,10 @@
     <div class="admin-app">
         <!-- 頁首 8% -->
         <header class="admin-header">
-            <div class="brand">
+            <div class="header-logo">
                 <img class="logo-bowtie" src="assets/logo.svg" alt="西北語薇 LOGO"
                      onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><pattern id=%22s%22 patternUnits=%22userSpaceOnUse%22 width=%2212%22 height=%2212%22 patternTransform=%22rotate(45)%22><rect width=%226%22 height=%2212%22 fill=%22%23e53935%22/><rect x=%226%22 width=%226%22 height=%2212%22 fill=%22%23141414%22/></pattern></defs><path d=%22M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/></svg>'"/>
-                <div class="brand-title">西北語薇<span class="role-tag">管理後台</span></div>
+                <span class="header-title">西北語薇<span class="role-tag">管理後台</span></span>
             </div>
             <div class="admin-user">
                 <button class="btn" id="adminLogoutBtn" type="button">管理員</button>
@@ -2352,7 +2361,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v11')
+                navigator.serviceWorker.register('./service-worker.js?v=v13')
                     .then(registration => console.log('Service Worker 註冊成功:', registration))
                     .catch(error => console.log('Service Worker 註冊失敗:', error));
             });

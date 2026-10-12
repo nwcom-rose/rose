@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rose-star-cache-v11';
+const CACHE_NAME = 'rose-star-cache-v13';
 const CACHE_ASSETS = [
     './index.html',
     './admin.html',
