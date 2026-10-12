@@ -1,11 +1,28 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+    // 管理員判定：以 email 白名單為權威來源（與前端 ADMIN_EMAILS 一致）
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email in ['istage.eason@gmail.com'];
     }
+
+    match /config/{docId} {
+      // 設定檔（位階、規則）：僅管理員可讀寫
+      allow read, write: if isAdmin();
+    }
+
+    match /users/{userId} {
+      // 讀取：管理員可讀取全部；一般會員只能讀取自己
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      // 寫入：管理員可寫入全部；一般會員只能寫入自己
+      allow write: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+    }
+
     match /users/{userId}/interactions/{interactionId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAdmin() || (request.auth != null && request.auth.uid == userId);
+      allow write: if isAdmin() || (request.auth != null && request.auth.uid == userId);
     }
   }
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rose-star-cache-v7';
+const CACHE_NAME = 'rose-star-cache-v11';
 const CACHE_ASSETS = [
     './index.html',
     './admin.html',
@@ -33,27 +33,41 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Cache-first strategy: return cached response if available, otherwise fetch from network
+// 混合快取策略：
+// - HTML 導航請求：Network-first（優先取得最新版，網路失敗才回退快取）
+// - 靜態資源：Stale-While-Revalidate（先顯示快取，背景更新）
 self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request).then((networkResponse) => {
+    const req = event.request;
+    const isHtmlNavigation = req.mode === 'navigate' ||
+        (req.method === 'GET' && req.headers.get('accept') && req.headers.get('accept').includes('text/html'));
+
+    if (isHtmlNavigation) {
+        // Network-first：優先從網路取得最新 HTML
+        event.respondWith(
+            fetch(req)
+                .then((networkResponse) => {
                     if (networkResponse && networkResponse.status === 200) {
                         const clone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, clone);
-                        });
+                        caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
                     }
                     return networkResponse;
-                }).catch(() => {
-                    if (event.request.mode === 'navigate') {
-                        return caches.match('./index.html');
-                    }
-                });
-            })
+                })
+                .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
+        );
+        return;
+    }
+
+    // Stale-While-Revalidate：先回傳快取，背景更新快取
+    event.respondWith(
+        caches.match(req).then((cached) => {
+            const networkFetch = fetch(req).then((networkResponse) => {
+                if (networkResponse && networkResponse.status === 200) {
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+                }
+                return networkResponse;
+            }).catch(() => cached);
+            return cached || networkFetch;
+        })
     );
 });

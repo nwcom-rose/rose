@@ -268,6 +268,111 @@
             display: flex;
         }
 
+        /* ===== 設定頁子分頁列（8%） ===== */
+        .settings-subtabs {
+            flex: 0 0 8%;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 2vw;
+            padding: 0 1vw;
+            background: rgba(20,20,32,0.6);
+            border: 1px solid rgba(211,47,47,0.25);
+            border-radius: 8px;
+        }
+        .subtab-btn {
+            flex: 1;
+            height: 70%;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            color: #bdbdbd;
+            font-size: clamp(12px, 3.2vw, 14px);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .subtab-btn:hover {
+            background: rgba(211,47,47,0.15);
+            color: #ff8a80;
+        }
+        .subtab-btn.active {
+            background: linear-gradient(180deg, #e53935, #b71c1c);
+            color: #fff;
+            border-color: #d32f2f;
+            box-shadow: 0 0 8px rgba(211,47,47,0.5);
+        }
+
+        /* ===== 子分頁內容面板 ===== */
+        .subtab-panel {
+            display: none;
+            flex: 1 1 auto;
+            min-height: 0;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .subtab-panel.active {
+            display: flex;
+        }
+
+        /* ===== 子分頁標題列 ===== */
+        .subtab-header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1vh;
+        }
+        .subtab-title {
+            font-size: clamp(13px, 3.4vw, 16px);
+            font-weight: 700;
+            color: #ff8a80;
+            margin: 0;
+        }
+
+        /* ===== 可編輯設定列 ===== */
+        .editable-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2vw;
+            padding: 1.2vh 3vw;
+            background: rgba(20,20,32,0.75);
+            border: 1px solid rgba(211,47,47,0.25);
+            border-radius: 8px;
+        }
+        .editable-row .row-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3vh;
+            min-width: 0;
+        }
+        .editable-row .row-name {
+            font-size: clamp(13px, 3.4vw, 15px);
+            font-weight: 600;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .editable-row .row-desc {
+            font-size: clamp(11px, 3vw, 13px);
+            color: #bdbdbd;
+            opacity: 0.8;
+        }
+        .editable-row .row-actions {
+            display: flex;
+            gap: 0.8vw;
+            flex-shrink: 0;
+        }
+        .level-color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
         /* ===== 分頁面板標題列 ===== */
         .panel-header {
             flex: 0 0 auto;
@@ -384,7 +489,216 @@
             font-size: clamp(12px, 3.2vw, 14px);
             padding: 0.6vh 2.5vw;
             border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: all 0.2s;
         }
+        .admin-app .btn:active { transform: scale(0.97); }
+        .admin-app .btn-primary { background: #d32f2f; color: #fff; }
+        .admin-app .btn-primary:hover { background: #b71c1c; }
+        .admin-app .btn-ghost { background: transparent; color: #bdbdbd; border: 1px solid rgba(255,255,255,0.2); }
+        .admin-app .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+        .admin-app .btn-danger { background: #b71c1c; color: #fff; }
+        .admin-app .btn-danger:hover { background: #7f0000; }
+        .admin-app .btn-small { padding: 0.4vh 1.5vw; font-size: clamp(11px, 2.8vw, 12px); white-space: nowrap; }
+        .admin-app .btn-edit { background: rgba(33,150,243,0.2); color: #64b5f6; border: 1px solid rgba(33,150,243,0.4); }
+        .admin-app .btn-edit:hover { background: rgba(33,150,243,0.35); }
+        .admin-app .btn-del { background: rgba(211,47,47,0.2); color: #ff8a80; border: 1px solid rgba(211,47,47,0.4); }
+        .admin-app .btn-del:hover { background: rgba(211,47,47,0.35); }
+
+        /* ===== 會員表格 ===== */
+        .member-table-wrap {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow: auto;
+            border: 1px solid rgba(211,47,47,0.25);
+            border-radius: 10px;
+            background: rgba(20,20,32,0.5);
+        }
+        .member-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(11px, 2.8vw, 13px);
+        }
+        .member-table thead th {
+            position: sticky;
+            top: 0;
+            background: #1a1a2e;
+            color: #ff8a80;
+            padding: 1vh 1vw;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+            border-bottom: 2px solid rgba(211,47,47,0.4);
+            z-index: 1;
+        }
+        .member-table tbody td {
+            padding: 1vh 1vw;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: #e0e0e0;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .member-table tbody tr:hover { background: rgba(211,47,47,0.08); }
+        .member-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #333;
+            border: 2px solid rgba(211,47,47,0.5);
+        }
+        .member-avatar-fallback {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d32f2f, #141414);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            border: 2px solid rgba(211,47,47,0.5);
+        }
+        .level-badge {
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: clamp(10px, 2.6vw, 12px);
+        }
+        .level-1 { background: rgba(255,152,0,0.2); color: #ffb74d; border: 1px solid rgba(255,152,0,0.4); }
+        .level-2 { background: rgba(33,150,243,0.2); color: #64b5f6; border: 1px solid rgba(33,150,243,0.4); }
+        .level-3 { background: rgba(211,47,47,0.2); color: #ff8a80; border: 1px solid rgba(211,47,47,0.4); }
+        .pwd-dots { letter-spacing: 2px; color: #888; }
+        .empty-tip { text-align: center; padding: 4vh 0; color: #888; }
+        .action-btns { display: flex; gap: 0.5vw; }
+
+        /* ===== 彈窗 ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 4vw;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: #1a1a2e;
+            border: 1px solid rgba(211,47,47,0.5);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(211,47,47,0.3);
+        }
+        .modal-small { max-width: 380px; }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2vh 3vw;
+            border-bottom: 1px solid rgba(211,47,47,0.3);
+        }
+        .modal-header h3 { margin: 0; color: #fff; font-size: clamp(15px, 4vw, 18px); }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 4px;
+        }
+        .modal-close:hover { color: #ff8a80; }
+        .modal-body {
+            padding: 2vh 3vw;
+            overflow-y: auto;
+            flex: 1 1 auto;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1.5vw;
+            padding: 1.5vh 3vw;
+            border-top: 1px solid rgba(211,47,47,0.3);
+        }
+
+        /* ===== 表單 ===== */
+        .form-group {
+            margin-bottom: 1.6vh;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6vh;
+        }
+        .form-group label {
+            font-size: clamp(12px, 3vw, 13px);
+            color: #bdbdbd;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(211,47,47,0.3);
+            border-radius: 6px;
+            padding: 0.8vh 1.2vw;
+            color: #fff;
+            font-size: clamp(13px, 3.4vw, 14px);
+            outline: none;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 2px rgba(211,47,47,0.2);
+        }
+        .form-group input[readonly] { opacity: 0.6; }
+        .form-row {
+            display: flex;
+            gap: 1.5vw;
+        }
+        .form-row .form-group { flex: 1; }
+        .inline-row {
+            display: flex;
+            gap: 1vw;
+            align-items: center;
+        }
+        .inline-row input { flex: 1; }
+        .form-hint {
+            font-size: clamp(10px, 2.6vw, 11px);
+            color: #888;
+            margin-top: 0.4vh;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            top: 10vh;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #1a1a2e;
+            color: #fff;
+            padding: 1.2vh 3vw;
+            border-radius: 8px;
+            border: 1px solid rgba(211,47,47,0.5);
+            font-size: clamp(12px, 3.2vw, 14px);
+            z-index: 20000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast.error { border-color: #b71c1c; }
+        .toast.success { border-color: #4caf50; }
     </style>
 </head>
 <body>
@@ -397,8 +711,8 @@
                 <div class="brand-title">西北語薇<span class="role-tag">管理後台</span></div>
             </div>
             <div class="admin-user">
-                <span class="admin-email" id="adminEmail">載入中…</span>
-                <button class="btn" id="adminLogoutBtn" type="button">登出</button>
+                <span class="admin-email" id="adminEmail" style="display:none;">載入中…</span>
+                <button class="btn" id="adminLogoutBtn" type="button">艙員暱稱</button>
             </div>
         </header>
 
@@ -477,19 +791,27 @@
             <section class="tab-panel" data-panel="members">
                 <div class="panel-header">
                     <h2 class="panel-title">會員管理</h2>
-                    <button class="btn btn-primary" type="button">＋ 新增會員</button>
+                    <button class="btn btn-primary" type="button" id="addMemberBtn">＋ 新增會員</button>
                 </div>
-                <div class="member-list">
-                    <div class="member-row">
-                        <span class="member-name">istage.eason</span>
-                        <span class="member-email">istage.eason@gmail.com</span>
-                        <span class="member-role role-admin">管理員</span>
-                    </div>
-                    <div class="member-row">
-                        <span class="member-name">範例會員</span>
-                        <span class="member-email">demo@nwrose.tw</span>
-                        <span class="member-role role-member">會員</span>
-                    </div>
+                <div class="member-table-wrap">
+                    <table class="member-table">
+                        <thead>
+                            <tr>
+                                <th>大頭照</th>
+                                <th>艙員暱稱</th>
+                                <th>電子郵件</th>
+                                <th>密碼</th>
+                                <th>艙員編號</th>
+                                <th>位階代號</th>
+                                <th>位階</th>
+                                <th>星點</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTbody">
+                            <tr><td colspan="9" class="empty-tip">載入中…</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -498,26 +820,55 @@
                 <div class="panel-header">
                     <h2 class="panel-title">系統設定</h2>
                 </div>
-                <div class="settings-list">
-                    <div class="setting-row">
-                        <span class="setting-name">站點名稱</span>
-                        <span class="setting-value">西北語薇 · 星際艙</span>
+                <!-- 子分頁列 8% -->
+                <div class="settings-subtabs">
+                    <button class="subtab-btn active" data-subtab="general" type="button">一般</button>
+                    <button class="subtab-btn" data-subtab="levels" type="button">位階</button>
+                    <button class="subtab-btn" data-subtab="rules" type="button">規則</button>
+                </div>
+                <!-- 一般設定 -->
+                <div class="subtab-panel active" data-subtab-panel="general">
+                    <div class="settings-list">
+                        <div class="setting-row">
+                            <span class="setting-name">站點名稱</span>
+                            <span class="setting-value">西北語薇 · 星光艙</span>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">主題色</span>
+                            <span class="setting-value">#d32f2f</span>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">PWA 安裝提示</span>
+                            <span class="setting-value">啟用</span>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">每日登入獎勵</span>
+                            <span class="setting-value">20 EXP / 15 星幣</span>
+                        </div>
+                        <div class="setting-row">
+                            <span class="setting-name">管理員白名單</span>
+                            <span class="setting-value">istage.eason@gmail.com</span>
+                        </div>
                     </div>
-                    <div class="setting-row">
-                        <span class="setting-name">主題色</span>
-                        <span class="setting-value">#d32f2f</span>
+                </div>
+                <!-- 位階設定 -->
+                <div class="subtab-panel" data-subtab-panel="levels">
+                    <div class="subtab-header">
+                        <h3 class="subtab-title">位階管理</h3>
+                        <button class="btn btn-primary btn-small" type="button" id="addLevelBtn">＋ 新增位階</button>
                     </div>
-                    <div class="setting-row">
-                        <span class="setting-name">PWA 安裝提示</span>
-                        <span class="setting-value">啟用</span>
+                    <div class="settings-list" id="levelsList">
+                        <div class="setting-row"><span class="setting-name">載入中…</span></div>
                     </div>
-                    <div class="setting-row">
-                        <span class="setting-name">每日登入獎勵</span>
-                        <span class="setting-value">20 EXP / 15 星幣</span>
+                </div>
+                <!-- 規則設定 -->
+                <div class="subtab-panel" data-subtab-panel="rules">
+                    <div class="subtab-header">
+                        <h3 class="subtab-title">獎勵規則管理</h3>
+                        <button class="btn btn-primary btn-small" type="button" id="addRuleBtn">＋ 新增規則</button>
                     </div>
-                    <div class="setting-row">
-                        <span class="setting-name">管理員白名單</span>
-                        <span class="setting-value">istage.eason@gmail.com</span>
+                    <div class="settings-list" id="rulesList">
+                        <div class="setting-row"><span class="setting-name">載入中…</span></div>
                     </div>
                 </div>
             </section>
@@ -547,6 +898,156 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+    <!-- 編輯會員彈窗 -->
+    <div class="modal-overlay" id="editMemberModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>編輯會員資料</h3>
+                <button class="modal-close" type="button" data-close-modal>×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editMemberUid">
+                <div class="form-group">
+                    <label>艙員暱稱</label>
+                    <input type="text" id="editDisplayName" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label>電子郵件（唯讀）</label>
+                    <input type="email" id="editEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label>密碼重設</label>
+                    <div class="inline-row">
+                        <input type="text" id="editNewPassword" placeholder="留空則不變更" minlength="6">
+                        <button type="button" class="btn btn-small" id="sendResetEmailBtn">發送重設郵件</button>
+                    </div>
+                    <small class="form-hint">Firebase 無法讀取原密碼。可輸入新密碼直接變更，或發送重設郵件給會員。</small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>位階</label>
+                        <select id="editLevel">
+                            <option value="1">LV1 見習艙員</option>
+                            <option value="2">LV2 星際航行員</option>
+                            <option value="3">LV3 語薇近衛隊</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>角色</label>
+                        <select id="editRole">
+                            <option value="member">會員</option>
+                            <option value="admin">管理員</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>星點（EXP）</label>
+                        <input type="number" id="editExp" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>星幣</label>
+                        <input type="number" id="editCoins" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" data-close-modal>取消</button>
+                <button class="btn btn-primary" type="button" id="saveMemberBtn">儲存變更</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂確認彈窗 -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box modal-small">
+            <div class="modal-header">
+                <h3 id="confirmTitle">確認操作</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">確定要執行此操作嗎？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" id="confirmCancelBtn">取消</button>
+                <button class="btn btn-danger" type="button" id="confirmOkBtn">確定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯位階彈窗 -->
+    <div class="modal-overlay" id="editLevelModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="editLevelTitle">新增位階</h3>
+                <button class="modal-close" type="button" data-close-modal="editLevelModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editLevelId">
+                <div class="form-group">
+                    <label>位階名稱</label>
+                    <input type="text" id="editLevelName" placeholder="例如：見習艙員" maxlength="20">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>等級數字</label>
+                        <input type="number" id="editLevelNum" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label>所需 EXP</label>
+                        <input type="number" id="editLevelMinExp" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>代表色</label>
+                    <input type="color" id="editLevelColor" value="#d32f2f">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" data-close-modal="editLevelModal">取消</button>
+                <button class="btn btn-primary" type="button" id="saveLevelBtn">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 編輯規則彈窗 -->
+    <div class="modal-overlay" id="editRuleModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="editRuleTitle">新增規則</h3>
+                <button class="modal-close" type="button" data-close-modal="editRuleModal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editRuleId">
+                <div class="form-group">
+                    <label>規則代碼（英文，唯讀）</label>
+                    <input type="text" id="editRuleKey" placeholder="例如：VIEW_CONTENT">
+                </div>
+                <div class="form-group">
+                    <label>規則名稱</label>
+                    <input type="text" id="editRuleLabel" placeholder="例如：內容探索" maxlength="20">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>獎勵 EXP</label>
+                        <input type="number" id="editRuleExp" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>獎勵星幣</label>
+                        <input type="number" id="editRuleCoins" min="0" value="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" data-close-modal="editRuleModal">取消</button>
+                <button class="btn btn-primary" type="button" id="saveRuleBtn">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast" id="adminToast"></div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyAH3dKwLLlg5-5jPwEbIZ2WKP41TaV68EY",
@@ -586,10 +1087,28 @@
             document.querySelectorAll('.tab-panel').forEach(panel => {
                 panel.classList.toggle('active', panel.dataset.panel === tabName);
             });
+            // 切換到會員分頁時載入會員列表
+            if (tabName === 'members') loadMembers();
         }
         // 綁定頁尾分頁按鈕
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // ===== 設定頁子分頁切換 =====
+        function switchSubtab(subtabName) {
+            document.querySelectorAll('.subtab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.subtab === subtabName);
+            });
+            document.querySelectorAll('.subtab-panel').forEach(panel => {
+                panel.classList.toggle('active', panel.dataset.subtabPanel === subtabName);
+            });
+            // 切換到對應子分頁時載入資料
+            if (subtabName === 'levels') loadLevels();
+            else if (subtabName === 'rules') loadRules();
+        }
+        document.querySelectorAll('.subtab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchSubtab(btn.dataset.subtab));
         });
 
         // 總覽頁的功能模組卡片：點擊導向對應分頁
@@ -644,11 +1163,598 @@
                 loadStats();
             }
         });
+
+        // ===== 會員管理 =====
+        // 位階名稱（共 30 階，LV1 最低，LV30 最高）— 會員表格與位階管理共用
+        const LEVEL_NAMES = [
+            '見習勤務員', '星際膳食師', '資深物資管理員', '醫療護理員', '資深安保專員',
+            '外星生物學家', '維生專家', '工程技術員', '裝備維修師', '星空巡航員',
+            '深空通訊官', '後勤總長', '心理調音師', '資深外科醫師', '動力工程師',
+            '網絡安全官', '副輪機長', '航行官', '火力控制官', '安全長',
+            '醫療總監', '首席系統架構師', '輪機長', '作戰指揮官', '資深航行官',
+            '首席導航官', '星艦副官', '首席參謀長', '副艦長', '艦長'
+        ];
+        const LEVELS = LEVEL_NAMES.map((name, i) => ({ level: i + 1, code: 'LV' + (i + 1), name }));
+
+        function getLevelInfo(lv) {
+            return LEVELS.find(l => l.level === Number(lv)) || LEVELS[0];
+        }
+
+        // 位階徽章：優先使用 Firestore 中位階設定的顏色
+        function levelBadgeHtml(lvInfo) {
+            const cfg = (allLevels || []).find(l => l.level === lvInfo.level);
+            const color = cfg && cfg.color ? cfg.color : '#d32f2f';
+            return `<span class="level-badge" style="background:${color}22;color:${color};border:1px solid ${color}66">${lvInfo.code}</span>`;
+        }
+
+        // 產生艙員編號：取 uid 前 8 碼大寫
+        function genMemberNo(uid) {
+            return String(uid || '').slice(0, 8).toUpperCase();
+        }
+
+        // 大頭照 fallback：取暱稱首字
+        function avatarHtml(photoURL, displayName) {
+            const name = displayName || '?';
+            const initial = name.trim().charAt(0).toUpperCase();
+            if (photoURL) {
+                return `<img class="member-avatar" src="${photoURL}" alt="${name}" onerror="this.outerHTML='<div class=\\'member-avatar-fallback\\'>${initial}</div>'">`;
+            }
+            return `<div class="member-avatar-fallback">${initial}</div>`;
+        }
+
+        // ===== Toast 提示 =====
+        const toastEl = document.getElementById('adminToast');
+        let toastTimer = null;
+        function showToast(msg, type) {
+            toastEl.textContent = msg;
+            toastEl.className = 'toast show' + (type === 'error' ? ' error' : type === 'success' ? ' success' : '');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 2500);
+        }
+
+        // ===== 自訂確認彈窗 =====
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmOkBtn = document.getElementById('confirmOkBtn');
+        const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+        let confirmCallback = null;
+
+        function showConfirm(title, message, callback) {
+            confirmTitle.textContent = title;
+            confirmMessage.textContent = message;
+            confirmCallback = callback;
+            confirmModal.classList.add('active');
+        }
+        function closeConfirm() {
+            confirmModal.classList.remove('active');
+            confirmCallback = null;
+        }
+        confirmOkBtn.addEventListener('click', () => {
+            const cb = confirmCallback;
+            closeConfirm();
+            if (cb) cb();
+        });
+        confirmCancelBtn.addEventListener('click', closeConfirm);
+
+        // ===== 載入會員列表 =====
+        const memberTbody = document.getElementById('memberTbody');
+        let allMembers = [];
+
+        async function loadMembers() {
+            memberTbody.innerHTML = '<tr><td colspan="9" class="empty-tip">載入中…</td></tr>';
+            try {
+                const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+                allMembers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+                renderMembers();
+            } catch (e) {
+                console.error('載入會員失敗', e);
+                memberTbody.innerHTML = `<tr><td colspan="9" class="empty-tip">載入失敗：${e.message}</td></tr>`;
+            }
+        }
+
+        function renderMembers() {
+            if (!allMembers.length) {
+                memberTbody.innerHTML = '<tr><td colspan="9" class="empty-tip">尚無會員資料</td></tr>';
+                return;
+            }
+            memberTbody.innerHTML = allMembers.map(m => {
+                const lvInfo = getLevelInfo(m.level);
+                const isAdmin = m.role === 'admin' || isAdminEmail(m.email);
+                return `
+                <tr>
+                    <td>${avatarHtml(m.photoURL, m.displayName)}</td>
+                    <td>${escapeHtml(m.displayName || '(未命名)')}</td>
+                    <td>${escapeHtml(m.email || '')}</td>
+                    <td><span class="pwd-dots">••••••••</span></td>
+                    <td>${genMemberNo(m.uid)}</td>
+                    <td>${levelBadgeHtml(lvInfo)}</td>
+                    <td>${lvInfo.name}</td>
+                    <td>${Number(m.exp || 0)}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn btn-small btn-edit" type="button" data-uid="${m.uid}" data-action="edit">編輯</button>
+                            <button class="btn btn-small btn-del" type="button" data-uid="${m.uid}" data-action="delete">刪除</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = String(str);
+            return div.innerHTML;
+        }
+
+        // ===== 表格點擊事件（事件代理）=====
+        memberTbody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const uid = btn.dataset.uid;
+            const member = allMembers.find(m => m.uid === uid);
+            if (!member) return;
+            if (btn.dataset.action === 'edit') openEditModal(member);
+            else if (btn.dataset.action === 'delete') deleteMember(member);
+        });
+
+        // ===== 編輯會員彈窗 =====
+        const editMemberModal = document.getElementById('editMemberModal');
+        const editMemberUid = document.getElementById('editMemberUid');
+        const editDisplayName = document.getElementById('editDisplayName');
+        const editEmail = document.getElementById('editEmail');
+        const editNewPassword = document.getElementById('editNewPassword');
+        const editLevel = document.getElementById('editLevel');
+        const editRole = document.getElementById('editRole');
+        const editExp = document.getElementById('editExp');
+        const editCoins = document.getElementById('editCoins');
+        const saveMemberBtn = document.getElementById('saveMemberBtn');
+        const sendResetEmailBtn = document.getElementById('sendResetEmailBtn');
+
+        function openEditModal(member) {
+            editMemberUid.value = member.uid;
+            editDisplayName.value = member.displayName || '';
+            editEmail.value = member.email || '';
+            editNewPassword.value = '';
+            editLevel.value = String(member.level || 1);
+            editRole.value = (member.role === 'admin' || isAdminEmail(member.email)) ? 'admin' : 'member';
+            editExp.value = Number(member.exp || 0);
+            editCoins.value = Number(member.coins || 0);
+            editMemberModal.classList.add('active');
+        }
+        function closeEditModal() {
+            editMemberModal.classList.remove('active');
+        }
+        // 關閉按鈕
+        editMemberModal.querySelectorAll('[data-close-modal]').forEach(b => {
+            b.addEventListener('click', closeEditModal);
+        });
+        // 點擊遮罩關閉
+        editMemberModal.addEventListener('click', (e) => {
+            if (e.target === editMemberModal) closeEditModal();
+        });
+
+        // 儲存變更
+        saveMemberBtn.addEventListener('click', async () => {
+            const uid = editMemberUid.value;
+            const displayName = editDisplayName.value.trim();
+            const newPassword = editNewPassword.value.trim();
+            const level = Number(editLevel.value);
+            const role = editRole.value;
+            const exp = Number(editExp.value) || 0;
+            const coins = Number(editCoins.value) || 0;
+
+            if (!displayName) { showToast('請輸入艙員暱稱', 'error'); return; }
+
+            saveMemberBtn.disabled = true;
+            saveMemberBtn.textContent = '儲存中…';
+            try {
+                const updates = { displayName, level, exp, coins };
+                // 角色：若 email 屬於白名單，強制 admin；否則依選擇
+                const member = allMembers.find(m => m.uid === uid);
+                if (!isAdminEmail(member?.email)) {
+                    updates.role = role;
+                } else {
+                    updates.role = 'admin';
+                }
+                await db.collection('users').doc(uid).update(updates);
+
+                // 若有輸入新密碼，嘗試變更（需該用戶最近登入，失敗則發重設郵件）
+                if (newPassword) {
+                    try {
+                        // 前端無法直接修改他人密碼，發送重設郵件
+                        await auth.sendPasswordResetEmail(member.email);
+                        showToast('資料已儲存，密碼重設郵件已發送', 'success');
+                    } catch (err) {
+                        showToast('資料已儲存，但重設郵件發送失敗', 'error');
+                    }
+                } else {
+                    showToast('儲存成功', 'success');
+                }
+                closeEditModal();
+                loadMembers();
+            } catch (e) {
+                console.error('儲存失敗', e);
+                showToast('儲存失敗：' + e.message, 'error');
+            } finally {
+                saveMemberBtn.disabled = false;
+                saveMemberBtn.textContent = '儲存變更';
+            }
+        });
+
+        // 發送密碼重設郵件
+        sendResetEmailBtn.addEventListener('click', async () => {
+            const email = editEmail.value;
+            if (!email) { showToast('無電子郵件', 'error'); return; }
+            sendResetEmailBtn.disabled = true;
+            sendResetEmailBtn.textContent = '發送中…';
+            try {
+                await auth.sendPasswordResetEmail(email);
+                showToast('重設郵件已發送', 'success');
+            } catch (e) {
+                showToast('發送失敗：' + e.message, 'error');
+            } finally {
+                sendResetEmailBtn.disabled = false;
+                sendResetEmailBtn.textContent = '發送重設郵件';
+            }
+        });
+
+        // ===== 刪除會員 =====
+        function deleteMember(member) {
+            const isSelf = auth.currentUser && auth.currentUser.uid === member.uid;
+            if (isSelf) {
+                showToast('無法刪除自己的帳號', 'error');
+                return;
+            }
+            showConfirm(
+                '刪除會員',
+                `確定要刪除「${member.displayName || member.email}」嗎？此操作將從資料庫移除該會員，無法復原。`,
+                async () => {
+                    try {
+                        await db.collection('users').doc(member.uid).delete();
+                        showToast('已刪除', 'success');
+                        loadMembers();
+                    } catch (e) {
+                        console.error('刪除失敗', e);
+                        showToast('刪除失敗：' + e.message, 'error');
+                    }
+                }
+            );
+        }
+
+        // ===== 新增會員按鈕 =====
+        const addMemberBtn = document.getElementById('addMemberBtn');
+        addMemberBtn.addEventListener('click', () => {
+            showToast('請由首頁註冊功能新增會員', 'info');
+        });
+
+        // 點擊確認彈窗遮罩關閉
+        confirmModal.addEventListener('click', (e) => {
+            if (e.target === confirmModal) closeConfirm();
+        });
+
+        // ===== 通用：關閉指定彈窗 =====
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+            btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
+        });
+        // 點擊彈窗遮罩關閉
+        ['editMemberModal', 'editLevelModal', 'editRuleModal'].forEach(id => {
+            const m = document.getElementById(id);
+            if (m) m.addEventListener('click', (e) => {
+                if (e.target === m) closeModal(id);
+            });
+        });
+
+        // ===== 位階管理 =====
+        const levelsListEl = document.getElementById('levelsList');
+        let allLevels = [];
+
+        // 產生 30 階預設位階（冷色→暖色漸層、二次方 EXP 成長）
+        function getDefaultLevels() {
+            const hslToHex = (h, s, l) => {
+                s /= 100; l /= 100;
+                const k = n => (n + h / 30) % 12;
+                const a = s * Math.min(l, 1 - l);
+                const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+                return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
+            };
+            return LEVEL_NAMES.map((name, i) => ({
+                level: i + 1,
+                name,
+                minExp: i === 0 ? 0 : Math.round(i * i * 50),
+                color: hslToHex(220 - i * (220 / 29), 65, 52)
+            }));
+        }
+
+        async function loadLevels() {
+            levelsListEl.innerHTML = '<div class="setting-row"><span class="setting-name">載入中…</span></div>';
+            try {
+                const snap = await db.collection('config').doc('levels').get();
+                if (snap.exists && snap.data().items) {
+                    allLevels = snap.data().items.slice().sort((a, b) => a.level - b.level);
+                } else {
+                    // 預設位階
+                    allLevels = getDefaultLevels();
+                    // 寫入預設
+                    await db.collection('config').doc('levels').set({ items: allLevels }).catch(() => {});
+                }
+                renderLevels();
+            } catch (e) {
+                console.error('載入位階失敗', e);
+                levelsListEl.innerHTML = `<div class="setting-row"><span class="setting-name">載入失敗：${escapeHtml(e.message)}</span></div>`;
+            }
+        }
+
+        function renderLevels() {
+            if (!allLevels.length) {
+                levelsListEl.innerHTML = '<div class="setting-row"><span class="setting-name">尚無位階資料</span></div>';
+                return;
+            }
+            levelsListEl.innerHTML = allLevels.map(lv => `
+                <div class="editable-row" data-level="${lv.level}">
+                    <div class="row-info">
+                        <div class="row-name">
+                            <span class="level-color-dot" style="background:${lv.color}"></span>
+                            LV${lv.level} ${escapeHtml(lv.name)}
+                        </div>
+                        <div class="row-desc">所需 EXP：${lv.minExp} 以上</div>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-small btn-edit" type="button" data-action="edit-level" data-level="${lv.level}">編輯</button>
+                        <button class="btn btn-small btn-del" type="button" data-action="del-level" data-level="${lv.level}">刪除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 位階彈窗元素
+        const editLevelModal = document.getElementById('editLevelModal');
+        const editLevelId = document.getElementById('editLevelId');
+        const editLevelName = document.getElementById('editLevelName');
+        const editLevelNum = document.getElementById('editLevelNum');
+        const editLevelMinExp = document.getElementById('editLevelMinExp');
+        const editLevelColor = document.getElementById('editLevelColor');
+        const editLevelTitle = document.getElementById('editLevelTitle');
+        const saveLevelBtn = document.getElementById('saveLevelBtn');
+
+        function openLevelModal(levelData) {
+            if (levelData) {
+                editLevelTitle.textContent = '編輯位階';
+                editLevelId.value = levelData.level;
+                editLevelName.value = levelData.name;
+                editLevelNum.value = levelData.level;
+                editLevelNum.disabled = true;
+                editLevelMinExp.value = levelData.minExp;
+                editLevelColor.value = levelData.color;
+            } else {
+                editLevelTitle.textContent = '新增位階';
+                editLevelId.value = '';
+                editLevelName.value = '';
+                editLevelNum.value = (allLevels.length ? Math.max(...allLevels.map(l => l.level)) : 0) + 1;
+                editLevelNum.disabled = false;
+                editLevelMinExp.value = 0;
+                editLevelColor.value = '#d32f2f';
+            }
+            editLevelModal.classList.add('active');
+        }
+
+        saveLevelBtn.addEventListener('click', async () => {
+            const name = editLevelName.value.trim();
+            const level = Number(editLevelNum.value);
+            const minExp = Number(editLevelMinExp.value);
+            const color = editLevelColor.value;
+            if (!name) { showToast('請輸入位階名稱', 'error'); return; }
+            if (!level || level < 1) { showToast('等級數字需大於 0', 'error'); return; }
+
+            const existing = editLevelId.value;
+            // 檢查等級數字是否重複（新增時）
+            if (!existing && allLevels.some(l => l.level === level)) {
+                showToast('該等級數字已存在', 'error');
+                return;
+            }
+
+            saveLevelBtn.disabled = true;
+            saveLevelBtn.textContent = '儲存中…';
+            try {
+                let items;
+                if (existing) {
+                    items = allLevels.map(l => l.level === level ? { level, name, minExp, color } : l);
+                } else {
+                    items = [...allLevels, { level, name, minExp, color }].sort((a, b) => a.level - b.level);
+                }
+                await db.collection('config').doc('levels').set({ items });
+                allLevels = items;
+                showToast(existing ? '已更新' : '已新增', 'success');
+                closeModal('editLevelModal');
+                renderLevels();
+            } catch (e) {
+                console.error('儲存位階失敗', e);
+                showToast('儲存失敗：' + e.message, 'error');
+            } finally {
+                saveLevelBtn.disabled = false;
+                saveLevelBtn.textContent = '儲存';
+            }
+        });
+
+        function deleteLevel(level) {
+            const lv = allLevels.find(l => l.level === level);
+            if (!lv) return;
+            showConfirm('刪除位階', `確定要刪除「LV${lv.level} ${lv.name}」嗎？`, async () => {
+                try {
+                    const items = allLevels.filter(l => l.level !== level);
+                    await db.collection('config').doc('levels').set({ items });
+                    allLevels = items;
+                    showToast('已刪除', 'success');
+                    renderLevels();
+                } catch (e) {
+                    showToast('刪除失敗：' + e.message, 'error');
+                }
+            });
+        }
+
+        document.getElementById('addLevelBtn').addEventListener('click', () => openLevelModal(null));
+        levelsListEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const level = Number(btn.dataset.level);
+            const lv = allLevels.find(l => l.level === level);
+            if (!lv) return;
+            if (btn.dataset.action === 'edit-level') openLevelModal(lv);
+            else if (btn.dataset.action === 'del-level') deleteLevel(level);
+        });
+
+        // ===== 規則管理 =====
+        const rulesListEl = document.getElementById('rulesList');
+        let allRules = {};
+
+        async function loadRules() {
+            rulesListEl.innerHTML = '<div class="setting-row"><span class="setting-name">載入中…</span></div>';
+            try {
+                const snap = await db.collection('config').doc('rules').get();
+                if (snap.exists && snap.data().items) {
+                    allRules = snap.data().items;
+                } else {
+                    allRules = {
+                        VIEW_CONTENT: { exp: 10, coins: 5, label: '內容探索' },
+                        SHARE: { exp: 15, coins: 10, label: '星際分享' },
+                        DAILY_LOGIN: { exp: 20, coins: 15, label: '每日報到' }
+                    };
+                    await db.collection('config').doc('rules').set({ items: allRules }).catch(() => {});
+                }
+                renderRules();
+            } catch (e) {
+                console.error('載入規則失敗', e);
+                rulesListEl.innerHTML = `<div class="setting-row"><span class="setting-name">載入失敗：${escapeHtml(e.message)}</span></div>`;
+            }
+        }
+
+        function renderRules() {
+            const keys = Object.keys(allRules);
+            if (!keys.length) {
+                rulesListEl.innerHTML = '<div class="setting-row"><span class="setting-name">尚無規則資料</span></div>';
+                return;
+            }
+            rulesListEl.innerHTML = keys.map(key => {
+                const r = allRules[key];
+                return `
+                <div class="editable-row" data-rule-key="${key}">
+                    <div class="row-info">
+                        <div class="row-name">${escapeHtml(r.label || key)}</div>
+                        <div class="row-desc">代碼：${escapeHtml(key)}　|　獎勵：${r.exp} EXP / ${r.coins} 星幣</div>
+                    </div>
+                    <div class="row-actions">
+                        <button class="btn btn-small btn-edit" type="button" data-action="edit-rule" data-key="${key}">編輯</button>
+                        <button class="btn btn-small btn-del" type="button" data-action="del-rule" data-key="${key}">刪除</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // 規則彈窗元素
+        const editRuleModal = document.getElementById('editRuleModal');
+        const editRuleId = document.getElementById('editRuleId');
+        const editRuleKey = document.getElementById('editRuleKey');
+        const editRuleLabel = document.getElementById('editRuleLabel');
+        const editRuleExp = document.getElementById('editRuleExp');
+        const editRuleCoins = document.getElementById('editRuleCoins');
+        const editRuleTitle = document.getElementById('editRuleTitle');
+        const saveRuleBtn = document.getElementById('saveRuleBtn');
+
+        function openRuleModal(key) {
+            if (key && allRules[key]) {
+                editRuleTitle.textContent = '編輯規則';
+                editRuleId.value = key;
+                editRuleKey.value = key;
+                editRuleKey.disabled = true;
+                editRuleLabel.value = allRules[key].label || '';
+                editRuleExp.value = allRules[key].exp || 0;
+                editRuleCoins.value = allRules[key].coins || 0;
+            } else {
+                editRuleTitle.textContent = '新增規則';
+                editRuleId.value = '';
+                editRuleKey.value = '';
+                editRuleKey.disabled = false;
+                editRuleLabel.value = '';
+                editRuleExp.value = 0;
+                editRuleCoins.value = 0;
+            }
+            editRuleModal.classList.add('active');
+        }
+
+        saveRuleBtn.addEventListener('click', async () => {
+            const key = editRuleKey.value.trim().toUpperCase();
+            const label = editRuleLabel.value.trim();
+            const exp = Number(editRuleExp.value) || 0;
+            const coins = Number(editRuleCoins.value) || 0;
+            if (!key) { showToast('請輸入規則代碼', 'error'); return; }
+            if (!/^[A-Z_]+$/.test(key)) { showToast('代碼僅限大寫英文與底線', 'error'); return; }
+            if (!label) { showToast('請輸入規則名稱', 'error'); return; }
+
+            const existing = editRuleId.value;
+            if (!existing && allRules[key]) {
+                showToast('該代碼已存在', 'error');
+                return;
+            }
+
+            saveRuleBtn.disabled = true;
+            saveRuleBtn.textContent = '儲存中…';
+            try {
+                const items = { ...allRules };
+                items[key] = { exp, coins, label };
+                if (existing && existing !== key) {
+                    delete items[existing];
+                }
+                await db.collection('config').doc('rules').set({ items });
+                allRules = items;
+                showToast(existing ? '已更新' : '已新增', 'success');
+                closeModal('editRuleModal');
+                renderRules();
+            } catch (e) {
+                console.error('儲存規則失敗', e);
+                showToast('儲存失敗：' + e.message, 'error');
+            } finally {
+                saveRuleBtn.disabled = false;
+                saveRuleBtn.textContent = '儲存';
+            }
+        });
+
+        function deleteRule(key) {
+            const r = allRules[key];
+            if (!r) return;
+            showConfirm('刪除規則', `確定要刪除「${r.label || key}」嗎？`, async () => {
+                try {
+                    const items = { ...allRules };
+                    delete items[key];
+                    await db.collection('config').doc('rules').set({ items });
+                    allRules = items;
+                    showToast('已刪除', 'success');
+                    renderRules();
+                } catch (e) {
+                    showToast('刪除失敗：' + e.message, 'error');
+                }
+            });
+        }
+
+        document.getElementById('addRuleBtn').addEventListener('click', () => openRuleModal(null));
+        rulesListEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const key = btn.dataset.key;
+            if (!allRules[key]) return;
+            if (btn.dataset.action === 'edit-rule') openRuleModal(key);
+            else if (btn.dataset.action === 'del-rule') deleteRule(key);
+        });
     </script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
+                navigator.serviceWorker.register('./service-worker.js?v=v11')
                     .then(registration => console.log('Service Worker 註冊成功:', registration))
                     .catch(error => console.log('Service Worker 註冊失敗:', error));
             });

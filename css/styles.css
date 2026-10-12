@@ -600,6 +600,94 @@ html, body {
     border-color: var(--primary-red);
 }
 
+/* ===== 密碼欄位：顯示/隱藏切換按鈕 ===== */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 46px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.toggle-password:hover {
+    color: var(--primary-red);
+    background: rgba(211,47,47,0.12);
+}
+
+/* ===== 表單選項列（記住我） ===== */
+.form-options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+}
+
+.remember-me input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-custom {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid rgba(211,47,47,0.5);
+    background: rgba(255,255,255,0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.remember-me input[type="checkbox"]:checked + .checkbox-custom {
+    background: var(--primary-red);
+    border-color: var(--primary-red);
+}
+
+.remember-me input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: "";
+    width: 10px;
+    height: 5px;
+    border-left: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.remember-me input[type="checkbox"]:focus-visible + .checkbox-custom {
+    box-shadow: 0 0 0 2px rgba(211,47,47,0.4);
+}
+
 .btn-block {
     width: 100%;
     padding: 13px;

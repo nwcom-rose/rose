@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("西北語薇星際艙啟動");
+  console.log("西北語薇星光艙啟動");
   if (typeof firebase !== 'undefined') {
     console.log("Firebase 載入成功");
     window.firebaseApp = firebase.apps.length ? firebase.app() : null;
@@ -456,6 +456,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const authSwitch = document.getElementById('authModeSwitch');
   const authForm = document.getElementById('authForm');
   const googleBtn = document.getElementById('googleSignInBtn');
+  const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+  const inputEmail = document.getElementById('inputEmail');
+  const inputPassword = document.getElementById('inputPassword');
+  const rememberMe = document.getElementById('rememberMe');
+  const REMEMBER_EMAIL_KEY = 'nwrose_remember_email';
+
+  // ===== 顯示/隱藏密碼切換 =====
+  if (togglePasswordBtn && inputPassword) {
+    togglePasswordBtn.addEventListener('click', () => {
+      const eyeOn = togglePasswordBtn.querySelector('.eye-icon');
+      const eyeOff = togglePasswordBtn.querySelector('.eye-off-icon');
+      const isPassword = inputPassword.type === 'password';
+      inputPassword.type = isPassword ? 'text' : 'password';
+      if (eyeOn) eyeOn.style.display = isPassword ? 'none' : '';
+      if (eyeOff) eyeOff.style.display = isPassword ? '' : 'none';
+      togglePasswordBtn.setAttribute('aria-label', isPassword ? '隱藏密碼' : '顯示密碼');
+    });
+  }
 
   function openAuthModal(mode = 'login', subtitle = null) {
     state.authMode = mode;
@@ -472,13 +490,21 @@ document.addEventListener('DOMContentLoaded', () => {
       authSubmit.textContent = '登入';
       authSwitch.textContent = '還沒有星光證？立即註冊';
     }
+    // 載入記住的 email
+    const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
+    if (inputEmail && savedEmail) {
+      inputEmail.value = savedEmail;
+      if (rememberMe) rememberMe.checked = true;
+    } else if (rememberMe) {
+      rememberMe.checked = false;
+    }
     authModal.classList.add('active');
   }
   function closeAuthModal() { authModal.classList.remove('active'); }
   authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
   if (authBtn) authBtn.addEventListener('click', () => {
     if (state.user) {
-      if (confirm('確定要登出星際艙嗎？')) {
+      if (confirm('確定要登出星光艙嗎？')) {
         auth.signOut().catch(err => console.warn(err));
       }
     } else {
@@ -490,8 +516,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   if (authForm) authForm.addEventListener('submit', async e => {
     e.preventDefault();
-    const email = document.getElementById('inputEmail').value.trim();
-    const password = document.getElementById('inputPassword').value;
+    const email = inputEmail.value.trim();
+    const password = inputPassword.value;
     const name = document.getElementById('inputName').value.trim();
     authSubmit.disabled = true;
     try {
@@ -502,6 +528,12 @@ document.addEventListener('DOMContentLoaded', () => {
         await ensureUserDoc(uc.user, displayName);
       } else {
         await auth.signInWithEmailAndPassword(email, password);
+      }
+      // 處理「記住我」：勾選則保存 email，否則清除
+      if (rememberMe && rememberMe.checked) {
+        localStorage.setItem(REMEMBER_EMAIL_KEY, email);
+      } else {
+        localStorage.removeItem(REMEMBER_EMAIL_KEY);
       }
       closeAuthModal();
       authForm.reset();

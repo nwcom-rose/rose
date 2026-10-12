@@ -6,10 +6,10 @@
     <meta name="theme-color" content="#d32f2f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="語薇星際艙">
+    <meta name="apple-mobile-web-app-title" content="語薇星光艙">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
-    <title>西北語薇星際艙</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261011-yuwei-82vh">
+    <title>西北語薇星光艙</title>
+    <link rel="stylesheet" href="css/styles.css?v=20261012-auth-enhance">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -20,7 +20,7 @@
         <div class="header-logo">
           <img class="logo-bowtie" src="assets/logo.svg" alt="西北語薇 LOGO"
                onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><pattern id=%22s%22 patternUnits=%22userSpaceOnUse%22 width=%2212%22 height=%2212%22 patternTransform=%22rotate(45)%22><rect width=%226%22 height=%2212%22 fill=%22%23e53935%22/><rect x=%226%22 width=%226%22 height=%2212%22 fill=%22%23141414%22/></pattern></defs><path d=%22M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/></svg>'"/>
-          <span class="header-title">西北語薇 · 星際艙</span>
+          <span class="header-title">西北語薇 · 星光艙</span>
         </div>
         <div class="header-user">
           <div class="starlight-cert" id="starlightCert" style="display:none;">
@@ -102,7 +102,7 @@
             </svg>
           </div>
           <h2 class="modal-title">安裝西北語薇</h2>
-          <p class="modal-subtitle">將星際艙安裝到你的裝置，隨時與語薇展開冒險</p>
+          <p class="modal-subtitle">將星光艙安裝到你的裝置，隨時與語薇展開冒險</p>
           <ul class="pwa-features">
             <li>🚀 一鍵開啟，離線也能暢遊星際</li>
             <li>📱 全螢幕沉浸式體驗</li>
@@ -130,7 +130,28 @@
             </div>
             <div class="form-group">
               <label>密碼</label>
-              <input type="password" id="inputPassword" placeholder="至少 6 個字元" minlength="6" required/>
+              <div class="password-wrapper">
+                <input type="password" id="inputPassword" placeholder="至少 6 個字元" minlength="6" required/>
+                <button type="button" class="toggle-password" id="togglePasswordBtn" aria-label="顯示密碼">
+                  <svg class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                  <svg class="eye-off-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-6.5 0-10-7-10-7a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="2" y1="2" x2="22" y2="22"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="form-options">
+              <label class="remember-me">
+                <input type="checkbox" id="rememberMe"/>
+                <span class="checkbox-custom"></span>
+                <span class="remember-label">記住我</span>
+              </label>
             </div>
             <button type="submit" class="btn btn-block" id="authSubmitBtn">登入</button>
           </form>
@@ -200,7 +221,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
+                navigator.serviceWorker.register('./service-worker.js?v=v11')
                     .then(registration => {
                         console.log('Service Worker 註冊成功:', registration);
                     })
@@ -210,6 +231,6 @@
             });
         }
     </script>
-    <script src="js/app.js?v=20261011-pwa-install"></script>
+    <script src="js/app.js?v=20261012-auth-enhance"></script>
 </body>
 </html>
