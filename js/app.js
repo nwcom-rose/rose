@@ -9,6 +9,39 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error("Firebase 載入失敗，請檢查網路連線或 Firebase SDK 設定");
   }
 
+  // ============ 載入駕駛艙自訂佈局（背景、語薇圖、熱點位置） ============
+  function applyCockpitConfig(cfg) {
+    if (!cfg) return;
+    // 背景圖
+    if (cfg.bgUrl) {
+      const bgImg = document.querySelector('.cockpit-bg > img');
+      if (bgImg) bgImg.src = cfg.bgUrl;
+    }
+    // 語薇圖
+    if (cfg.yuweiUrl) {
+      const ywImg = document.querySelector('.yuwei-figure');
+      if (ywImg) ywImg.src = cfg.yuweiUrl;
+    }
+    // 熱點位置
+    if (cfg.hotspots) {
+      Object.keys(cfg.hotspots).forEach(key => {
+        const btn = document.querySelector(`.hotspot-btn[data-topic="${key}"]`);
+        if (btn && cfg.hotspots[key]) {
+          btn.style.top = cfg.hotspots[key].top + '%';
+          btn.style.left = cfg.hotspots[key].left + '%';
+          btn.style.right = 'auto';
+          btn.style.bottom = 'auto';
+          if (key === 'neighbor') btn.style.transform = 'none';
+        }
+      });
+    }
+  }
+  if (window.db) {
+    window.db.collection('config').doc('cockpit').get()
+      .then(snap => { if (snap.exists) applyCockpitConfig(snap.data()); })
+      .catch(err => console.warn('載入駕駛艙設定失敗', err));
+  }
+
   // ============ CONFIG ============
   const APP_CONFIG = {
     levels: [
@@ -211,7 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return /admin\.html/i.test(location.pathname + location.hash);
   }
   // 依角色執行頁面導向（管理員 → admin.html；其餘留在此站）
+  // 若 sessionStorage 有 nwrose_stay_frontend 旗標，表示管理員主動切換到前台，略過導向
   function handleRoleRedirect() {
+    if (sessionStorage.getItem('nwrose_stay_frontend')) return;
     if (state.userData && state.userData.role === 'admin' && !isOnAdminPage()) {
       window.location.replace('admin.html');
     }
@@ -505,6 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (authBtn) authBtn.addEventListener('click', () => {
     if (state.user) {
       if (confirm('確定要登出星光艙嗎？')) {
+        sessionStorage.removeItem('nwrose_stay_frontend');
         auth.signOut().catch(err => console.warn(err));
       }
     } else {

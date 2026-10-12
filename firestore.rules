@@ -8,8 +8,14 @@ service cloud.firestore {
         request.auth.token.email in ['istage.eason@gmail.com'];
     }
 
+    match /config/cockpit {
+      // 駕駛艙佈局：所有人可讀取，僅管理員可寫入
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /config/{docId} {
-      // 設定檔（位階、規則）：僅管理員可讀寫
+      // 其他設定檔（位階、規則、一般設定）：僅管理員可讀寫
       allow read, write: if isAdmin();
     }
 

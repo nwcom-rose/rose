@@ -268,8 +268,8 @@
             display: flex;
         }
 
-        /* ===== 設定頁子分頁列（8%） ===== */
-        .settings-subtabs {
+        /* ===== 子分頁列（8%）— 主題/設定等分頁共用 ===== */
+        .subtabs-bar {
             flex: 0 0 8%;
             min-height: 40px;
             display: flex;
@@ -371,6 +371,198 @@
             border-radius: 50%;
             display: inline-block;
             flex-shrink: 0;
+        }
+        /* 一般設定輸入框 */
+        .gen-input {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            color: #fff;
+            padding: 0.5vh 0.8vw;
+            border-radius: 6px;
+            font-size: clamp(12px, 3vw, 13px);
+            min-width: 180px;
+            max-width: 40vw;
+            outline: none;
+        }
+        .gen-input:focus { border-color: #d32f2f; }
+        .gen-color {
+            width: 40px;
+            height: 32px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            padding: 2px;
+        }
+
+        /* ===== 駕駛艙編輯器 ===== */
+        .cockpit-editor {
+            flex: 1 1 auto;
+            min-height: 0;
+            display: flex;
+            gap: 1.5vw;
+            overflow: hidden;
+        }
+        .cockpit-preview {
+            position: relative;
+            flex: 1 1 auto;
+            min-width: 0;
+            min-height: 0;
+            border: 1px solid rgba(211,47,47,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
+        .cp-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .cp-yuwei {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 72%;
+            max-height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .cp-hotspots {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+        }
+        .cp-btn {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 26px;
+            min-width: 72px;
+            padding: 3px 6px;
+            font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+            font-weight: 700;
+            font-size: 12px;
+            color: #fff6ef;
+            text-shadow: 0 0 5px rgba(255,60,60,0.6), 0 1px 2px rgba(0,0,0,0.9);
+            background: linear-gradient(135deg, rgba(211,47,47,0.92), rgba(120,10,10,0.92));
+            border: 1.2px solid rgba(255,120,120,0.5);
+            border-radius: 6px;
+            box-shadow: inset 0 1px 0 rgba(255,220,220,0.35), 0 2px 6px rgba(0,0,0,0.55), 0 0 10px rgba(211,47,47,0.5);
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            white-space: nowrap;
+            transition: box-shadow 0.2s;
+        }
+        .cp-btn:hover {
+            box-shadow: inset 0 1px 0 rgba(255,220,220,0.5), 0 4px 12px rgba(0,0,0,0.6), 0 0 18px rgba(255,60,60,0.75);
+        }
+        .cp-btn.dragging {
+            cursor: grabbing;
+            box-shadow: 0 0 0 2px #ffeb3b, 0 4px 14px rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+        .cockpit-controls {
+            flex: 0 0 38%;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+            overflow-y: auto;
+            padding-right: 0.5vw;
+        }
+        .cp-file-actions {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .cp-file-label {
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .cp-tip {
+            font-size: clamp(11px, 2.8vw, 12px);
+            color: #9e9e9e;
+            padding: 0 1vw;
+            line-height: 1.5;
+        }
+        /* 標題 + 圖示按鈕群組 */
+        .subtab-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.6vw;
+        }
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: rgba(211,47,47,0.15);
+            border: 1px solid rgba(211,47,47,0.4);
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .icon-btn:hover { background: rgba(211,47,47,0.35); transform: translateY(-1px); }
+        .icon-btn:active { transform: translateY(0); }
+
+        /* 圖片設定小視窗 */
+        .cp-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-top: 8px;
+        }
+        .cp-preview-box {
+            flex: 0 0 90px;
+            width: 90px;
+            height: 90px;
+            border-radius: 6px;
+            border: 1px dashed rgba(255,255,255,0.25);
+            background: rgba(0,0,0,0.3) center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 11px;
+            overflow: hidden;
+        }
+        .cp-input-col {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .cp-input-col .full-width {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cp-file-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .cp-filename {
+            font-size: 12px;
+            color: #bdbdbd;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .cp-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.12);
+            margin: 14px 0;
         }
 
         /* ===== 分頁面板標題列 ===== */
@@ -711,8 +903,7 @@
                 <div class="brand-title">西北語薇<span class="role-tag">管理後台</span></div>
             </div>
             <div class="admin-user">
-                <span class="admin-email" id="adminEmail" style="display:none;">載入中…</span>
-                <button class="btn" id="adminLogoutBtn" type="button">艙員暱稱</button>
+                <button class="btn" id="adminLogoutBtn" type="button">管理員</button>
             </div>
         </header>
 
@@ -775,15 +966,48 @@
                     <h2 class="panel-title">主題管理</h2>
                     <button class="btn btn-primary" type="button">＋ 新增主題</button>
                 </div>
-                <div class="topic-list">
-                    <div class="topic-row"><span class="topic-name">關於語薇</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">語薇創作曲</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">語薇日常</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">社區百寶箱</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">語薇開箱去</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">鄰里好生活</span><span class="topic-status status-off">停用</span></div>
-                    <div class="topic-row"><span class="topic-name">社區快訊</span><span class="topic-status status-on">啟用</span></div>
-                    <div class="topic-row"><span class="topic-name">社區英雄</span><span class="topic-status status-on">啟用</span></div>
+                <!-- 子分頁列 8% -->
+                <div class="subtabs-bar">
+                    <button class="subtab-btn active" data-subtab="cockpit" type="button">駕駛艙</button>
+                    <button class="subtab-btn" data-subtab="habitat" type="button">居住艙</button>
+                </div>
+                <!-- 駕駛艙（編輯 index.html 駕駛艙佈局） -->
+                <div class="subtab-panel active" data-subtab-panel="cockpit">
+                    <div class="subtab-header">
+                        <div class="subtab-title-group">
+                            <h3 class="subtab-title">駕駛艙主題編輯</h3>
+                            <button class="icon-btn" type="button" id="cpImageSettingsBtn" title="圖片設定" aria-label="圖片設定">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            </button>
+                        </div>
+                        <div style="display:flex;gap:0.5vw">
+                            <button class="btn btn-small btn-ghost" type="button" id="cpResetPosBtn">重置位置</button>
+                            <button class="btn btn-primary btn-small" type="button" id="saveCockpitBtn">儲存佈局</button>
+                        </div>
+                    </div>
+                    <div class="cockpit-editor">
+                        <!-- 預覽區（模擬 index.html 駕駛艙） -->
+                        <div class="cockpit-preview" id="cockpitPreview">
+                            <img class="cp-bg" id="cpBg" src="assets/cockpit-bg.jpg" alt="駕駛艙背景"
+                                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Interior%20of%20a%20futuristic%20sci-fi%20spacecraft%20cockpit%20control%20room%20with%20dark%20red%20and%20black%20color%20scheme%2C%20multiple%20HUD%20screens%2C%20anime%20illustration%20style%2C%20cinematic%20lighting%2C%20highly%20detailed&image_size=portrait_16_9';">
+                            <img class="cp-yuwei" id="cpYuwei" src="assets/yuwei.png" alt="西北語薇"
+                                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%2C%20red%20and%20black%20tech%20jacket%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style&image_size=portrait_16_9';">
+                            <div class="cp-hotspots" id="cpHotspots">
+                                <button class="cp-btn" data-hotspot="about" type="button">關於語薇</button>
+                                <button class="cp-btn" data-hotspot="music" type="button">語薇創作曲</button>
+                                <button class="cp-btn" data-hotspot="daily" type="button">語薇日常</button>
+                                <button class="cp-btn" data-hotspot="toolbox" type="button">社區百寶箱</button>
+                                <button class="cp-btn" data-hotspot="unbox" type="button">語薇開箱去</button>
+                                <button class="cp-btn" data-hotspot="neighbor" type="button">鄰里好生活</button>
+                                <button class="cp-btn" data-hotspot="news" type="button">社區快訊</button>
+                                <button class="cp-btn" data-hotspot="hero" type="button">社區英雄</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 居住艙 -->
+                <div class="subtab-panel" data-subtab-panel="habitat">
+                    <div class="empty-tip">居住艙內容建置中…</div>
                 </div>
             </section>
 
@@ -821,33 +1045,56 @@
                     <h2 class="panel-title">系統設定</h2>
                 </div>
                 <!-- 子分頁列 8% -->
-                <div class="settings-subtabs">
+                <div class="subtabs-bar">
                     <button class="subtab-btn active" data-subtab="general" type="button">一般</button>
                     <button class="subtab-btn" data-subtab="levels" type="button">位階</button>
                     <button class="subtab-btn" data-subtab="rules" type="button">規則</button>
                 </div>
                 <!-- 一般設定 -->
                 <div class="subtab-panel active" data-subtab-panel="general">
+                    <div class="subtab-header">
+                        <h3 class="subtab-title">一般設定</h3>
+                        <button class="btn btn-primary btn-small" type="button" id="saveGeneralBtn">儲存設定</button>
+                    </div>
                     <div class="settings-list">
-                        <div class="setting-row">
-                            <span class="setting-name">站點名稱</span>
-                            <span class="setting-value">西北語薇 · 星光艙</span>
+                        <div class="editable-row">
+                            <div class="row-info">
+                                <div class="row-name">站點名稱</div>
+                                <div class="row-desc">顯示於後台標題與首頁</div>
+                            </div>
+                            <div class="row-actions">
+                                <input type="text" class="gen-input" id="genSiteName" maxlength="30" value="西北語薇 · 星光艙">
+                            </div>
                         </div>
-                        <div class="setting-row">
-                            <span class="setting-name">主題色</span>
-                            <span class="setting-value">#d32f2f</span>
+                        <div class="editable-row">
+                            <div class="row-info">
+                                <div class="row-name">主題色</div>
+                                <div class="row-desc">品牌主色，用於按鈕、標題等</div>
+                            </div>
+                            <div class="row-actions">
+                                <input type="color" class="gen-color" id="genThemeColor" value="#d32f2f">
+                            </div>
                         </div>
-                        <div class="setting-row">
-                            <span class="setting-name">PWA 安裝提示</span>
-                            <span class="setting-value">啟用</span>
+                        <div class="editable-row">
+                            <div class="row-info">
+                                <div class="row-name">PWA 安裝提示</div>
+                                <div class="row-desc">首頁是否顯示安裝 App 提示</div>
+                            </div>
+                            <div class="row-actions">
+                                <select class="gen-input" id="genPwaPrompt">
+                                    <option value="1">啟用</option>
+                                    <option value="0">停用</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="setting-row">
-                            <span class="setting-name">每日登入獎勵</span>
-                            <span class="setting-value">20 EXP / 15 星幣</span>
-                        </div>
-                        <div class="setting-row">
-                            <span class="setting-name">管理員白名單</span>
-                            <span class="setting-value">istage.eason@gmail.com</span>
+                        <div class="editable-row">
+                            <div class="row-info">
+                                <div class="row-name">管理員白名單</div>
+                                <div class="row-desc">多個 Email 以逗號分隔</div>
+                            </div>
+                            <div class="row-actions">
+                                <input type="text" class="gen-input" id="genAdminEmails" value="istage.eason@gmail.com">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -975,6 +1222,24 @@
         </div>
     </div>
 
+    <!-- 登出確認彈窗 -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal-box modal-small">
+            <div class="modal-header">
+                <h3>登出管理後台</h3>
+            </div>
+            <div class="modal-body">
+                <p id="logoutUserText" style="margin-bottom:0.6rem;color:#ddd;font-size:0.9rem"></p>
+                <p>確定要登出嗎？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" id="logoutCancelBtn">取消</button>
+                <button class="btn btn-ghost" type="button" id="logoutSwitchBtn">切換系統前台</button>
+                <button class="btn btn-danger" type="button" id="logoutConfirmBtn">登出</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 編輯位階彈窗 -->
     <div class="modal-overlay" id="editLevelModal">
         <div class="modal-box">
@@ -1045,6 +1310,51 @@
         </div>
     </div>
 
+    <!-- 駕駛艙圖片設定小視窗 -->
+    <div class="modal-overlay" id="cpImageModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>圖片設定</h3>
+                <button class="modal-close" type="button" data-close-modal="cpImageModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>背景圖片</label>
+                    <div class="cp-row">
+                        <div class="cp-preview-box" id="cpBgPreview"></div>
+                        <div class="cp-input-col">
+                            <input type="text" id="cpBgUrl" class="full-width" placeholder="輸入圖片網址 https://...">
+                            <div class="cp-file-row">
+                                <label class="btn btn-small btn-ghost cp-file-label">選擇檔案
+                                    <input type="file" id="cpBgFile" accept="image/*" hidden>
+                                </label>
+                                <span class="cp-filename" id="cpBgFilename"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cp-divider"></div>
+                    <label>語薇圖片</label>
+                    <div class="cp-row">
+                        <div class="cp-preview-box" id="cpYuweiPreview"></div>
+                        <div class="cp-input-col">
+                            <input type="text" id="cpYuweiUrl" class="full-width" placeholder="輸入圖片網址 https://...">
+                            <div class="cp-file-row">
+                                <label class="btn btn-small btn-ghost cp-file-label">選擇檔案
+                                    <input type="file" id="cpYuweiFile" accept="image/*" hidden>
+                                </label>
+                                <span class="cp-filename" id="cpYuweiFilename"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" data-close-modal="cpImageModal">取消</button>
+                <button class="btn btn-primary" type="button" id="cpImageApplyBtn">套用預覽</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast 提示 -->
     <div class="toast" id="adminToast"></div>
 
@@ -1068,13 +1378,36 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        const emailEl = document.getElementById('adminEmail');
+        // 進入後台時清除「停留前台」旗標，確保下次登入仍自動導向後台
+        sessionStorage.removeItem('nwrose_stay_frontend');
+
         const logoutBtn = document.getElementById('adminLogoutBtn');
 
+        // ===== 登出確認彈窗 =====
+        const logoutModal = document.getElementById('logoutModal');
+        const logoutUserText = document.getElementById('logoutUserText');
+        const logoutCancelBtn = document.getElementById('logoutCancelBtn');
+        const logoutConfirmBtn = document.getElementById('logoutConfirmBtn');
+        const logoutSwitchBtn = document.getElementById('logoutSwitchBtn');
+
         logoutBtn.addEventListener('click', () => {
+            const currentText = logoutBtn.textContent || '管理員';
+            logoutUserText.textContent = `目前登入：${currentText}`;
+            logoutModal.classList.add('active');
+        });
+        logoutCancelBtn.addEventListener('click', () => logoutModal.classList.remove('active'));
+        logoutConfirmBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
                 window.location.replace('index.html');
             }).catch(err => console.warn('登出失敗', err));
+        });
+        logoutSwitchBtn.addEventListener('click', () => {
+            // 保持登入狀態，切換到前台首頁，並設定旗標避免被自動導回後台
+            sessionStorage.setItem('nwrose_stay_frontend', '1');
+            window.location.href = 'index.html';
+        });
+        logoutModal.addEventListener('click', (e) => {
+            if (e.target === logoutModal) logoutModal.classList.remove('active');
         });
 
         // ===== 分頁切換邏輯 =====
@@ -1089,26 +1422,32 @@
             });
             // 切換到會員分頁時載入會員列表
             if (tabName === 'members') loadMembers();
+            // 切換到主題分頁時載入駕駛艙設定
+            else if (tabName === 'topics') loadCockpitConfig();
         }
         // 綁定頁尾分頁按鈕
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => switchTab(btn.dataset.tab));
         });
 
-        // ===== 設定頁子分頁切換 =====
-        function switchSubtab(subtabName) {
-            document.querySelectorAll('.subtab-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.subtab === subtabName);
+        // ===== 子分頁切換（限作用於所屬分頁內） =====
+        function switchSubtab(subtabName, btn) {
+            const scope = btn.closest('.tab-panel');
+            scope.querySelectorAll('.subtab-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.subtab === subtabName);
             });
-            document.querySelectorAll('.subtab-panel').forEach(panel => {
-                panel.classList.toggle('active', panel.dataset.subtabPanel === subtabName);
+            scope.querySelectorAll('.subtab-panel').forEach(p => {
+                p.classList.toggle('active', p.dataset.subtabPanel === subtabName);
             });
-            // 切換到對應子分頁時載入資料
-            if (subtabName === 'levels') loadLevels();
-            else if (subtabName === 'rules') loadRules();
+            // 僅設定頁的子分頁需要載入資料
+            if (scope.dataset.panel === 'settings') {
+                if (subtabName === 'general') loadGeneral();
+                else if (subtabName === 'levels') loadLevels();
+                else if (subtabName === 'rules') loadRules();
+            }
         }
         document.querySelectorAll('.subtab-btn').forEach(btn => {
-            btn.addEventListener('click', () => switchSubtab(btn.dataset.subtab));
+            btn.addEventListener('click', () => switchSubtab(btn.dataset.subtab, btn));
         });
 
         // 總覽頁的功能模組卡片：點擊導向對應分頁
@@ -1154,13 +1493,24 @@
                         { merge: true }
                     ).catch(() => {});
                 }
-                emailEl.textContent = user.email || user.displayName || '管理員';
+                const fbName = (snap.exists && snap.data().displayName) || '';
+                const googleShort = (user.displayName || '').trim().split(/\s+/)[0] || '';
+                const emailLocal = (user.email || '').split('@')[0];
+                const btnText = fbName || googleShort || emailLocal || '管理員';
+                logoutBtn.textContent = btnText;
+                logoutBtn.title = user.email || btnText;
                 loadStats();
+                loadGeneral();
             } catch (e) {
                 console.warn('管理後台驗證失敗', e);
                 // 已通過 email 白名單，仍顯示頁面，僅略過資料同步
-                emailEl.textContent = user.email || user.displayName || '管理員';
+                const googleShort = (user.displayName || '').trim().split(/\s+/)[0] || '';
+                const emailLocal = (user.email || '').split('@')[0];
+                const btnText = googleShort || emailLocal || '管理員';
+                logoutBtn.textContent = btnText;
+                logoutBtn.title = user.email || btnText;
                 loadStats();
+                loadGeneral();
             }
         });
 
@@ -1443,11 +1793,259 @@
             btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
         });
         // 點擊彈窗遮罩關閉
-        ['editMemberModal', 'editLevelModal', 'editRuleModal'].forEach(id => {
+        ['editMemberModal', 'editLevelModal', 'editRuleModal', 'cpImageModal'].forEach(id => {
             const m = document.getElementById(id);
             if (m) m.addEventListener('click', (e) => {
                 if (e.target === m) closeModal(id);
             });
+        });
+
+        // ===== 一般設定管理 =====
+        const genSiteName = document.getElementById('genSiteName');
+        const genThemeColor = document.getElementById('genThemeColor');
+        const genPwaPrompt = document.getElementById('genPwaPrompt');
+        const genAdminEmails = document.getElementById('genAdminEmails');
+        const saveGeneralBtn = document.getElementById('saveGeneralBtn');
+
+        async function loadGeneral() {
+            try {
+                const snap = await db.collection('config').doc('general').get();
+                if (snap.exists) {
+                    const d = snap.data();
+                    if (d.siteName != null) genSiteName.value = d.siteName;
+                    if (d.themeColor != null) genThemeColor.value = d.themeColor;
+                    if (d.pwaPrompt != null) genPwaPrompt.value = d.pwaPrompt ? '1' : '0';
+                    if (d.adminEmails != null) genAdminEmails.value = d.adminEmails;
+                }
+            } catch (e) {
+                console.error('載入一般設定失敗', e);
+            }
+        }
+
+        saveGeneralBtn.addEventListener('click', async () => {
+            const siteName = genSiteName.value.trim();
+            const themeColor = genThemeColor.value;
+            const pwaPrompt = genPwaPrompt.value === '1';
+            const adminEmails = genAdminEmails.value.trim();
+            if (!siteName) { showToast('請輸入站點名稱', 'error'); return; }
+            if (!/^#[0-9a-fA-F]{6}$/.test(themeColor)) { showToast('主題色格式錯誤', 'error'); return; }
+
+            saveGeneralBtn.disabled = true;
+            saveGeneralBtn.textContent = '儲存中…';
+            try {
+                await db.collection('config').doc('general').set({
+                    siteName, themeColor, pwaPrompt, adminEmails
+                });
+                document.title = siteName + ' · 管理後台';
+                showToast('設定已儲存', 'success');
+            } catch (e) {
+                console.error('儲存一般設定失敗', e);
+                showToast('儲存失敗：' + e.message, 'error');
+            } finally {
+                saveGeneralBtn.disabled = false;
+                saveGeneralBtn.textContent = '儲存設定';
+            }
+        });
+
+        // ===== 駕駛艙主題編輯 =====
+        const cockpitPreview = document.getElementById('cockpitPreview');
+        const cpBg = document.getElementById('cpBg');
+        const cpYuwei = document.getElementById('cpYuwei');
+        const cpBgUrl = document.getElementById('cpBgUrl');
+        const cpYuweiUrl = document.getElementById('cpYuweiUrl');
+        const cpBgFile = document.getElementById('cpBgFile');
+        const cpYuweiFile = document.getElementById('cpYuweiFile');
+        const saveCockpitBtn = document.getElementById('saveCockpitBtn');
+        const cpResetPosBtn = document.getElementById('cpResetPosBtn');
+        // 圖片設定小視窗
+        const cpImageModal = document.getElementById('cpImageModal');
+        const cpImageSettingsBtn = document.getElementById('cpImageSettingsBtn');
+        const cpImageApplyBtn = document.getElementById('cpImageApplyBtn');
+        const cpBgPreview = document.getElementById('cpBgPreview');
+        const cpYuweiPreview = document.getElementById('cpYuweiPreview');
+        const cpBgFilename = document.getElementById('cpBgFilename');
+        const cpYuweiFilename = document.getElementById('cpYuweiFilename');
+
+        // 8 個主題按鈕的預設位置（top/left 百分比，對齊 index.html 原始配置）
+        const DEFAULT_HOTSPOTS = {
+            about:   { top: 9,  left: 6  },
+            music:   { top: 22, left: 73 },
+            daily:   { top: 31, left: 55 },
+            toolbox: { top: 54, left: 4  },
+            unbox:   { top: 88, left: 4  },
+            neighbor:{ top: 82, left: 40 },
+            news:    { top: 66, left: 76 },
+            hero:    { top: 93, left: 76 }
+        };
+        let cockpitHotspots = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS));
+
+        function applyHotspotPositions() {
+            Object.keys(cockpitHotspots).forEach(key => {
+                const btn = cockpitPreview.querySelector(`.cp-btn[data-hotspot="${key}"]`);
+                if (btn && cockpitHotspots[key]) {
+                    btn.style.top = cockpitHotspots[key].top + '%';
+                    btn.style.left = cockpitHotspots[key].left + '%';
+                    btn.style.right = 'auto';
+                    btn.style.bottom = 'auto';
+                    btn.style.transform = 'none';
+                }
+            });
+        }
+
+        async function loadCockpitConfig() {
+            try {
+                const snap = await db.collection('config').doc('cockpit').get();
+                if (snap.exists) {
+                    const d = snap.data();
+                    if (d.bgUrl) {
+                        cpBg.src = d.bgUrl;
+                        cpBgUrl.value = d.bgUrl;
+                        cpBgPreview.style.backgroundImage = `url("${d.bgUrl}")`;
+                    }
+                    if (d.yuweiUrl) {
+                        cpYuwei.src = d.yuweiUrl;
+                        cpYuweiUrl.value = d.yuweiUrl;
+                        cpYuweiPreview.style.backgroundImage = `url("${d.yuweiUrl}")`;
+                    }
+                    if (d.hotspots) cockpitHotspots = { ...DEFAULT_HOTSPOTS, ...d.hotspots };
+                }
+            } catch (e) {
+                console.error('載入駕駛艙設定失敗', e);
+            }
+            applyHotspotPositions();
+        }
+
+        // 拖曳邏輯
+        let dragBtn = null, dragStartX = 0, dragStartY = 0, origPos = null;
+        cockpitPreview.querySelectorAll('.cp-btn').forEach(btn => {
+            btn.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                dragBtn = btn;
+                btn.classList.add('dragging');
+                const rect = cockpitPreview.getBoundingClientRect();
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                const key = btn.dataset.hotspot;
+                origPos = { ...cockpitHotspots[key] };
+                btn.setPointerCapture(e.pointerId);
+            });
+            btn.addEventListener('pointermove', (e) => {
+                if (!dragBtn || dragBtn !== btn) return;
+                const rect = cockpitPreview.getBoundingClientRect();
+                const dxPct = ((e.clientX - dragStartX) / rect.width) * 100;
+                const dyPct = ((e.clientY - dragStartY) / rect.height) * 100;
+                const key = btn.dataset.hotspot;
+                let newLeft = origPos.left + dxPct;
+                let newTop = origPos.top + dyPct;
+                // 邊界限制
+                const btnW = btn.offsetWidth / rect.width * 100;
+                const btnH = btn.offsetHeight / rect.height * 100;
+                newLeft = Math.max(0, Math.min(100 - btnW, newLeft));
+                newTop = Math.max(0, Math.min(100 - btnH, newTop));
+                cockpitHotspots[key] = { top: newTop, left: newLeft };
+                btn.style.top = newTop + '%';
+                btn.style.left = newLeft + '%';
+            });
+            const endDrag = (e) => {
+                if (dragBtn === btn) {
+                    btn.classList.remove('dragging');
+                    dragBtn = null;
+                    origPos = null;
+                    try { btn.releasePointerCapture(e.pointerId); } catch(_) {}
+                }
+            };
+            btn.addEventListener('pointerup', endDrag);
+            btn.addEventListener('pointercancel', endDrag);
+        });
+
+        // 圖片設定小視窗：網址輸入即時更新預覽框
+        cpBgUrl.addEventListener('input', () => {
+            const v = cpBgUrl.value.trim();
+            if (v) cpBgPreview.style.backgroundImage = `url("${v}")`;
+            else cpBgPreview.style.backgroundImage = '';
+        });
+        cpYuweiUrl.addEventListener('input', () => {
+            const v = cpYuweiUrl.value.trim();
+            if (v) cpYuweiPreview.style.backgroundImage = `url("${v}")`;
+            else cpYuweiPreview.style.backgroundImage = '';
+        });
+
+        // 檔案上傳 → base64，更新預覽框與檔名
+        function fileToDataUrl(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        cpBgFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = await fileToDataUrl(file);
+            cpBgUrl.value = url;
+            cpBgPreview.style.backgroundImage = `url("${url}")`;
+            cpBgFilename.textContent = file.name;
+        });
+        cpYuweiFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = await fileToDataUrl(file);
+            cpYuweiUrl.value = url;
+            cpYuweiPreview.style.backgroundImage = `url("${url}")`;
+            cpYuweiFilename.textContent = file.name;
+        });
+
+        // 開啟圖片設定小視窗，同步顯示目前圖片
+        cpImageSettingsBtn.addEventListener('click', () => {
+            const bgSrc = cpBg.getAttribute('src') || '';
+            const ywSrc = cpYuwei.getAttribute('src') || '';
+            // 同步預覽框
+            if (bgSrc) cpBgPreview.style.backgroundImage = `url("${bgSrc}")`;
+            if (ywSrc) cpYuweiPreview.style.backgroundImage = `url("${ywSrc}")`;
+            // 同步網址輸入框
+            if (bgSrc) cpBgUrl.value = bgSrc;
+            if (ywSrc) cpYuweiUrl.value = ywSrc;
+            cpImageModal.classList.add('active');
+        });
+
+        // 套用預覽：將 modal 內的值套用到左側預覽區
+        cpImageApplyBtn.addEventListener('click', () => {
+            const bg = cpBgUrl.value.trim();
+            const yw = cpYuweiUrl.value.trim();
+            if (bg) cpBg.src = bg;
+            if (yw) cpYuwei.src = yw;
+            cpImageModal.classList.remove('active');
+            showToast('圖片設定已套用至預覽，請按「儲存佈局」寫入資料庫', 'success');
+        });
+
+        // 重置位置
+        cpResetPosBtn.addEventListener('click', () => {
+            showConfirm('重置位置', '確定要將所有主題按鈕位置重置為預設嗎？', () => {
+                cockpitHotspots = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS));
+                applyHotspotPositions();
+                showToast('已重置為預設位置', 'success');
+            });
+        });
+
+        // 儲存佈局
+        saveCockpitBtn.addEventListener('click', async () => {
+            saveCockpitBtn.disabled = true;
+            saveCockpitBtn.textContent = '儲存中…';
+            try {
+                await db.collection('config').doc('cockpit').set({
+                    bgUrl: cpBgUrl.value.trim(),
+                    yuweiUrl: cpYuweiUrl.value.trim(),
+                    hotspots: cockpitHotspots
+                });
+                showToast('駕駛艙佈局已儲存', 'success');
+            } catch (e) {
+                console.error('儲存駕駛艙設定失敗', e);
+                showToast('儲存失敗：' + e.message, 'error');
+            } finally {
+                saveCockpitBtn.disabled = false;
+                saveCockpitBtn.textContent = '儲存佈局';
+            }
         });
 
         // ===== 位階管理 =====
