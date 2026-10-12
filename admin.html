@@ -121,10 +121,13 @@
             overflow: hidden;
         }
         .admin-stats {
-            flex: 0 0 auto;
+            flex: 1 1 auto;
+            min-height: 0;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(2, 1fr);
             gap: 1.5vh 3vw;
+            align-content: center;
         }
         .stat-card {
             background: rgba(20,20,32,0.75);
@@ -352,6 +355,14 @@
         }
         .editable-row .row-info {
             display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+        .editable-row .row-text {
+            display: flex;
             flex-direction: column;
             gap: 0.3vh;
             min-width: 0;
@@ -380,6 +391,14 @@
             border-radius: 50%;
             display: inline-block;
             flex-shrink: 0;
+        }
+        .level-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 1px solid rgba(211,47,47,0.4);
         }
         /* 一般設定輸入框 */
         .gen-input {
@@ -666,15 +685,13 @@
 
         /* ===== 響應式：平板 / 電腦（直屏或橫屏） ===== */
         @media (min-width: 600px) {
-            .admin-stats { grid-template-columns: repeat(4, 1fr); }
-            .admin-modules { grid-template-columns: repeat(3, 1fr); }
+            .admin-stats { grid-template-columns: 1fr; gap: 2vh 2vw; }
         }
         @media (min-width: 1024px) {
             .admin-app { max-width: 100%; }
             .admin-main { padding: 2vh 4vw; }
-            .admin-stats { grid-template-columns: repeat(4, 1fr); gap: 2vh 2vw; }
-            .admin-modules { grid-template-columns: repeat(4, 1fr); gap: 2vh 2vw; }
-            .stat-card, .module-card { padding: 2vh 1.5vw; }
+            .admin-stats { grid-template-columns: 1fr; gap: 2vh 2vw; }
+            .stat-card { padding: 2vh 1.5vw; }
         }
         /* 橫屏手機：壓縮上下 padding，維持單屏 */
         @media (max-height: 500px) and (orientation: landscape) {
@@ -682,7 +699,6 @@
             .admin-footer { min-height: 40px; }
             .admin-main { padding: 1vh 3vw; gap: 1vh; }
             .stat-card { padding: 1vh 2vw; }
-            .module-card { padding: 1.2vh 2vw; }
         }
 
         /* 共用按鈕（沿用主站 .btn 風格並補強） */
@@ -930,42 +946,6 @@
                         <div class="stat-label">今日活躍</div>
                         <div class="stat-value" id="statActive">—</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-label">內容數量</div>
-                        <div class="stat-value" id="statContent">—</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">系統訊息</div>
-                        <div class="stat-value" id="statAlerts">—</div>
-                    </div>
-                </section>
-
-                <!-- 功能模組 -->
-                <section class="admin-modules" aria-label="管理功能">
-                    <div class="module-card" data-module="members">
-                        <span class="module-coming">即將上線</span>
-                        <div class="module-icon">👥</div>
-                        <div class="module-name">會員管理</div>
-                        <div class="module-desc">檢視與管理所有會員帳號與角色權限</div>
-                    </div>
-                    <div class="module-card" data-module="content">
-                        <span class="module-coming">即將上線</span>
-                        <div class="module-icon">📝</div>
-                        <div class="module-name">內容管理</div>
-                        <div class="module-desc">編輯主題內容、公告與推播訊息</div>
-                    </div>
-                    <div class="module-card" data-module="analytics">
-                        <span class="module-coming">即將上線</span>
-                        <div class="module-icon">📊</div>
-                        <div class="module-name">數據分析</div>
-                        <div class="module-desc">查看造訪、互動與獎勵統計報表</div>
-                    </div>
-                    <div class="module-card" data-module="settings">
-                        <span class="module-coming">即將上線</span>
-                        <div class="module-icon">⚙️</div>
-                        <div class="module-name">系統設定</div>
-                        <div class="module-desc">站點資訊、主題風格與進階配置</div>
-                    </div>
                 </section>
             </section>
 
@@ -1072,7 +1052,7 @@
                                 <div class="row-desc">顯示於後台標題與首頁</div>
                             </div>
                             <div class="row-actions">
-                                <input type="text" class="gen-input" id="genSiteName" maxlength="30" value="西北語薇 · 星光艙">
+                                <input type="text" class="gen-input" id="genSiteName" maxlength="30" value="西北語薇 · 星光號">
                             </div>
                         </div>
                         <div class="editable-row">
@@ -1242,8 +1222,8 @@
                 <p>確定要登出嗎？</p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-ghost" type="button" id="logoutCancelBtn">取消</button>
                 <button class="btn btn-ghost" type="button" id="logoutSwitchBtn">切換系統前台</button>
+                <button class="btn btn-ghost" type="button" id="logoutCancelBtn">取消</button>
                 <button class="btn btn-danger" type="button" id="logoutConfirmBtn">登出</button>
             </div>
         </div>
@@ -1275,6 +1255,21 @@
                 <div class="form-group">
                     <label>代表色</label>
                     <input type="color" id="editLevelColor" value="#d32f2f">
+                </div>
+                <div class="form-group">
+                    <label>位階圖片</label>
+                    <div class="cp-row">
+                        <div class="cp-preview-box" id="editLevelPreview"></div>
+                        <div class="cp-input-col">
+                            <input type="text" id="editLevelImageUrl" class="full-width" placeholder="輸入圖片網址 https://...">
+                            <div class="cp-file-row">
+                                <label class="btn btn-small btn-ghost cp-file-label">選擇檔案
+                                    <input type="file" id="editLevelImageFile" accept="image/*" hidden>
+                                </label>
+                                <span class="cp-filename" id="editLevelImageFilename"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1459,26 +1454,10 @@
             btn.addEventListener('click', () => switchSubtab(btn.dataset.subtab, btn));
         });
 
-        // 總覽頁的功能模組卡片：點擊導向對應分頁
-        const moduleToTab = {
-            members: 'members',
-            content: 'topics',
-            analytics: 'overview',
-            settings: 'settings'
-        };
-        document.querySelectorAll('.module-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const target = moduleToTab[card.dataset.module];
-                if (target) switchTab(target);
-            });
-        });
-
         // 載入統計數據（暫以模擬資料展示版面，後續接 Firestore）
         function loadStats() {
             document.getElementById('statMembers').textContent = '0';
             document.getElementById('statActive').textContent = '0';
-            document.getElementById('statContent').textContent = '0';
-            document.getElementById('statAlerts').textContent = '0';
         }
 
         // 驗證登入態與角色：以 email 白名單為權威來源，非管理員一律導回 index.html
@@ -1534,6 +1513,11 @@
             '首席導航官', '星艦副官', '首席參謀長', '副艦長', '艦長'
         ];
         const LEVELS = LEVEL_NAMES.map((name, i) => ({ level: i + 1, code: 'LV' + (i + 1), name }));
+
+        // 位階預設圖片：assets/lvN.png（與位階等級對應）
+        function getDefaultLevelImage(level) {
+            return './assets/lv' + level + '.png';
+        }
 
         function getLevelInfo(lv) {
             return LEVELS.find(l => l.level === Number(lv)) || LEVELS[0];
@@ -2102,21 +2086,24 @@
                 levelsListEl.innerHTML = '<div class="setting-row"><span class="setting-name">尚無位階資料</span></div>';
                 return;
             }
-            levelsListEl.innerHTML = allLevels.map(lv => `
+            levelsListEl.innerHTML = allLevels.map(lv => {
+                const imgSrc = lv.imageUrl || getDefaultLevelImage(lv.level);
+                return `
                 <div class="editable-row" data-level="${lv.level}">
                     <div class="row-info">
-                        <div class="row-name">
-                            <span class="level-color-dot" style="background:${lv.color}"></span>
-                            LV${lv.level} ${escapeHtml(lv.name)}
+                        <img class="level-img" src="${escapeHtml(imgSrc)}" alt="LV${lv.level}" onerror="this.src='${getDefaultLevelImage(lv.level)}'">
+                        <div class="row-text">
+                            <div class="row-name">LV${lv.level} ${escapeHtml(lv.name)}</div>
+                            <div class="row-desc">所需 EXP：${lv.minExp} 以上</div>
                         </div>
-                        <div class="row-desc">所需 EXP：${lv.minExp} 以上</div>
                     </div>
                     <div class="row-actions">
                         <button class="btn btn-small btn-edit" type="button" data-action="edit-level" data-level="${lv.level}">編輯</button>
                         <button class="btn btn-small btn-del" type="button" data-action="del-level" data-level="${lv.level}">刪除</button>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // 位階彈窗元素
@@ -2127,7 +2114,21 @@
         const editLevelMinExp = document.getElementById('editLevelMinExp');
         const editLevelColor = document.getElementById('editLevelColor');
         const editLevelTitle = document.getElementById('editLevelTitle');
+        const editLevelImageUrl = document.getElementById('editLevelImageUrl');
+        const editLevelImageFile = document.getElementById('editLevelImageFile');
+        const editLevelPreview = document.getElementById('editLevelPreview');
+        const editLevelImageFilename = document.getElementById('editLevelImageFilename');
         const saveLevelBtn = document.getElementById('saveLevelBtn');
+
+        function setLevelPreview(url) {
+            if (url) {
+                editLevelPreview.style.backgroundImage = `url("${url}")`;
+                editLevelPreview.textContent = '';
+            } else {
+                editLevelPreview.style.backgroundImage = '';
+                editLevelPreview.textContent = '預覽';
+            }
+        }
 
         function openLevelModal(levelData) {
             if (levelData) {
@@ -2138,23 +2139,48 @@
                 editLevelNum.disabled = true;
                 editLevelMinExp.value = levelData.minExp;
                 editLevelColor.value = levelData.color;
+                const img = levelData.imageUrl || getDefaultLevelImage(levelData.level);
+                editLevelImageUrl.value = img;
+                setLevelPreview(img);
+                editLevelImageFilename.textContent = levelData.imageUrl ? '' : '（預設圖片）';
             } else {
+                const newLevel = (allLevels.length ? Math.max(...allLevels.map(l => l.level)) : 0) + 1;
                 editLevelTitle.textContent = '新增位階';
                 editLevelId.value = '';
                 editLevelName.value = '';
-                editLevelNum.value = (allLevels.length ? Math.max(...allLevels.map(l => l.level)) : 0) + 1;
+                editLevelNum.value = newLevel;
                 editLevelNum.disabled = false;
                 editLevelMinExp.value = 0;
                 editLevelColor.value = '#d32f2f';
+                const def = getDefaultLevelImage(newLevel);
+                editLevelImageUrl.value = def;
+                setLevelPreview(def);
+                editLevelImageFilename.textContent = '（預設圖片）';
             }
             editLevelModal.classList.add('active');
         }
+
+        editLevelImageUrl.addEventListener('input', () => {
+            setLevelPreview(editLevelImageUrl.value.trim());
+        });
+
+        editLevelImageFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = await fileToDataUrl(file);
+            editLevelImageUrl.value = url;
+            setLevelPreview(url);
+            editLevelImageFilename.textContent = file.name;
+        });
 
         saveLevelBtn.addEventListener('click', async () => {
             const name = editLevelName.value.trim();
             const level = Number(editLevelNum.value);
             const minExp = Number(editLevelMinExp.value);
             const color = editLevelColor.value;
+            const rawImageUrl = editLevelImageUrl.value.trim();
+            // 若圖片等於預設路徑，存空字串以永遠使用預設 assets/lvN.png
+            const imageUrl = rawImageUrl === getDefaultLevelImage(level) ? '' : rawImageUrl;
             if (!name) { showToast('請輸入位階名稱', 'error'); return; }
             if (!level || level < 1) { showToast('等級數字需大於 0', 'error'); return; }
 
@@ -2170,9 +2196,9 @@
             try {
                 let items;
                 if (existing) {
-                    items = allLevels.map(l => l.level === level ? { level, name, minExp, color } : l);
+                    items = allLevels.map(l => l.level === level ? { level, name, minExp, color, imageUrl } : l);
                 } else {
-                    items = [...allLevels, { level, name, minExp, color }].sort((a, b) => a.level - b.level);
+                    items = [...allLevels, { level, name, minExp, color, imageUrl }].sort((a, b) => a.level - b.level);
                 }
                 await db.collection('config').doc('levels').set({ items });
                 allLevels = items;
@@ -2361,7 +2387,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v13')
+                navigator.serviceWorker.register('./service-worker.js?v=v16')
                     .then(registration => console.log('Service Worker 註冊成功:', registration))
                     .catch(error => console.log('Service Worker 註冊失敗:', error));
             });

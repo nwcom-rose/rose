@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("西北語薇星光艙啟動");
+  console.log("西北語薇星光號啟動");
   if (typeof firebase !== 'undefined') {
     console.log("Firebase 載入成功");
     window.firebaseApp = firebase.apps.length ? firebase.app() : null;
@@ -519,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
       authSubmit.textContent = '註冊並登入';
       authSwitch.textContent = '已有星光證？前往登入';
     } else {
-      modalTitle.textContent = '登入星光艙';
+      modalTitle.textContent = '登入星光號';
       modalSubtitle.textContent = subtitle || '與語薇一起展開星際冒險';
       nameGroup.style.display = 'none';
       authSubmit.textContent = '登入';
@@ -537,12 +537,47 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function closeAuthModal() { authModal.classList.remove('active'); }
   authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
+
+  // ===== 登出確認 Modal =====
+  const logoutModal = document.getElementById('logoutModal');
+  const logoutCancelBtn = document.getElementById('logoutCancelBtn');
+  const logoutConfirmBtn = document.getElementById('logoutConfirmBtn');
+  const logoutSwitchAdminBtn = document.getElementById('logoutSwitchAdminBtn');
+  const logoutUserText = document.getElementById('logoutUserText');
+  function openLogoutModal() {
+    if (logoutUserText) {
+      const name = (state.userData && state.userData.displayName)
+        || (state.user && state.user.email && state.user.email.split('@')[0])
+        || '艙員';
+      logoutUserText.textContent = `${name}，即將離開星光號`;
+    }
+    // 僅管理員顯示「切換系統後台」按鈕
+    if (logoutSwitchAdminBtn) {
+      logoutSwitchAdminBtn.style.display =
+        (state.userData && state.userData.role === 'admin') ? '' : 'none';
+    }
+    if (logoutModal) logoutModal.classList.add('active');
+  }
+  function closeLogoutModal() { if (logoutModal) logoutModal.classList.remove('active'); }
+  if (logoutCancelBtn) logoutCancelBtn.addEventListener('click', closeLogoutModal);
+  if (logoutConfirmBtn) logoutConfirmBtn.addEventListener('click', () => {
+    closeLogoutModal();
+    sessionStorage.removeItem('nwrose_stay_frontend');
+    auth.signOut().catch(err => console.warn(err));
+  });
+  if (logoutSwitchAdminBtn) logoutSwitchAdminBtn.addEventListener('click', () => {
+    closeLogoutModal();
+    // 清除前台停留旗標，讓管理員返回後台
+    sessionStorage.removeItem('nwrose_stay_frontend');
+    window.location.href = 'admin.html';
+  });
+  if (logoutModal) logoutModal.addEventListener('click', e => {
+    if (e.target === logoutModal) closeLogoutModal();
+  });
+
   if (authBtn) authBtn.addEventListener('click', () => {
     if (state.user) {
-      if (confirm('確定要登出星光艙嗎？')) {
-        sessionStorage.removeItem('nwrose_stay_frontend');
-        auth.signOut().catch(err => console.warn(err));
-      }
+      openLogoutModal();
     } else {
       openAuthModal('login');
     }

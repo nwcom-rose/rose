@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#d32f2f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="語薇星光艙">
+    <meta name="apple-mobile-web-app-title" content="語薇星光號">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
-    <title>西北語薇星光艙</title>
+    <title>西北語薇星光號</title>
     <link rel="stylesheet" href="css/styles.css?v=20261013-safearea">
     <link rel="manifest" href="manifest.json">
 </head>
@@ -18,7 +18,7 @@
       <!-- 跑馬燈上 -->
       <div class="marquee-bar marquee-top" aria-hidden="true">
         <div class="marquee-track">
-          <span class="marquee-item">歡迎登艦 西北語薇 · 星光艙</span>
+          <span class="marquee-item">歡迎登艦 西北語薇 · 星光號</span>
           <span class="marquee-item">每日登入領取 EXP 與星幣獎勵</span>
           <span class="marquee-item">與語薇一起展開星際冒險</span>
           <span class="marquee-item">關注社群獲得第一手消息</span>
@@ -29,14 +29,9 @@
         <div class="header-logo">
           <img class="logo-bowtie" src="assets/logo.svg" alt="西北語薇 LOGO"
                onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22><defs><pattern id=%22s%22 patternUnits=%22userSpaceOnUse%22 width=%2212%22 height=%2212%22 patternTransform=%22rotate(45)%22><rect width=%226%22 height=%2212%22 fill=%22%23e53935%22/><rect x=%226%22 width=%226%22 height=%2212%22 fill=%22%23141414%22/></pattern></defs><path d=%22M4 18 Q20 22 30 32 Q20 42 4 46 Q14 32 4 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M60 18 Q44 22 34 32 Q44 42 60 46 Q50 32 60 18 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/><path d=%22M26 24 L38 24 Q40 24 40 32 Q40 40 38 40 L26 40 Q24 40 24 32 Q24 24 26 24 Z%22 fill=%22url(%23s)%22 stroke=%22%235a0000%22 stroke-width=%221.2%22/></svg>'"/>
-          <span class="header-title">西北語薇 · 星光艙</span>
+          <span class="header-title">西北語薇 · 星光號</span>
         </div>
         <div class="header-user">
-          <div class="starlight-cert" id="starlightCert" style="display:none;">
-            <span class="level-badge" id="userLevel">LV1 見習艙員</span>
-            <div class="exp-bar-wrap"><div class="exp-bar" id="userExpBar"></div></div>
-            <span class="coins">✦ <span id="userCoins">0</span></span>
-          </div>
           <button class="btn btn-ghost" id="installBtn" style="display:none;">↓ 安裝</button>
           <button class="btn" id="authBtn">登入 / 註冊</button>
         </div>
@@ -111,7 +106,7 @@
             </svg>
           </div>
           <h2 class="modal-title">安裝西北語薇</h2>
-          <p class="modal-subtitle">將星光艙安裝到你的裝置，隨時與語薇展開冒險</p>
+          <p class="modal-subtitle">將星光號安裝到你的裝置，隨時與語薇展開冒險</p>
           <ul class="pwa-features">
             <li>🚀 一鍵開啟，離線也能暢遊星際</li>
             <li>📱 全螢幕沉浸式體驗</li>
@@ -126,7 +121,7 @@
       <!-- Login / Register Modal -->
       <div class="modal-overlay" id="authModal">
         <div class="modal-box">
-          <h2 class="modal-title" id="authModalTitle">登入星光艙</h2>
+          <h2 class="modal-title" id="authModalTitle">登入星光號</h2>
           <p class="modal-subtitle" id="authModalSubtitle">與語薇一起展開星際冒險</p>
           <form id="authForm">
             <div class="form-group" id="nameGroup" style="display:none;">
@@ -174,6 +169,19 @@
           </div>
         </div>
       </div>
+      <!-- Logout Confirm Modal -->
+      <div class="modal-overlay" id="logoutModal">
+        <div class="modal-box">
+          <h2 class="modal-title">登出星光號</h2>
+          <p class="modal-subtitle" id="logoutUserText" style="margin-bottom:10px;"></p>
+          <p style="text-align:center;color:rgba(255,255,255,0.8);margin-bottom:20px;font-size:14px;">確定要登出嗎？</p>
+          <div class="modal-footer">
+            <button class="btn btn-ghost" type="button" id="logoutSwitchAdminBtn" style="display:none;">切換系統後台</button>
+            <button class="btn btn-ghost" type="button" id="logoutCancelBtn">取消</button>
+            <button class="btn btn-danger" type="button" id="logoutConfirmBtn">登出</button>
+          </div>
+        </div>
+      </div>
       <!-- Level Up Overlay -->
       <div class="level-up-overlay" id="levelUpOverlay">
         <div class="level-up-content">
@@ -183,6 +191,12 @@
       </div>
       <!-- Footer — 社群媒體連結列（圖示可自行更換：替換 assets/social-*.png 即可） -->
       <footer class="footer-bar">
+        <div class="starlight-cert" id="starlightCert" style="display:none;">
+          <span class="level-badge" id="userLevel">LV1 見習艙員</span>
+          <div class="exp-bar-wrap"><div class="exp-bar" id="userExpBar"></div></div>
+          <span class="coins">✦ <span id="userCoins">0</span></span>
+        </div>
+        <!-- 暫時移除社群按鈕（footer-social），日後還原請移除此註解
         <div class="footer-social">
           <a class="social-btn social-yt" href="https://www.youtube.com/@西北語薇" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
             <img class="social-icon" src="assets/social-youtube.png" alt="Youtube"
@@ -209,6 +223,7 @@
                  onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%23ffffff%22><path d=%22M12 2C6.5 2 2 5.6 2 10c0 2.5 1.5 4.7 3.8 6.1-.1.5-.6 2.2-.7 2.6-.2.5.2.5.4.4.2-.1 2.4-1.6 3.3-2.2 1 .3 2.1.5 3.2.5 5.5 0 10-3.6 10-8S17.5 2 12 2zm-2 9.5c-.4 0-.7-.3-.7-.7s.3-.7.7-.7.7.3.7.7-.3.7-.7.7zm4 0c-.4 0-.7-.3-.7-.7s.3-.7.7-.7.7.3.7.7-.3.7-.7.7z%22/></svg>'"/>
           </a>
         </div>
+        暫時移除社群按鈕 結束 -->
       </footer>
       <!-- 跑馬燈下 -->
       <div class="marquee-bar marquee-bottom" aria-hidden="true">
@@ -239,7 +254,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v13')
+                navigator.serviceWorker.register('./service-worker.js?v=v16')
                     .then(registration => {
                         console.log('Service Worker 註冊成功:', registration);
                     })
@@ -249,6 +264,6 @@
             });
         }
     </script>
-    <script src="js/app.js?v=20261012-cockpit"></script>
+    <script src="js/app.js?v=20261013-logoutmodal"></script>
 </body>
 </html>

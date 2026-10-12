@@ -585,6 +585,24 @@ html, body {
     box-shadow: 0 30px 80px rgba(211,47,47,0.3);
 }
 
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #b71c1c, #7f0000);
+    color: #fff;
+    border: 1px solid rgba(255,120,120,0.4);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c62828, #8e0000);
+}
+
 .modal-title {
     font-size: 22px;
     font-weight: 800;

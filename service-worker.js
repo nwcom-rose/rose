@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rose-star-cache-v13';
+const CACHE_NAME = 'rose-star-cache-v16';
 const CACHE_ASSETS = [
     './index.html',
     './admin.html',
@@ -6,7 +6,37 @@ const CACHE_ASSETS = [
     './js/app.js',
     './manifest.json',
     './assets/icon-192.png',
-    './assets/icon-512.png'
+    './assets/icon-512.png',
+    './assets/lv1.png',
+    './assets/lv2.png',
+    './assets/lv3.png',
+    './assets/lv4.png',
+    './assets/lv5.png',
+    './assets/lv6.png',
+    './assets/lv7.png',
+    './assets/lv8.png',
+    './assets/lv9.png',
+    './assets/lv10.png',
+    './assets/lv11.png',
+    './assets/lv12.png',
+    './assets/lv13.png',
+    './assets/lv14.png',
+    './assets/lv15.png',
+    './assets/lv16.png',
+    './assets/lv17.png',
+    './assets/lv18.png',
+    './assets/lv19.png',
+    './assets/lv20.png',
+    './assets/lv21.png',
+    './assets/lv22.png',
+    './assets/lv23.png',
+    './assets/lv24.png',
+    './assets/lv25.png',
+    './assets/lv26.png',
+    './assets/lv27.png',
+    './assets/lv28.png',
+    './assets/lv29.png',
+    './assets/lv30.png'
 ];
 
 self.addEventListener('install', (event) => {
