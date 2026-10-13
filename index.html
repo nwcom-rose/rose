@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="語薇星光號">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <title>西北語薇星光號</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261013-appheight">
+    <link rel="stylesheet" href="css/styles.css?v=20261013-boarding2">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -59,11 +59,15 @@
             </div>
             <div class="cockpit-vignette"></div>
           </div>
+          <!-- 駕駛艙標題（左上角白字） -->
+          <div class="cockpit-title" id="cockpitTitle">駕駛艙</div>
           <!-- 西北語薇人物 — 優先載入 assets/yuwei.png，否則 fallback 生成圖 -->
           <div class="cockpit-figures">
-            <img class="yuwei-figure" src="assets/yuwei.png" alt="西北語薇"
-                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%20in%20high%20ponytail%2C%20wearing%20red%20sci-fi%20goggles%20on%20forehead%2C%20red%20and%20black%20tech%20jacket%20with%20red%20black%20striped%20bow%20tie%2C%20badge%20on%20left%20chest%2C%20glowing%20device%20on%20left%20forearm%2C%20black%20pants%2C%20black%20boots%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style%2C%20high%20detail&image_size=portrait_16_9';"
-                 referrerpolicy="no-referrer" />
+            <div class="yuwei-wrap">
+              <img class="yuwei-figure" src="assets/yuwei.png" alt="西北語薇"
+                   onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%20in%20high%20ponytail%2C%20wearing%20red%20sci-fi%20goggles%20on%20forehead%2C%20red%20and%20black%20tech%20jacket%20with%20red%20black%20striped%20bow%20tie%2C%20badge%20on%20left%20chest%2C%20glowing%20device%20on%20left%20forearm%2C%20black%20pants%2C%20black%20boots%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style%2C%20high%20detail&image_size=portrait_16_9';"
+                   referrerpolicy="no-referrer" />
+            </div>
           </div>
           <div class="cockpit-hotspots">
             <button class="hotspot-btn hs-about" data-topic="about">
@@ -86,6 +90,59 @@
           <!-- 舊元素保留以防止 JS 報錯，但 CSS 強制隱藏 -->
           <div class="home-hero" style="display:none"></div>
           <div class="menu-3d-wrap" style="display:none"><div class="menu-3d-grid" id="menuGrid"></div></div>
+        </section>
+        <!-- 登艦入口（由左側滑入的子頁面） -->
+        <section class="page boarding-page" id="page-boarding" data-level="0">
+          <div class="boarding-bg">
+            <div class="airlock-door">
+              <div class="door-frame"></div>
+              <div class="door-panel door-left"></div>
+              <div class="door-panel door-right"></div>
+              <div class="door-glow"></div>
+            </div>
+            <div class="boarding-vignette"></div>
+          </div>
+          <div class="boarding-header">
+            <button class="back-btn" id="boardingBackBtn" aria-label="返回">←</button>
+            <h2 class="boarding-title">登艦入口</h2>
+          </div>
+          <div class="boarding-content">
+            <!-- 星光證（1:1 艙員識別證） -->
+            <div class="starlight-card" id="starlightCard">
+              <div class="card-header">
+                <span class="card-logo">✦ 星光號</span>
+                <span class="card-id-label">艙員識別證</span>
+              </div>
+              <div class="card-photo">
+                <img id="cardPhoto" src="" alt="大頭照" onerror="this.onerror=null;this.style.display='none';this.parentElement.querySelector('.photo-placeholder').style.display='flex';" />
+                <div class="photo-placeholder" style="display:none;">👤</div>
+              </div>
+              <div class="card-name" id="cardName">艙員暱稱</div>
+              <div class="card-member-no">
+                <span class="label">艙員編號</span>
+                <span class="value" id="cardMemberNo">--</span>
+              </div>
+              <div class="card-qr">
+                <div id="cardQrCanvas"></div>
+              </div>
+              <div class="card-level">
+                <span class="level-code" id="cardLevelCode">LV1</span>
+                <span class="level-name" id="cardLevelName">見習勤務員</span>
+              </div>
+            </div>
+            <!-- 識別證外：星點與星幣 -->
+            <div class="card-stats">
+              <div class="stat-item">
+                <span class="stat-label">星點</span>
+                <span class="stat-value" id="cardExp">0</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-label">星幣</span>
+                <span class="stat-value" id="cardCoins">0</span>
+              </div>
+            </div>
+          </div>
         </section>
         <!-- Sub pages will be injected via JS -->
       </main>
@@ -189,12 +246,15 @@
           <div class="level-up-title" id="levelUpTitle">升級為見習艙員</div>
         </div>
       </div>
+      <!-- 自訂 Toast 提示 -->
+      <div class="toast-container" id="toastContainer"></div>
       <!-- Footer — 社群媒體連結列（圖示可自行更換：替換 assets/social-*.png 即可） -->
       <footer class="footer-bar">
         <div class="starlight-cert" id="starlightCert" style="display:none;">
           <span class="level-badge" id="userLevel">LV1 見習艙員</span>
           <div class="exp-bar-wrap"><div class="exp-bar" id="userExpBar"></div></div>
           <span class="coins">✦ <span id="userCoins">0</span></span>
+          <div class="level-apply-tip" id="levelApplyTip" style="display:none;"></div>
         </div>
         <!-- 暫時移除社群按鈕（footer-social），日後還原請移除此註解
         <div class="footer-social">
@@ -239,6 +299,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         // PWA 重新整理時 100dvh 可能計算錯誤，用 window.innerHeight 強制正確高度
         (function () {
@@ -267,7 +328,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v17')
+                navigator.serviceWorker.register('./service-worker.js?v=v33')
                     .then(registration => {
                         console.log('Service Worker 註冊成功:', registration);
                     })
@@ -277,6 +338,6 @@
             });
         }
     </script>
-    <script src="js/app.js?v=20261013-logoutmodal"></script>
+    <script src="js/app.js?v=20261013-boarding2"></script>
 </body>
 </html>

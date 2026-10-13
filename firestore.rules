@@ -5,7 +5,7 @@ service cloud.firestore {
     // 管理員判定：以 email 白名單為權威來源（與前端 ADMIN_EMAILS 一致）
     function isAdmin() {
       return request.auth != null &&
-        request.auth.token.email in ['istage.eason@gmail.com'];
+        request.auth.token.email in ['istage.eason@gmail.com', 'nwcom.rose@gmail.com'];
     }
 
     match /config/cockpit {

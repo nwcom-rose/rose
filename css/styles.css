@@ -381,6 +381,31 @@ html, body {
     font-size: 13px;
 }
 
+.level-apply-tip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.apply-btn {
+    background: linear-gradient(90deg, var(--primary-red), #ff6f6f);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.apply-pending {
+    color: #ffeb3b;
+    font-size: 12px;
+    font-weight: 600;
+}
+.apply-rejected {
+    color: #ff8a80;
+    font-size: 12px;
+}
+
 .main-content {
     flex: 1;
     min-height: 0;
@@ -881,6 +906,39 @@ html, body {
     }
 }
 
+/* ===== Toast 提示 ===== */
+.toast-container {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+}
+.toast {
+    padding: 10px 18px;
+    border-radius: 22px;
+    background: rgba(26,26,46,0.92);
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    border: 1px solid rgba(211,47,47,0.4);
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity .25s ease, transform .25s ease;
+    max-width: 86vw;
+    text-align: center;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.toast-success { border-color: rgba(76,175,80,0.6); }
+.toast-error { border-color: rgba(211,47,47,0.7); }
+
 @media (min-width: 768px) {
     .menu-3d-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -1082,20 +1140,14 @@ body {
    COCKPIT REAL BG (v3 - 真實圖片背景 + 8 熱區)
    ======================================================= */
 #page-home.cockpit-page {
-  position: fixed;
-  top: 7vh; left: 0;
+  position: absolute;
+  inset: 0;
   padding: 0 !important;
   margin: 0 !important;
-  width: 100vw;
-  height: 93vh;
+  width: 100%;
+  height: 100%;
   background: #0a0608;
   overflow: hidden;
-}
-@media (min-width: 768px) {
-  #page-home.cockpit-page { top: 6vh; height: 94vh; }
-}
-@media (min-width: 1200px) {
-  #page-home.cockpit-page { top: 5.5vh; height: 94.5vh; }
 }
 #page-home.cockpit-page .home-hero,
 #page-home.cockpit-page .menu-3d-wrap {
@@ -1258,14 +1310,32 @@ body {
   height: 100%;
   z-index: 2;
   pointer-events: none;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
   overflow: hidden;
 }
-.yuwei-figure {
+.cockpit-title {
+  position: absolute;
+  top: 50px;
+  left: 16px;
+  color: #fff;
+  font-size: clamp(18px, 5vw, 26px);
+  font-weight: 800;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.6);
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 2px;
+  user-select: none;
+}
+.yuwei-wrap {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   height: clamp(62vh, 72vh, 82vh);
   max-height: 82vh;
+  pointer-events: none;
+}
+.yuwei-figure {
+  height: 100%;
   width: auto;
   object-fit: contain;
   object-position: center bottom;
@@ -1274,20 +1344,33 @@ body {
   -webkit-user-drag: none;
   filter: drop-shadow(0 10px 18px rgba(0,0,0,0.65)) drop-shadow(0 0 12px rgba(211,47,47,0.35));
   animation: yuweiFloat 5s ease-in-out infinite;
-  transform-origin: center bottom;
+}
+/* 前台自訂圖片（只顯示，不可拖曳） */
+.cockpit-custom-img {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 3;
+}
+.cockpit-custom-img img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 @keyframes yuweiFloat {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-6px); }
 }
 @media (min-width: 768px) {
-  .yuwei-figure { height: clamp(64vh, 74vh, 82vh); }
+  .yuwei-wrap { height: clamp(64vh, 74vh, 82vh); }
 }
 @media (min-width: 1200px) {
-  .yuwei-figure { height: clamp(66vh, 76vh, 82vh); }
+  .yuwei-wrap { height: clamp(66vh, 76vh, 82vh); }
 }
 @media (max-width: 360px) {
-  .yuwei-figure { height: clamp(56vh, 64vh, 74vh); }
+  .yuwei-wrap { height: clamp(56vh, 64vh, 74vh); }
 }
 .cockpit-hotspots {
   position: absolute;
@@ -1483,6 +1566,311 @@ body {
   .hs-neighbor { bottom: 12%; }
   .hs-news     { bottom: 30%; right: 2%; }
   .hs-hero     { bottom: 1%;  right: 3%; }
+}
+
+/* =======================================================
+   登艦入口（Boarding Entrance）— 星際船艙氣閘門
+   ======================================================= */
+.boarding-page {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+  background: #050510;
+  overflow: hidden;
+  z-index: 50;
+}
+.boarding-page.active {
+  display: flex;
+  animation: slideInFromLeft 0.45s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slideInFromLeft {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
+.boarding-page.leaving {
+  animation: slideOutToLeft 0.35s cubic-bezier(.4,0,.8,.2);
+}
+@keyframes slideOutToLeft {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* 氣閘門背景 */
+.boarding-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(211,47,47,0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #0a0a18 0%, #0f0a14 45%, #0a0a18 100%);
+}
+.airlock-door {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(82vw, 420px);
+  height: min(82vw, 420px);
+  max-height: 60vh;
+}
+.door-frame {
+  position: absolute;
+  inset: 0;
+  border: 3px solid rgba(211,47,47,0.55);
+  border-radius: 50% / 38%;
+  box-shadow:
+    inset 0 0 40px rgba(211,47,47,0.25),
+    0 0 60px rgba(211,47,47,0.18);
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(40,10,15,0.6) 0%, rgba(10,5,12,0.9) 70%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(211,47,47,0.06) 14px,
+      rgba(211,47,47,0.06) 16px
+    );
+}
+.door-panel {
+  position: absolute;
+  top: 12%;
+  width: 44%;
+  height: 76%;
+  background: linear-gradient(90deg, rgba(30,30,45,0.9), rgba(20,15,25,0.85));
+  border: 1px solid rgba(211,47,47,0.3);
+  z-index: 1;
+}
+.door-left {
+  left: 6%;
+  border-radius: 60% 8% 8% 60% / 50% 12% 12% 50%;
+  transform-origin: right center;
+  animation: doorLeftOpen 2.2s ease-out forwards;
+}
+.door-right {
+  right: 6%;
+  border-radius: 8% 60% 60% 8% / 12% 50% 50% 12%;
+  transform-origin: left center;
+  animation: doorRightOpen 2.2s ease-out forwards;
+}
+@keyframes doorLeftOpen {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-70%); opacity: 0.3; }
+}
+@keyframes doorRightOpen {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(70%); opacity: 0.3; }
+}
+.door-glow {
+  position: absolute;
+  inset: 20% 30%;
+  background: radial-gradient(ellipse at center, rgba(255,200,180,0.25) 0%, rgba(211,47,47,0.1) 50%, transparent 80%);
+  filter: blur(20px);
+  animation: doorGlowPulse 3s ease-in-out infinite;
+}
+@keyframes doorGlowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.boarding-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+}
+
+/* 登艦入口頁首 */
+.boarding-header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+.boarding-title {
+  font-size: clamp(18px, 4vw, 24px);
+  font-weight: 700;
+  color: #ff8a80;
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px rgba(211,47,47,0.5);
+}
+
+/* 內容區 */
+.boarding-content {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 8px 16px 24px;
+}
+
+/* ===== 星光證（1:1 艙員識別證） ===== */
+.starlight-card {
+  position: relative;
+  width: min(72vw, 320px);
+  aspect-ratio: 1 / 1;
+  max-height: 56vh;
+  background: linear-gradient(145deg, #1a1420 0%, #0f0a16 50%, #1a1018 100%);
+  border: 2px solid rgba(211,47,47,0.6);
+  border-radius: 20px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow:
+    0 0 30px rgba(211,47,47,0.3),
+    inset 0 0 20px rgba(211,47,47,0.08);
+  box-sizing: border-box;
+}
+.starlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(211,47,47,0.25);
+  border-radius: 16px;
+  pointer-events: none;
+}
+.card-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.card-logo {
+  color: #ff8a80;
+  font-weight: 800;
+  font-size: clamp(12px, 2.6vw, 15px);
+  letter-spacing: 1px;
+}
+.card-id-label {
+  color: rgba(255,255,255,0.5);
+  font-size: clamp(9px, 1.8vw, 11px);
+  letter-spacing: 1px;
+}
+.card-photo {
+  width: 30%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(211,47,47,0.5);
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-placeholder {
+  font-size: clamp(24px, 6vw, 36px);
+  color: rgba(255,255,255,0.3);
+}
+.card-name {
+  font-size: clamp(14px, 3.2vw, 18px);
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 3px;
+  text-shadow: 0 0 8px rgba(211,47,47,0.4);
+}
+.card-member-no {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.card-member-no .label {
+  font-size: clamp(9px, 1.8vw, 11px);
+  color: rgba(255,255,255,0.5);
+}
+.card-member-no .value {
+  font-size: clamp(13px, 2.8vw, 16px);
+  font-weight: 700;
+  color: #ffd54f;
+  letter-spacing: 1px;
+}
+.card-qr {
+  width: 28%;
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+.card-qr canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+.card-level {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.card-level .level-code {
+  font-size: clamp(11px, 2.4vw, 14px);
+  font-weight: 800;
+  color: #ff8a80;
+}
+.card-level .level-name {
+  font-size: clamp(10px, 2.2vw, 13px);
+  color: rgba(255,255,255,0.75);
+}
+
+/* 識別證外：星點與星幣 */
+.card-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: rgba(211,47,47,0.12);
+  border: 1px solid rgba(211,47,47,0.35);
+  border-radius: 14px;
+  padding: 8px 18px;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.stat-label {
+  font-size: clamp(10px, 2vw, 12px);
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 1px;
+}
+.stat-value {
+  font-size: clamp(15px, 3vw, 19px);
+  font-weight: 800;
+  color: #ffd54f;
+}
+.stat-divider {
+  width: 1px;
+  height: 26px;
+  background: rgba(255,255,255,0.2);
+}
+
+/* 未登入提示 */
+.boarding-login-hint {
+  color: rgba(255,255,255,0.7);
+  font-size: clamp(13px, 2.6vw, 16px);
+  text-align: center;
+  padding: 20px;
 }
 
 /* ===== PWA 安裝提示 Modal ===== */

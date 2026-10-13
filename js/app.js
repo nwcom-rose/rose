@@ -9,9 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error("Firebase 載入失敗，請檢查網路連線或 Firebase SDK 設定");
   }
 
-  // ============ 載入駕駛艙自訂佈局（背景、語薇圖、熱點位置） ============
+  // ============ 載入駕駛艙自訂佈局（背景、語薇圖、熱點位置、語薇位置、自訂圖片、標題） ============
   function applyCockpitConfig(cfg) {
     if (!cfg) return;
+    // 標題
+    if (cfg.title) {
+      const titleEl = document.getElementById('cockpitTitle');
+      if (titleEl) titleEl.textContent = cfg.title;
+    }
     // 背景圖
     if (cfg.bgUrl) {
       const bgImg = document.querySelector('.cockpit-bg > img');
@@ -21,6 +26,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cfg.yuweiUrl) {
       const ywImg = document.querySelector('.yuwei-figure');
       if (ywImg) ywImg.src = cfg.yuweiUrl;
+    }
+    // 語薇圖片位置與大小
+    const ywWrap = document.querySelector('.yuwei-wrap');
+    if (ywWrap) {
+      // 高度（若有自訂）
+      if (cfg.yuweiPos && typeof cfg.yuweiPos.height === 'number') {
+        ywWrap.style.height = cfg.yuweiPos.height + '%';
+      }
+      if (cfg.yuweiPos && typeof cfg.yuweiPos.top === 'number' && typeof cfg.yuweiPos.left === 'number') {
+        ywWrap.style.top = cfg.yuweiPos.top + '%';
+        ywWrap.style.left = cfg.yuweiPos.left + '%';
+        ywWrap.style.bottom = 'auto';
+        ywWrap.style.transform = 'translate(-50%, -50%)';
+      }
+    }
+    // 自訂圖片
+    const figures = document.querySelector('.cockpit-figures');
+    if (figures) {
+      figures.querySelectorAll('.cockpit-custom-img').forEach(el => el.remove());
+      if (Array.isArray(cfg.customImages)) {
+        cfg.customImages.forEach(img => {
+          if (!img || !img.url) return;
+          const wrap = document.createElement('div');
+          wrap.className = 'cockpit-custom-img';
+          wrap.style.top = img.top + '%';
+          wrap.style.left = img.left + '%';
+          wrap.style.width = (img.width || 15) + '%';
+          const pic = document.createElement('img');
+          pic.src = img.url;
+          pic.alt = '裝飾圖片';
+          pic.draggable = false;
+          wrap.appendChild(pic);
+          figures.appendChild(wrap);
+        });
+      }
     }
     // 熱點位置
     if (cfg.hotspots) {
@@ -40,15 +80,46 @@ document.addEventListener('DOMContentLoaded', () => {
     window.db.collection('config').doc('cockpit').get()
       .then(snap => { if (snap.exists) applyCockpitConfig(snap.data()); })
       .catch(err => console.warn('載入駕駛艙設定失敗', err));
+    // 載入位階設定（30 階），失敗時使用 APP_CONFIG.levels 預設值
+    window.db.collection('config').doc('levels').get()
+      .then(snap => {
+        if (snap.exists && Array.isArray(snap.data().items)) {
+          APP_CONFIG.levels = snap.data().items.slice().sort((a, b) => a.level - b.level);
+          renderUserCard();
+        }
+      })
+      .catch(err => console.warn('載入位階設定失敗', err));
   }
 
   // ============ CONFIG ============
+  // 30 階位階預設（與後台 getDefaultLevels 一致；Firestore 有資料時會覆寫）
+  const LEVEL_NAMES = [
+    '見習勤務員', '星際膳食師', '資深物資管理員', '醫療護理員', '資深安保專員',
+    '外星生物學家', '維生專家', '工程技術員', '裝備維修師', '星空巡航員',
+    '深空通訊官', '後勤總長', '心理調音師', '資深外科醫師', '動力工程師',
+    '網絡安全官', '副輪機長', '航行官', '火力控制官', '安全長',
+    '醫療總監', '首席系統架構師', '輪機長', '作戰指揮官', '資深航行官',
+    '首席導航官', '星艦副官', '首席參謀長', '副艦長', '艦長'
+  ];
+  const LEVEL_MIN_EXP = { 25: 500000, 26: 700000, 27: 1000000, 28: 1500000, 29: 10000000, 30: 10000000 };
+  const hslToHex = (h, s, l) => {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
+  };
+  const DEFAULT_LEVELS = LEVEL_NAMES.map((name, i) => {
+    const lv = i + 1;
+    return {
+      level: lv,
+      name,
+      minExp: LEVEL_MIN_EXP[lv] !== undefined ? LEVEL_MIN_EXP[lv] : (lv === 1 ? 0 : Math.round(Math.pow(lv, 2.6) * 22)),
+      color: hslToHex(220 - i * (220 / 29), 65, 52)
+    };
+  });
   const APP_CONFIG = {
-    levels: [
-      { level: 1, name: '見習艙員', minExp: 0, color: '#ff9800' },
-      { level: 2, name: '星際航行員', minExp: 100, color: '#2196f3' },
-      { level: 3, name: '語薇近衛隊', minExp: 500, color: '#d32f2f' }
-    ],
+    levels: DEFAULT_LEVELS.slice(),
     rewards: {
       VIEW_CONTENT: { exp: 10, coins: 5, label: '內容探索' },
       SHARE: { exp: 15, coins: 10, label: '星際分享' },
@@ -234,20 +305,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ============ ROLE CONFIG ============
   // 預設管理員帳號（不分大小寫）。登入後自動導向 admin.html。
-  const ADMIN_EMAILS = ['istage.eason@gmail.com'];
+  const ADMIN_EMAILS = ['istage.eason@gmail.com', 'nwcom.rose@gmail.com'];
+  // 艦長（LV30）固定帳號與名稱，永不變更
+  const CAPTAIN_EMAIL = 'nwcom.rose@gmail.com';
+  const CAPTAIN_NAME = '西北語薇';
+  const CAPTAIN_LEVEL = 30;
+  const VICE_CAPTAIN_LEVEL = 29;
+  // LV25~LV28 需申請加入，EXP 門檻 500000
+  const APPLY_LEVEL_MIN = 25;
+  const APPLY_LEVEL_MAX = 28;
+  const APPLY_REQUIRED_EXP = 500000;
+  // 副艦長（LV29）EXP 門檻 10000000，由艦長指定派任
+  const VICE_CAPTAIN_REQUIRED_EXP = 10000000;
+  // 自動升級上限（LV24），超過需申請或派任
+  const AUTO_LEVEL_MAX = 24;
+
   function resolveRole(email) {
     if (!email) return 'member';
     return ADMIN_EMAILS.includes(String(email).toLowerCase()) ? 'admin' : 'member';
+  }
+
+  // 判斷是否為管理員 Email 白名單（含艦長）
+  function isAdminEmail(email) {
+    return !!email && ADMIN_EMAILS.includes(String(email).toLowerCase());
+  }
+
+  // 判斷是否為排除編號的帳號（管理員）；艦長不排除，固定為「1」
+  function isExcludedFromNumbering(email) {
+    const e = String(email || '').toLowerCase();
+    if (e === CAPTAIN_EMAIL) return false;
+    return ADMIN_EMAILS.includes(e);
+  }
+
+  // 產生推薦碼：NW + 6 碼零填補的艙員編號
+  function makeReferralCode(memberNo) {
+    const n = Number(memberNo);
+    if (!n || n < 1) return '';
+    return 'NW' + String(n).padStart(6, '0');
+  }
+
+  // 取得下一個可用的艙員編號（查詢所有用戶的 memberNo 取最大值 +1）
+  async function getNextMemberNo() {
+    try {
+      const snap = await db.collection('users').get();
+      let maxNo = 1; // 艦長固定為 1
+      snap.forEach(doc => {
+        const m = doc.data();
+        const no = Number(m?.memberNo);
+        if (no && no > maxNo) maxNo = no;
+      });
+      return String(maxNo + 1);
+    } catch (e) {
+      console.error('取得下一個艙員編號失敗', e);
+      return String(Date.now()); //  fallback：用時間戳避免重複
+    }
   }
   // 判斷當前是否為管理後台頁面，避免重複跳轉
   function isOnAdminPage() {
     return /admin\.html/i.test(location.pathname + location.hash);
   }
-  // 依角色執行頁面導向（管理員 → admin.html；其餘留在此站）
+  // 依角色執行頁面導向（管理員或 Email 白名單 → admin.html；其餘留在此站）
   // 若 sessionStorage 有 nwrose_stay_frontend 旗標，表示管理員主動切換到前台，略過導向
   function handleRoleRedirect() {
     if (sessionStorage.getItem('nwrose_stay_frontend')) return;
-    if (state.userData && state.userData.role === 'admin' && !isOnAdminPage()) {
+    const isAdmin = state.userData && (state.userData.role === 'admin' || isAdminEmail(state.userData.email));
+    if (isAdmin && !isOnAdminPage()) {
       window.location.replace('admin.html');
     }
   }
@@ -346,6 +468,12 @@ document.addEventListener('DOMContentLoaded', () => {
       history.replaceState(null, '', '#' + pageId);
     }
     if (pageId !== 'home') startViewTimer(pageId);
+    // 切換到非登艦入口頁面時，重置登艦入口狀態
+    if (pageId !== 'boarding' && boardingOpen) {
+      boardingOpen = false;
+      const bp = document.getElementById('page-boarding');
+      if (bp) bp.classList.remove('active', 'leaving');
+    }
   }
 
   function navigateTo(pageId) {
@@ -355,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!state.user) { openAuthModal('login', `需登入才能進入「${topic.name}」`); return; }
     if (state.userData && state.userData.level < topic.requiredLevel) {
       const need = APP_CONFIG.levels.find(l => l.level === topic.requiredLevel);
-      alert(`此區域需要「${need ? need.name : '等級'+topic.requiredLevel}」才能解鎖哦！`);
+      showToast(`此區域需要「${need ? need.name : '等級'+topic.requiredLevel}」才能解鎖哦！`, 'error');
       return;
     }
     showPage(pageId);
@@ -366,6 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleHashChange() {
     const hash = (location.hash || '#home').slice(1) || 'home';
     if (hash === 'home') showPage('home', false);
+    else if (hash === 'boarding') showBoardingPage();
     else navigateTo(hash);
   }
   window.addEventListener('hashchange', handleHashChange);
@@ -385,6 +514,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1600);
   }
+
+  // 自訂 Toast 提示（取代原生 alert）
+  function showToast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) { alert(msg); return; }
+    const el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.textContent = msg;
+    container.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 300);
+    }, 2800);
+  }
+  window.showToast = showToast;
   async function grantReward(type, ev) {
     if (!state.user || !state.userData) return;
     const cfg = APP_CONFIG.rewards[type];
@@ -402,9 +547,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const newExp = (u.exp || 0) + cfg.exp;
     const newCoins = (u.coins || 0) + cfg.coins;
     const oldLevel = u.level || 1;
+    // 艦長帳號等級固定不變
+    const isCaptain = String(u.email || '').toLowerCase() === CAPTAIN_EMAIL;
     let newLevel = oldLevel;
-    for (const lv of APP_CONFIG.levels) {
-      if (newExp >= lv.minExp) newLevel = lv.level;
+    if (!isCaptain) {
+      // 自動升級僅限 LV1~LV24；LV25+ 需申請或派任
+      for (const lv of APP_CONFIG.levels) {
+        if (lv.level <= AUTO_LEVEL_MAX && newExp >= lv.minExp) newLevel = lv.level;
+      }
     }
     await db.collection('users').doc(uid).update({
       exp: newExp,
@@ -445,12 +595,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return list[0];
   }
+
+  // 取得可申請的下一個位階（LV25~LV28），若無則回傳 null
+  function getApplicableLevel() {
+    if (!state.userData) return null;
+    const curLv = Number(state.userData.level || 1);
+    const nextLv = curLv + 1;
+    if (nextLv < APPLY_LEVEL_MIN || nextLv > APPLY_LEVEL_MAX) return null;
+    if (Number(state.userData.exp || 0) < APPLY_REQUIRED_EXP) return null;
+    // 若已有 pending 申請，不重複申請
+    const app = state.userData.levelApplication;
+    if (app && app.status === 'pending') return null;
+    return nextLv;
+  }
+
+  // 送出升階申請
+  async function applyLevelUp(targetLevel) {
+    if (!state.user || !state.userData) return;
+    const app = {
+      targetLevel,
+      status: 'pending',
+      appliedAt: Date.now(),
+      reviewedBy: null,
+      reviewedAt: null,
+      reviewNote: ''
+    };
+    try {
+      await db.collection('users').doc(state.user.uid).update({ levelApplication: app });
+      state.userData.levelApplication = app;
+      renderUserCard();
+      showToast(`已送出 LV${targetLevel} 升階申請，請等候艦長或副艦長核准。`, 'success');
+    } catch (e) {
+      console.error('申請失敗', e);
+      showToast('申請失敗：' + (e.message || e), 'error');
+    }
+  }
+  window.applyLevelUp = applyLevelUp;
+
   function renderUserCard() {
     const cert = document.getElementById('starlightCert');
     const authBtn = document.getElementById('authBtn');
     if (!state.user || !state.userData) {
       cert.style.display = 'none';
       if (authBtn) authBtn.textContent = '登入 / 註冊';
+      return;
+    }
+    // 管理員帳號（不含艦長）不顯示 EXP/星幣區塊
+    if (isExcludedFromNumbering(state.userData.email)) {
+      cert.style.display = 'none';
+      if (authBtn) authBtn.textContent = state.userData.displayName ? state.userData.displayName.slice(0,8) : '登出';
       return;
     }
     cert.style.display = 'flex';
@@ -461,12 +654,247 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nextLv) {
       const curMin = lvInfo.minExp;
       const range = nextLv.minExp - curMin;
-      pct = Math.min(100, Math.max(0, ((state.userData.exp - curMin) / range) * 100));
+      pct = Math.min(100, Math.max(0, ((state.userData.exp - curMin) / (range || 1)) * 100));
     }
     document.getElementById('userExpBar').style.width = pct + '%';
     document.getElementById('userCoins').textContent = state.userData.coins || 0;
     if (authBtn) authBtn.textContent = state.userData.displayName ? state.userData.displayName.slice(0,8) : '登出';
+
+    // 升階申請提示
+    const applyTip = document.getElementById('levelApplyTip');
+    if (applyTip) {
+      const app = state.userData.levelApplication;
+      const applicable = getApplicableLevel();
+      if (app && app.status === 'pending') {
+        applyTip.innerHTML = `<span class="apply-pending">LV${app.targetLevel} 申請審核中…</span>`;
+        applyTip.style.display = 'block';
+      } else if (applicable) {
+        applyTip.innerHTML = `<button class="apply-btn" type="button" onclick="applyLevelUp(${applicable})">申請 LV${applicable}</button>`;
+        applyTip.style.display = 'block';
+      } else if (app && app.status === 'rejected') {
+        applyTip.innerHTML = `<span class="apply-rejected">申請被駁回${app.reviewNote ? '：' + app.reviewNote : ''}</span>`;
+        applyTip.style.display = 'block';
+      } else {
+        applyTip.style.display = 'none';
+        applyTip.innerHTML = '';
+      }
+    }
   }
+
+  // ============ 登艦入口（星光證） ============
+  let boardingOpen = false;
+
+  function renderStarlightCard() {
+    const card = document.getElementById('starlightCard');
+    const stats = document.querySelector('.card-stats');
+    if (!card) return;
+    const photo = document.getElementById('cardPhoto');
+    const nameEl = document.getElementById('cardName');
+    const memberNoEl = document.getElementById('cardMemberNo');
+    const levelCodeEl = document.getElementById('cardLevelCode');
+    const levelNameEl = document.getElementById('cardLevelName');
+    const expEl = document.getElementById('cardExp');
+    const coinsEl = document.getElementById('cardCoins');
+    const canvas = document.getElementById('cardQrCanvas');
+    const content = document.querySelector('.boarding-content');
+
+    // 未登入：顯示提示
+    if (!state.user || !state.userData) {
+      card.style.display = 'none';
+      if (stats) stats.style.display = 'none';
+      let hint = content.querySelector('.boarding-login-hint');
+      if (!hint) {
+        hint = document.createElement('div');
+        hint.className = 'boarding-login-hint';
+        hint.textContent = '請先登入以領取你的星光證';
+        content.appendChild(hint);
+      }
+      return;
+    }
+    // 隱藏未登入提示
+    const hint = content.querySelector('.boarding-login-hint');
+    if (hint) hint.remove();
+    card.style.display = 'flex';
+
+    const u = state.userData;
+    // 管理員帳號（不含艦長）不顯示星點/星幣
+    const excluded = isExcludedFromNumbering(u.email);
+    if (stats) stats.style.display = excluded ? 'none' : 'flex';
+    // 大頭照
+    if (photo) {
+      if (u.photoURL) {
+        photo.src = u.photoURL;
+        photo.style.display = 'block';
+        const ph = photo.parentElement.querySelector('.photo-placeholder');
+        if (ph) ph.style.display = 'none';
+      } else {
+        photo.style.display = 'none';
+        const ph = photo.parentElement.querySelector('.photo-placeholder');
+        if (ph) ph.style.display = 'flex';
+      }
+    }
+    // 暱稱
+    if (nameEl) nameEl.textContent = u.displayName || '艙員';
+    // 艙員編號
+    const memberNo = u.memberNo || '--';
+    if (memberNoEl) memberNoEl.textContent = memberNo;
+    // 位階
+    const lvInfo = getCurrentLevelInfo(u.level || 1);
+    if (levelCodeEl) levelCodeEl.textContent = `LV${u.level || 1}`;
+    if (levelNameEl) levelNameEl.textContent = lvInfo.name;
+    // 星點 / 星幣
+    if (expEl) expEl.textContent = Number(u.exp || 0).toLocaleString();
+    if (coinsEl) coinsEl.textContent = Number(u.coins || 0).toLocaleString();
+    // QR Code（推薦碼 = 會員號）
+    if (canvas) {
+      const qrText = u.referralCode || (u.memberNo ? 'NW' + String(Number(u.memberNo)).padStart(6, '0') : '');
+      if (window.QRCode && qrText) {
+        // qrcodejs 庫：每次先清空容器再建立
+        canvas.innerHTML = '';
+        try {
+          new window.QRCode(canvas, {
+            text: qrText,
+            width: 200,
+            height: 200,
+            colorDark: '#1a0a0a',
+            colorLight: '#ffffff',
+            correctLevel: window.QRCode.CorrectLevel.M
+          });
+        } catch (err) {
+          console.warn('QR 產生失敗', err);
+        }
+      }
+    }
+  }
+
+  function showBoardingPage() {
+    const page = document.getElementById('page-boarding');
+    if (!page || boardingOpen) return;
+    boardingOpen = true;
+    state.currentPage = 'boarding';
+    if (location.hash !== '#boarding') {
+      history.replaceState(null, '', '#boarding');
+    }
+    renderStarlightCard();
+    page.classList.remove('leaving');
+    page.classList.add('active');
+
+    // 重新觸發氣閘門開啟動畫
+    const doors = page.querySelectorAll('.door-left, .door-right');
+    doors.forEach(d => {
+      d.style.animation = 'none';
+      // 強制 reflow
+      void d.offsetHeight;
+      d.style.animation = '';
+    });
+  }
+
+  function hideBoardingPage() {
+    const page = document.getElementById('page-boarding');
+    if (!page || !boardingOpen) return;
+    boardingOpen = false;
+    state.currentPage = 'home';
+    if (location.hash !== '#home') {
+      history.replaceState(null, '', '#home');
+    }
+    page.classList.add('leaving');
+    setTimeout(() => {
+      page.classList.remove('active', 'leaving');
+    }, 340);
+  }
+
+  // 返回按鈕
+  const boardingBackBtn = document.getElementById('boardingBackBtn');
+  if (boardingBackBtn) boardingBackBtn.addEventListener('click', hideBoardingPage);
+
+  // 首頁滑動手勢：由左向右滑 → 顯示登艦入口
+  (function initBoardingSwipe() {
+    const home = document.getElementById('page-home');
+    if (!home) return;
+    let startX = 0, startY = 0, tracking = false;
+    const THRESHOLD = 60; // 滑動超過 60px 即觸發
+    const VERTICAL_LIMIT = 50; // 垂直偏移超過此值視為非水平滑動
+
+    function onStart(x, y) {
+      startX = x; startY = y; tracking = true;
+    }
+    function onMove(x, y) {
+      if (!tracking) return;
+      const dx = x - startX;
+      const dy = Math.abs(y - startY);
+      // 由左向右滑，且水平為主
+      if (dx > THRESHOLD && dy < VERTICAL_LIMIT && state.currentPage === 'home') {
+        tracking = false;
+        showBoardingPage();
+      }
+    }
+    function onEnd() { tracking = false; }
+
+    // Touch 事件
+    home.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      onStart(t.clientX, t.clientY);
+    }, { passive: true });
+    home.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      onMove(t.clientX, t.clientY);
+    }, { passive: true });
+    home.addEventListener('touchend', onEnd);
+
+    // Mouse 事件（電腦）
+    home.addEventListener('mousedown', e => {
+      onStart(e.clientX, e.clientY);
+    });
+    home.addEventListener('mousemove', e => {
+      if (e.buttons !== 1) return; // 僅左鍵拖曳
+      onMove(e.clientX, e.clientY);
+    });
+    home.addEventListener('mouseup', onEnd);
+    home.addEventListener('mouseleave', onEnd);
+  })();
+
+  // 登艦入口左滑返回首頁
+  (function initBoardingBackSwipe() {
+    const page = document.getElementById('page-boarding');
+    if (!page) return;
+    let startX = 0, startY = 0, tracking = false;
+    const THRESHOLD = 60;
+    const VERTICAL_LIMIT = 50;
+
+    function onStart(x, y) { startX = x; startY = y; tracking = true; }
+    function onMove(x, y) {
+      if (!tracking) return;
+      const dx = x - startX;
+      const dy = Math.abs(y - startY);
+      // 由右向左滑 → 返回首頁
+      if (dx < -THRESHOLD && dy < VERTICAL_LIMIT) {
+        tracking = false;
+        hideBoardingPage();
+      }
+    }
+    function onEnd() { tracking = false; }
+
+    page.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      onStart(t.clientX, t.clientY);
+    }, { passive: true });
+    page.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      onMove(t.clientX, t.clientY);
+    }, { passive: true });
+    page.addEventListener('touchend', onEnd);
+    page.addEventListener('mousedown', e => onStart(e.clientX, e.clientY));
+    page.addEventListener('mousemove', e => {
+      if (e.buttons !== 1) return;
+      onMove(e.clientX, e.clientY);
+    });
+    page.addEventListener('mouseup', onEnd);
+    page.addEventListener('mouseleave', onEnd);
+  })();
+
+  // 暴露給外部（hash 變化時使用）
+  window.showBoardingPage = showBoardingPage;
+  window.hideBoardingPage = hideBoardingPage;
 
   function triggerLevelUp(newLevel) {
     const info = getCurrentLevelInfo(newLevel);
@@ -551,10 +979,10 @@ document.addEventListener('DOMContentLoaded', () => {
         || '艙員';
       logoutUserText.textContent = `${name}，即將離開星光號`;
     }
-    // 僅管理員顯示「切換系統後台」按鈕
+    // 僅管理員（含 Email 白名單）顯示「切換系統後台」按鈕
     if (logoutSwitchAdminBtn) {
-      logoutSwitchAdminBtn.style.display =
-        (state.userData && state.userData.role === 'admin') ? '' : 'none';
+      const isAdmin = state.userData && (state.userData.role === 'admin' || isAdminEmail(state.userData.email));
+      logoutSwitchAdminBtn.style.display = isAdmin ? '' : 'none';
     }
     if (logoutModal) logoutModal.classList.add('active');
   }
@@ -609,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeAuthModal();
       authForm.reset();
     } catch (err) {
-      alert('驗證失敗：' + (err.message || err.code));
+      showToast('驗證失敗：' + (err.message || err.code), 'error');
     } finally {
       authSubmit.disabled = false;
     }
@@ -622,20 +1050,44 @@ document.addEventListener('DOMContentLoaded', () => {
       closeAuthModal();
     } catch (err) {
       if (err.code !== 'auth/cancelled-popup-request' && err.code !== 'auth/popup-closed-by-user') {
-        alert('Google 登入失敗：' + (err.message || err.code));
+        showToast('Google 登入失敗：' + (err.message || err.code), 'error');
       }
     }
   });
 
   async function ensureUserDoc(user, displayNameOverride) {
+    const isCaptain = String(user.email || '').toLowerCase() === CAPTAIN_EMAIL;
     const snap = await db.collection('users').doc(user.uid).get();
     if (snap.exists) {
       state.userData = snap.data();
-      // 舊用戶若缺少 role 欄位，依 email 補登（預設 istage.eason@gmail.com 為管理員）
-      if (!state.userData.role) {
+      // 艦長帳號：強制 LV30、角色 member、固定名稱，永不變更
+      if (isCaptain) {
+        const forced = {
+          level: CAPTAIN_LEVEL,
+          role: 'member',
+          displayName: CAPTAIN_NAME,
+          memberNo: '1',
+          referralCode: makeReferralCode('1')
+        };
+        const changed = state.userData.level !== CAPTAIN_LEVEL ||
+          state.userData.role !== 'member' ||
+          state.userData.displayName !== CAPTAIN_NAME ||
+          state.userData.memberNo !== '1';
+        if (changed) {
+          await db.collection('users').doc(user.uid).update(forced).catch(() => {});
+          state.userData = { ...state.userData, ...forced };
+        }
+      } else if (!state.userData.role) {
         const role = resolveRole(user.email);
         state.userData.role = role;
         await db.collection('users').doc(user.uid).update({ role }).catch(() => {});
+      }
+      // 補填：非管理員用戶若缺少 memberNo，自動配發序號
+      if (!isCaptain && !isExcludedFromNumbering(user.email) && !state.userData.memberNo) {
+        const nextNo = await getNextMemberNo();
+        const refCode = makeReferralCode(nextNo);
+        await db.collection('users').doc(user.uid).update({ memberNo: nextNo, referralCode: refCode }).catch(() => {});
+        state.userData = { ...state.userData, memberNo: nextNo, referralCode: refCode };
       }
       const today = getTodayKey();
       const inter = state.userData.interactions || [];
@@ -645,23 +1097,35 @@ document.addEventListener('DOMContentLoaded', () => {
       handleRoleRedirect();
       return;
     }
-    const displayName = displayNameOverride || user.displayName || user.email.split('@')[0];
+    const displayName = isCaptain ? CAPTAIN_NAME : (displayNameOverride || user.displayName || user.email.split('@')[0]);
+    const excluded = isExcludedFromNumbering(user.email);
+    let memberNo = '';
+    let referralCode = '';
+    if (isCaptain) {
+      memberNo = '1';
+      referralCode = makeReferralCode('1');
+    } else if (!excluded) {
+      memberNo = await getNextMemberNo();
+      referralCode = makeReferralCode(memberNo);
+    }
     const data = {
       uid: user.uid,
       displayName,
       photoURL: user.photoURL || '',
       email: user.email || '',
-      role: resolveRole(user.email),
-      level: 1,
+      role: isCaptain ? 'member' : resolveRole(user.email),
+      level: isCaptain ? CAPTAIN_LEVEL : 1,
       exp: 0,
       coins: 0,
       createdAt: Date.now(),
-      interactions: []
+      interactions: [],
+      memberNo,
+      referralCode
     };
     await db.collection('users').doc(user.uid).set(data);
     state.userData = data;
     renderUserCard();
-    await grantReward('DAILY_LOGIN').catch(()=>{});
+    if (!isCaptain) await grantReward('DAILY_LOGIN').catch(()=>{});
     handleRoleRedirect();
   }
 
@@ -673,8 +1137,18 @@ document.addEventListener('DOMContentLoaded', () => {
           const snap = await db.collection('users').doc(user.uid).get();
           if (snap.exists) {
             state.userData = snap.data();
-            // 補登缺少 role 的既有帳號，並做角色導向
-            if (!state.userData.role) {
+            const isCaptain = String(user.email || '').toLowerCase() === CAPTAIN_EMAIL;
+            if (isCaptain) {
+              // 艦長帳號：強制維持 LV30、角色 member、固定名稱
+              const changed = state.userData.level !== CAPTAIN_LEVEL ||
+                state.userData.role !== 'member' ||
+                state.userData.displayName !== CAPTAIN_NAME;
+              if (changed) {
+                const forced = { level: CAPTAIN_LEVEL, role: 'member', displayName: CAPTAIN_NAME };
+                db.collection('users').doc(user.uid).update(forced).catch(() => {});
+                state.userData = { ...state.userData, ...forced };
+              }
+            } else if (!state.userData.role) {
               const role = resolveRole(user.email);
               state.userData.role = role;
               db.collection('users').doc(user.uid).update({ role }).catch(() => {});
@@ -751,7 +1225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', async () => {
       if (!state.installPromptEvent) {
         // 若 beforeinstallprompt 未觸發（例如 iOS Safari），提示手動安裝方式
-        alert('請點擊瀏覽器分享按鈕 →「加入主畫面」來安裝西北語薇');
+        showToast('請點擊瀏覽器分享按鈕 →「加入主畫面」來安裝西北語薇', 'info');
         return;
       }
       state.installPromptEvent.prompt();

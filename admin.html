@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#d32f2f">
     <title>西北語薇 · 管理後台</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261013-appheight">
+    <link rel="stylesheet" href="css/styles.css?v=20261013-resize">
     <link rel="manifest" href="manifest.json">
     <style>
         /* ===== admin.html 版面：頁首 8% / 頁中 84% / 頁尾 8%，單頁不捲動 ===== */
@@ -315,6 +315,48 @@
             border-color: #d32f2f;
             box-shadow: 0 0 8px rgba(211,47,47,0.5);
         }
+        .subtab-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .subtab-btn-text {
+            pointer-events: none;
+        }
+        .subtab-edit-icon {
+            flex: 0 0 auto;
+            width: 22px;
+            height: 22px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
+            color: #e0e0e0;
+            font-size: 12px;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .subtab-edit-icon:hover {
+            background: rgba(211,47,47,0.3);
+            color: #ff8a80;
+        }
+        .cp-title-label {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            color: #fff;
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-weight: 700;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.85), 0 0 8px rgba(0,0,0,0.6);
+            z-index: 6;
+            pointer-events: none;
+            letter-spacing: 1px;
+        }
 
         /* ===== 子分頁內容面板 ===== */
         .subtab-panel {
@@ -451,23 +493,100 @@
             pointer-events: none;
             z-index: 0;
         }
-        .cp-yuwei {
+        .cp-yuwei-wrap {
             position: absolute;
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            height: 72%;
-            max-height: 100%;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            z-index: 3;
+            transition: filter 0.2s;
+        }
+        .cp-yuwei-wrap.dragging {
+            cursor: grabbing;
+            filter: drop-shadow(0 0 0 2px #ffeb3b) drop-shadow(0 4px 14px rgba(0,0,0,0.7));
+            z-index: 10;
+        }
+        .cp-yuwei {
+            display: block;
+            height: 100%;
+            width: auto;
             object-fit: contain;
             pointer-events: none;
-            z-index: 1;
+            -webkit-user-drag: none;
+        }
+        .cp-custom-img {
+            position: absolute;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
+            z-index: 3;
+            transform: translate(-50%, -50%);
+        }
+        .cp-custom-img img {
+            display: block;
+            width: 100%;
+            height: auto;
+            pointer-events: none;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        }
+        .cp-custom-img.dragging {
+            cursor: grabbing;
+            z-index: 10;
+            filter: drop-shadow(0 0 0 2px #ffeb3b);
+        }
+        .cp-img-delete {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #d32f2f;
+            color: #fff;
+            border: 2px solid #fff;
+            font-size: 14px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 4;
+        }
+        .cp-img-delete:hover {
+            background: #b71c1c;
+        }
+        .cp-resize-handle {
+            position: absolute;
+            bottom: -9px;
+            right: -9px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #d32f2f;
+            border: 2px solid #fff;
+            cursor: nwse-resize;
+            z-index: 5;
+            padding: 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+        .cp-resize-handle:hover {
+            background: #b71c1c;
         }
         .cp-hotspots {
             position: absolute;
             inset: 0;
             z-index: 2;
+            pointer-events: none;
         }
         .cp-btn {
+            pointer-events: auto;
             position: absolute;
             display: inline-flex;
             align-items: center;
@@ -726,6 +845,39 @@
         .admin-app .btn-del:hover { background: rgba(211,47,47,0.35); }
 
         /* ===== 會員表格 ===== */
+        .member-filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(211,47,47,0.3);
+            background: rgba(26,26,46,0.5);
+            color: #b0b0c8;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all .2s;
+        }
+        .filter-tab:hover { background: rgba(211,47,47,0.15); color: #fff; }
+        .filter-tab.active {
+            background: #d32f2f;
+            color: #fff;
+            border-color: #d32f2f;
+        }
+        .app-review-section { margin-bottom: 12px; }
+        .app-review-list { display: flex; flex-direction: column; gap: 8px; }
+        .app-review-card {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 10px 14px; border: 1px solid rgba(211,47,47,0.3);
+            border-radius: 10px; background: rgba(26,26,46,0.6);
+        }
+        .app-review-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .app-review-name { font-weight: 600; color: #fff; }
+        .app-review-meta { font-size: 12px; color: #b0b0c8; margin-top: 2px; }
+        .app-review-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .app-review-lock { font-size: 12px; color: #888; }
         .member-table-wrap {
             flex: 1 1 auto;
             min-height: 0;
@@ -958,8 +1110,14 @@
                 </div>
                 <!-- 子分頁列 8% -->
                 <div class="subtabs-bar">
-                    <button class="subtab-btn active" data-subtab="cockpit" type="button">駕駛艙</button>
-                    <button class="subtab-btn" data-subtab="habitat" type="button">居住艙</button>
+                    <button class="subtab-btn" data-subtab="habitat" type="button">
+                        <span class="subtab-edit-icon" id="habitatRenameBtn" title="更名" aria-label="更名">✎</span>
+                        <span class="subtab-btn-text">居住艙</span>
+                    </button>
+                    <button class="subtab-btn active" data-subtab="cockpit" type="button">
+                        <span class="subtab-edit-icon" id="cpRenameBtn" title="更名" aria-label="更名">✎</span>
+                        <span class="subtab-btn-text">駕駛艙</span>
+                    </button>
                 </div>
                 <!-- 駕駛艙（編輯 index.html 駕駛艙佈局） -->
                 <div class="subtab-panel active" data-subtab-panel="cockpit">
@@ -970,7 +1128,9 @@
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             </button>
                         </div>
-                        <div style="display:flex;gap:0.5vw">
+                        <div style="display:flex;gap:0.5vw;align-items:center;flex-wrap:wrap">
+                            <label class="btn btn-small btn-ghost" style="cursor:pointer" for="cpAddImgFile">＋ 新增圖片</label>
+                            <input type="file" id="cpAddImgFile" accept="image/*" hidden>
                             <button class="btn btn-small btn-ghost" type="button" id="cpResetPosBtn">重置位置</button>
                             <button class="btn btn-primary btn-small" type="button" id="saveCockpitBtn">儲存佈局</button>
                         </div>
@@ -978,10 +1138,14 @@
                     <div class="cockpit-editor">
                         <!-- 預覽區（模擬 index.html 駕駛艙） -->
                         <div class="cockpit-preview" id="cockpitPreview">
+                            <div class="cp-title-label" id="cpTitleLabel">駕駛艙</div>
                             <img class="cp-bg" id="cpBg" src="assets/cockpit-bg.jpg" alt="駕駛艙背景"
                                  onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Interior%20of%20a%20futuristic%20sci-fi%20spacecraft%20cockpit%20control%20room%20with%20dark%20red%20and%20black%20color%20scheme%2C%20multiple%20HUD%20screens%2C%20anime%20illustration%20style%2C%20cinematic%20lighting%2C%20highly%20detailed&image_size=portrait_16_9';">
-                            <img class="cp-yuwei" id="cpYuwei" src="assets/yuwei.png" alt="西北語薇"
-                                 onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%2C%20red%20and%20black%20tech%20jacket%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style&image_size=portrait_16_9';">
+                            <div class="cp-yuwei-wrap" id="cpYuweiWrap" style="height:72%">
+                                <img class="cp-yuwei" id="cpYuwei" src="assets/yuwei.png" alt="西北語薇"
+                                     onerror="this.onerror=null;this.src='https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=full%20body%20portrait%20of%20a%20young%20beautiful%20asian%20woman%20with%20long%20black%20hair%2C%20red%20and%20black%20tech%20jacket%2C%20standing%20front%20view%2C%20isolated%20on%20transparent%20background%2C%20realistic%20style&image_size=portrait_16_9';">
+                                <button class="cp-resize-handle" id="cpYuweiResize" type="button" title="拖曳縮放大小"></button>
+                            </div>
                             <div class="cp-hotspots" id="cpHotspots">
                                 <button class="cp-btn" data-hotspot="about" type="button">關於語薇</button>
                                 <button class="cp-btn" data-hotspot="music" type="button">語薇創作曲</button>
@@ -1007,6 +1171,19 @@
                     <h2 class="panel-title">會員管理</h2>
                     <button class="btn btn-primary" type="button" id="addMemberBtn">＋ 新增會員</button>
                 </div>
+                <!-- 會員分頁：全部 / 管理員 / 會員 -->
+                <div class="member-filter-tabs">
+                    <button class="filter-tab active" type="button" data-filter="all">全部</button>
+                    <button class="filter-tab" type="button" data-filter="admin">管理員</button>
+                    <button class="filter-tab" type="button" data-filter="member">會員</button>
+                </div>
+                <!-- 升階申請審核（LV25~LV28，由管理員/LV29/LV30 核准） -->
+                <div class="app-review-section" id="appReviewSection">
+                    <h3 class="subtab-title">升階申請審核</h3>
+                    <div id="appReviewList" class="app-review-list">
+                        <div class="empty-tip">載入中…</div>
+                    </div>
+                </div>
                 <div class="member-table-wrap">
                     <table class="member-table">
                         <thead>
@@ -1016,14 +1193,16 @@
                                 <th>電子郵件</th>
                                 <th>密碼</th>
                                 <th>艙員編號</th>
+                                <th>推薦碼</th>
                                 <th>位階代號</th>
                                 <th>位階</th>
                                 <th>星點</th>
+                                <th>星幣</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody id="memberTbody">
-                            <tr><td colspan="9" class="empty-tip">載入中…</td></tr>
+                            <tr><td colspan="11" class="empty-tip">載入中…</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -1224,13 +1403,30 @@
         </div>
     </div>
 
+    <!-- 輸入彈窗（用於更名等） -->
+    <div class="modal-overlay" id="promptModal">
+        <div class="modal-box modal-small">
+            <div class="modal-header">
+                <h3 id="promptTitle">輸入</h3>
+            </div>
+            <div class="modal-body">
+                <p id="promptMessage" style="margin-bottom:10px"></p>
+                <input type="text" id="promptInput" class="full-width" maxlength="20" placeholder="請輸入名稱">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" type="button" id="promptCancelBtn">取消</button>
+                <button class="btn btn-primary" type="button" id="promptOkBtn">確定</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 登出確認彈窗 -->
     <div class="modal-overlay" id="logoutModal">
         <div class="modal-box modal-small">
-            <div class="modal-header">
+            <div class="modal-header" style="justify-content:center;text-align:center;">
                 <h3>登出管理後台</h3>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="text-align:center;">
                 <p id="logoutUserText" style="margin-bottom:0.6rem;color:#ddd;font-size:0.9rem"></p>
                 <p>確定要登出嗎？</p>
             </div>
@@ -1387,10 +1583,20 @@
         };
         firebase.initializeApp(firebaseConfig);
 
-        const ADMIN_EMAILS = ['istage.eason@gmail.com'];
+        const ADMIN_EMAILS = ['istage.eason@gmail.com', 'nwcom.rose@gmail.com'];
         function isAdminEmail(email) {
             return !!email && ADMIN_EMAILS.includes(String(email).toLowerCase());
         }
+        // 艦長（LV30）固定帳號與名稱，永不變更
+        const CAPTAIN_EMAIL = 'nwcom.rose@gmail.com';
+        const CAPTAIN_NAME = '西北語薇';
+        const CAPTAIN_LEVEL = 30;
+        const VICE_CAPTAIN_LEVEL = 29;
+        const APPLY_LEVEL_MIN = 25;
+        const APPLY_LEVEL_MAX = 28;
+        const APPLY_REQUIRED_EXP = 500000;
+        const VICE_CAPTAIN_REQUIRED_EXP = 10000000;
+        const AUTO_LEVEL_MAX = 24;
 
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -1439,8 +1645,20 @@
             });
             // 切換到會員分頁時載入會員列表
             if (tabName === 'members') loadMembers();
-            // 切換到主題分頁時載入駕駛艙設定
-            else if (tabName === 'topics') loadCockpitConfig();
+            // 切換到主題分頁時載入駕駛艙設定，並預設顯示駕駛艙子分頁
+            else if (tabName === 'topics') {
+                const topicsPanel = document.querySelector('.tab-panel[data-panel="topics"]');
+                if (topicsPanel) {
+                    topicsPanel.querySelectorAll('.subtab-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.subtab === 'cockpit');
+                    });
+                    topicsPanel.querySelectorAll('.subtab-panel').forEach(p => {
+                        p.classList.toggle('active', p.dataset.subtabPanel === 'cockpit');
+                    });
+                }
+                loadCockpitConfig();
+                loadHabitatConfig();
+            }
         }
         // 綁定頁尾分頁按鈕
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1487,10 +1705,12 @@
             }
             try {
                 const snap = await db.collection('users').doc(user.uid).get();
-                // 同步確保 Firestore 內 role 為 admin
-                if (!snap.exists || snap.data().role !== 'admin') {
+                // 同步確保 Firestore 內 role 正確：艦長固定為 member，其餘管理員為 admin
+                const isCaptain = String(user.email || '').toLowerCase() === CAPTAIN_EMAIL;
+                const expectedRole = isCaptain ? 'member' : 'admin';
+                if (!snap.exists || snap.data().role !== expectedRole) {
                     db.collection('users').doc(user.uid).set(
-                        { role: 'admin' },
+                        { role: expectedRole },
                         { merge: true }
                     ).catch(() => {});
                 }
@@ -1543,9 +1763,18 @@
             return `<span class="level-badge" style="background:${color}22;color:${color};border:1px solid ${color}66">${lvInfo.code}</span>`;
         }
 
-        // 產生艙員編號：取 uid 前 8 碼大寫
-        function genMemberNo(uid) {
-            return String(uid || '').slice(0, 8).toUpperCase();
+        // 產生推薦碼：NW + 6 碼零填補的艙員編號
+        function makeReferralCode(memberNo) {
+            const n = Number(memberNo);
+            if (!n || n < 1) return '';
+            return 'NW' + String(n).padStart(6, '0');
+        }
+
+        // 判斷是否為排除編號的帳號（管理員）；艦長不排除，固定為「1」
+        function isExcludedFromNumbering(email) {
+            const e = String(email || '').toLowerCase();
+            if (e === CAPTAIN_EMAIL) return false;
+            return isAdminEmail(e);
         }
 
         // 大頭照 fallback：取暱稱首字
@@ -1595,43 +1824,136 @@
         });
         confirmCancelBtn.addEventListener('click', closeConfirm);
 
+        // ===== 輸入彈窗（用於更名） =====
+        const promptModal = document.getElementById('promptModal');
+        const promptTitle = document.getElementById('promptTitle');
+        const promptMessage = document.getElementById('promptMessage');
+        const promptInput = document.getElementById('promptInput');
+        const promptOkBtn = document.getElementById('promptOkBtn');
+        const promptCancelBtn = document.getElementById('promptCancelBtn');
+        let promptCallback = null;
+
+        function showPrompt(title, message, defaultValue, callback) {
+            promptTitle.textContent = title;
+            promptMessage.textContent = message;
+            promptInput.value = defaultValue || '';
+            promptCallback = callback;
+            promptModal.classList.add('active');
+            setTimeout(() => promptInput.focus(), 50);
+        }
+        function closePrompt() {
+            promptModal.classList.remove('active');
+            promptCallback = null;
+        }
+        promptOkBtn.addEventListener('click', () => {
+            const val = promptInput.value.trim();
+            const cb = promptCallback;
+            closePrompt();
+            if (cb) cb(val);
+        });
+        promptCancelBtn.addEventListener('click', closePrompt);
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') promptOkBtn.click();
+            if (e.key === 'Escape') closePrompt();
+        });
+        promptModal.addEventListener('click', (e) => {
+            if (e.target === promptModal) closePrompt();
+        });
+
         // ===== 載入會員列表 =====
         const memberTbody = document.getElementById('memberTbody');
         let allMembers = [];
 
         async function loadMembers() {
-            memberTbody.innerHTML = '<tr><td colspan="9" class="empty-tip">載入中…</td></tr>';
+            memberTbody.innerHTML = '<tr><td colspan="11" class="empty-tip">載入中…</td></tr>';
             try {
                 const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
                 allMembers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+                // 艦長帳號正規化：強制位階 LV30、角色 member、艙員編號「1」
+                for (const m of allMembers) {
+                    if (String(m.email || '').toLowerCase() === CAPTAIN_EMAIL) {
+                        const needFix = Number(m.level) !== CAPTAIN_LEVEL || m.role !== 'member' || m.memberNo !== '1';
+                        m.level = CAPTAIN_LEVEL;
+                        m.role = 'member';
+                        m.memberNo = '1';
+                        m.referralCode = makeReferralCode('1');
+                        if (needFix) {
+                            db.collection('users').doc(m.uid).update({ level: CAPTAIN_LEVEL, role: 'member', memberNo: '1', referralCode: m.referralCode }).catch(() => {});
+                        }
+                    }
+                }
+                // 補填：非管理員用戶若缺少 memberNo，依 createdAt 順序配發序號
+                const toBackfill = allMembers
+                    .filter(m => !isExcludedFromNumbering(m.email) && !m.memberNo)
+                    .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                if (toBackfill.length) {
+                    let maxNo = 1; // 艦長固定為 1
+                    allMembers.forEach(m => {
+                        const no = Number(m.memberNo);
+                        if (no && no > maxNo) maxNo = no;
+                    });
+                    for (const m of toBackfill) {
+                        maxNo += 1;
+                        const no = String(maxNo);
+                        m.memberNo = no;
+                        m.referralCode = makeReferralCode(no);
+                        db.collection('users').doc(m.uid).update({ memberNo: no, referralCode: m.referralCode }).catch(() => {});
+                    }
+                }
                 renderMembers();
+                loadApplications();
             } catch (e) {
                 console.error('載入會員失敗', e);
-                memberTbody.innerHTML = `<tr><td colspan="9" class="empty-tip">載入失敗：${e.message}</td></tr>`;
+                memberTbody.innerHTML = `<tr><td colspan="11" class="empty-tip">載入失敗：${e.message}</td></tr>`;
             }
         }
 
+        // 會員過濾狀態
+        let memberFilter = 'all'; // all | admin | member
+
+        // 取得艙員編號：讀取 Firestore 中的 memberNo 欄位；管理員無編號
+        function getMemberNo(m) {
+            if (isExcludedFromNumbering(m.email)) return '';
+            return m.memberNo || '';
+        }
+
         function renderMembers() {
-            if (!allMembers.length) {
-                memberTbody.innerHTML = '<tr><td colspan="9" class="empty-tip">尚無會員資料</td></tr>';
+            // 依過濾條件篩選（僅依 role 欄位，艦長雖屬會員角色但透過 Email 白名單擁有管理權限）
+            const filtered = allMembers.filter(m => {
+                if (memberFilter === 'admin') return m.role === 'admin';
+                if (memberFilter === 'member') return m.role !== 'admin';
+                return true;
+            });
+            if (!filtered.length) {
+                memberTbody.innerHTML = '<tr><td colspan="11" class="empty-tip">尚無會員資料</td></tr>';
                 return;
             }
-            memberTbody.innerHTML = allMembers.map(m => {
+            const canAppoint = canAppointViceCaptain();
+            const canAppointCap = canAppointCaptain();
+            memberTbody.innerHTML = filtered.map(m => {
                 const lvInfo = getLevelInfo(m.level);
-                const isAdmin = m.role === 'admin' || isAdminEmail(m.email);
+                const isCaptain = String(m.email || '').toLowerCase() === CAPTAIN_EMAIL;
+                const isAdminOnly = isExcludedFromNumbering(m.email); // 管理員（不含艦長）：隱藏會員相關欄位
+                const dash = '<span style="color:#666;">--</span>';
+                const canBeVice = canAppoint && !isCaptain && !isAdminOnly && Number(m.level) < VICE_CAPTAIN_LEVEL && Number(m.exp || 0) >= VICE_CAPTAIN_REQUIRED_EXP;
+                const canBeCaptain = canAppointCap && !isCaptain && !isAdminOnly && Number(m.level) < CAPTAIN_LEVEL;
                 return `
                 <tr>
                     <td>${avatarHtml(m.photoURL, m.displayName)}</td>
                     <td>${escapeHtml(m.displayName || '(未命名)')}</td>
                     <td>${escapeHtml(m.email || '')}</td>
-                    <td><span class="pwd-dots">••••••••</span></td>
-                    <td>${genMemberNo(m.uid)}</td>
-                    <td>${levelBadgeHtml(lvInfo)}</td>
-                    <td>${lvInfo.name}</td>
-                    <td>${Number(m.exp || 0)}</td>
+                    <td><button class="btn btn-small" type="button" data-uid="${m.uid}" data-action="reset-password">重設密碼</button></td>
+                    <td>${isAdminOnly ? dash : (getMemberNo(m) || dash)}</td>
+                    <td>${isAdminOnly ? dash : (m.referralCode || dash)}</td>
+                    <td>${isAdminOnly ? dash : levelBadgeHtml(lvInfo)}</td>
+                    <td>${isAdminOnly ? dash : escapeHtml(lvInfo.name)}</td>
+                    <td>${isAdminOnly ? dash : Number(m.exp || 0)}</td>
+                    <td>${isAdminOnly ? dash : Number(m.coins || 0)}</td>
                     <td>
                         <div class="action-btns">
                             <button class="btn btn-small btn-edit" type="button" data-uid="${m.uid}" data-action="edit">編輯</button>
+                            ${canBeVice ? `<button class="btn btn-small" type="button" data-uid="${m.uid}" data-action="appoint-vice">派任副艦長</button>` : ''}
+                            ${canBeCaptain ? `<button class="btn btn-small" type="button" data-uid="${m.uid}" data-action="appoint-captain">任命艦長</button>` : ''}
                             <button class="btn btn-small btn-del" type="button" data-uid="${m.uid}" data-action="delete">刪除</button>
                         </div>
                     </td>
@@ -1639,10 +1961,125 @@
             }).join('');
         }
 
+        // 分頁按鈕事件
+        document.querySelectorAll('.filter-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                memberFilter = btn.dataset.filter;
+                renderMembers();
+            });
+        });
+
         function escapeHtml(str) {
             const div = document.createElement('div');
             div.textContent = String(str);
             return div.innerHTML;
+        }
+
+        // ===== 升階申請審核（LV25~LV28）=====
+        const appReviewList = document.getElementById('appReviewList');
+        const currentAdminLevel = () => {
+            const me = allMembers.find(m => auth.currentUser && m.uid === auth.currentUser.uid);
+            return Number(me?.level || 0);
+        };
+        const canReviewApps = () => {
+            if (!auth.currentUser) return false;
+            const me = allMembers.find(m => m.uid === auth.currentUser.uid);
+            const lv = Number(me?.level || 0);
+            const isAdmin = me?.role === 'admin' || isAdminEmail(me?.email);
+            return isAdmin || lv >= VICE_CAPTAIN_LEVEL; // 管理員或 LV29/LV30 可審核
+        };
+
+        function loadApplications() {
+            if (!appReviewList) return;
+            const pending = allMembers.filter(m =>
+                m.levelApplication && m.levelApplication.status === 'pending'
+            );
+            if (!pending.length) {
+                appReviewList.innerHTML = '<div class="empty-tip">目前無待審核的升階申請</div>';
+                return;
+            }
+            const canReview = canReviewApps();
+            appReviewList.innerHTML = pending.map(m => {
+                const app = m.levelApplication;
+                const targetLv = allLevels.find(l => l.level === app.targetLevel);
+                return `
+                <div class="app-review-card">
+                    <div class="app-review-info">
+                        ${avatarHtml(m.photoURL, m.displayName)}
+                        <div>
+                            <div class="app-review-name">${escapeHtml(m.displayName || '(未命名)')}</div>
+                            <div class="app-review-meta">目前 LV${m.level} · 申請 LV${app.targetLevel} ${targetLv ? targetLv.name : ''} · EXP ${Number(m.exp || 0)}</div>
+                        </div>
+                    </div>
+                    <div class="app-review-actions">
+                        ${canReview ? `
+                        <button class="btn btn-small btn-primary" type="button" data-app-uid="${m.uid}" data-app-action="approve">核准</button>
+                        <button class="btn btn-small btn-del" type="button" data-app-uid="${m.uid}" data-app-action="reject">駁回</button>
+                        ` : '<span class="app-review-lock">僅 LV29/LV30 可審核</span>'}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        appReviewList.addEventListener('click', async (e) => {
+            const btn = e.target.closest('button[data-app-action]');
+            if (!btn) return;
+            const uid = btn.dataset.appUid;
+            const action = btn.dataset.appAction;
+            const member = allMembers.find(m => m.uid === uid);
+            if (!member) return;
+            if (action === 'approve') {
+                const targetLv = member.levelApplication.targetLevel;
+                showConfirm('核准升階', `確定核准「${member.displayName || member.email}」升任 LV${targetLv} 嗎？`, async () => {
+                    try {
+                        await db.collection('users').doc(uid).update({
+                            level: targetLv,
+                            'levelApplication.status': 'approved',
+                            'levelApplication.reviewedBy': auth.currentUser.uid,
+                            'levelApplication.reviewedAt': Date.now()
+                        });
+                        showToast('已核准升階', 'success');
+                        loadMembers();
+                    } catch (err) {
+                        console.error(err);
+                        showToast('核准失敗：' + err.message, 'error');
+                    }
+                });
+            } else if (action === 'reject') {
+                showPrompt('駁回升階', '請輸入駁回原因（選填）', '', async (note) => {
+                    try {
+                        await db.collection('users').doc(uid).update({
+                            'levelApplication.status': 'rejected',
+                            'levelApplication.reviewedBy': auth.currentUser.uid,
+                            'levelApplication.reviewedAt': Date.now(),
+                            'levelApplication.reviewNote': note || ''
+                        });
+                        showToast('已駁回申請', 'success');
+                        loadMembers();
+                    } catch (err) {
+                        console.error(err);
+                        showToast('駁回失敗：' + err.message, 'error');
+                    }
+                });
+            }
+        });
+
+        // ===== 派任副艦長（LV29，管理員或 LV30 艦長可操作）=====
+        function canAppointViceCaptain() {
+            if (!auth.currentUser) return false;
+            const me = allMembers.find(m => m.uid === auth.currentUser.uid);
+            const lv = Number(me?.level || 0);
+            const isAdmin = me?.role === 'admin' || isAdminEmail(me?.email);
+            return isAdmin || lv === CAPTAIN_LEVEL;
+        }
+
+        // ===== 任命艦長（LV30，僅管理員可操作）=====
+        function canAppointCaptain() {
+            if (!auth.currentUser) return false;
+            const me = allMembers.find(m => m.uid === auth.currentUser.uid);
+            return me?.role === 'admin' || isAdminEmail(me?.email);
         }
 
         // ===== 表格點擊事件（事件代理）=====
@@ -1654,7 +2091,80 @@
             if (!member) return;
             if (btn.dataset.action === 'edit') openEditModal(member);
             else if (btn.dataset.action === 'delete') deleteMember(member);
+            else if (btn.dataset.action === 'appoint-vice') appointViceCaptain(member);
+            else if (btn.dataset.action === 'appoint-captain') appointCaptain(member);
+            else if (btn.dataset.action === 'reset-password') resetMemberPassword(member);
         });
+
+        // 發送密碼重設郵件給會員（Firebase 無法讀取原密碼）
+        function resetMemberPassword(member) {
+            if (!member.email) { showToast('該會員無電子郵件，無法重設密碼', 'error'); return; }
+            showConfirm('重設密碼', `確定發送密碼重設郵件給「${member.displayName || member.email}」嗎？`, async () => {
+                try {
+                    await auth.sendPasswordResetEmail(member.email);
+                    showToast('密碼重設郵件已發送', 'success');
+                } catch (err) {
+                    console.error(err);
+                    showToast('發送失敗：' + err.message, 'error');
+                }
+            });
+        }
+
+        // 派任副艦長（LV29，管理員或 LV30 艦長可操作，且被派任者 EXP >= 10000000）
+        function appointViceCaptain(member) {
+            if (!canAppointViceCaptain()) {
+                showToast('僅管理員或艦長可派任副艦長', 'error');
+                return;
+            }
+            if (isExcludedFromNumbering(member.email)) {
+                showToast('管理員帳號無法擔任任何位階', 'error');
+                return;
+            }
+            if (Number(member.exp || 0) < VICE_CAPTAIN_REQUIRED_EXP) {
+                showToast('該會員 EXP 未達 10,000,000，無法派任副艦長', 'error');
+                return;
+            }
+            showConfirm('派任副艦長', `確定派任「${member.displayName || member.email}」為副艦長（LV29）嗎？`, async () => {
+                try {
+                    await db.collection('users').doc(member.uid).update({
+                        level: VICE_CAPTAIN_LEVEL,
+                        appointedBy: auth.currentUser.uid,
+                        appointedAt: Date.now()
+                    });
+                    showToast('已派任副艦長', 'success');
+                    loadMembers();
+                } catch (err) {
+                    console.error(err);
+                    showToast('派任失敗：' + err.message, 'error');
+                }
+            });
+        }
+
+        // 任命艦長（LV30，僅管理員可操作）
+        function appointCaptain(member) {
+            if (!canAppointCaptain()) {
+                showToast('僅管理員可任命艦長', 'error');
+                return;
+            }
+            if (isExcludedFromNumbering(member.email)) {
+                showToast('管理員帳號無法擔任任何位階', 'error');
+                return;
+            }
+            showConfirm('任命艦長', `確定任命「${member.displayName || member.email}」為艦長（LV30）嗎？\n注意：此操作僅變更該會員位階為 LV30，西北語薇帳號仍固定為艦長。`, async () => {
+                try {
+                    await db.collection('users').doc(member.uid).update({
+                        level: CAPTAIN_LEVEL,
+                        appointedBy: auth.currentUser.uid,
+                        appointedAt: Date.now()
+                    });
+                    showToast('已任命艦長', 'success');
+                    loadMembers();
+                } catch (err) {
+                    console.error(err);
+                    showToast('任命失敗：' + err.message, 'error');
+                }
+            });
+        }
 
         // ===== 編輯會員彈窗 =====
         const editMemberModal = document.getElementById('editMemberModal');
@@ -1669,13 +2179,29 @@
         const saveMemberBtn = document.getElementById('saveMemberBtn');
         const sendResetEmailBtn = document.getElementById('sendResetEmailBtn');
 
+        // 動態產生位階選單（顯示 LV1~LV30，權限控制交由儲存時驗證）
+        function populateLevelSelect(selected) {
+            const opts = allLevels
+                .map(l => `<option value="${l.level}">LV${l.level} ${escapeHtml(l.name)}</option>`);
+            editLevel.innerHTML = opts.join('');
+            editLevel.value = String(selected || 1);
+        }
+
         function openEditModal(member) {
             editMemberUid.value = member.uid;
             editDisplayName.value = member.displayName || '';
             editEmail.value = member.email || '';
             editNewPassword.value = '';
-            editLevel.value = String(member.level || 1);
-            editRole.value = (member.role === 'admin' || isAdminEmail(member.email)) ? 'admin' : 'member';
+            populateLevelSelect(member.level || 1);
+            const isCaptain = String(member.email || '').toLowerCase() === CAPTAIN_EMAIL;
+            const isAdminOnly = isExcludedFromNumbering(member.email); // 管理員（不含艦長）
+            // 艦長帳號：僅顯示名稱不可變更，位階/EXP/星幣開放調整
+            // 管理員帳號：位階/EXP/星幣不可調整
+            editLevel.disabled = isAdminOnly;
+            editExp.disabled = isAdminOnly;
+            editCoins.disabled = isAdminOnly;
+            editDisplayName.disabled = isCaptain;
+            editRole.value = member.role === 'admin' ? 'admin' : 'member';
             editExp.value = Number(member.exp || 0);
             editCoins.value = Number(member.coins || 0);
             editMemberModal.classList.add('active');
@@ -1701,20 +2227,33 @@
             const role = editRole.value;
             const exp = Number(editExp.value) || 0;
             const coins = Number(editCoins.value) || 0;
+            const member = allMembers.find(m => m.uid === uid);
+            const isCaptain = String(member?.email || '').toLowerCase() === CAPTAIN_EMAIL;
+            const isAdminOnly = isExcludedFromNumbering(member?.email); // 管理員（不含艦長）
 
             if (!displayName) { showToast('請輸入艙員暱稱', 'error'); return; }
+            // 艦長帳號：顯示名稱固定不可變更，其餘欄位（位階/EXP/星幣）開放調整
+            const finalDisplayName = isCaptain ? (member?.displayName || displayName) : displayName;
+            // 非管理員不可將他人設為 LV30（僅管理員可任命艦長）
+            const me = allMembers.find(m => auth.currentUser && m.uid === auth.currentUser.uid);
+            const iAmAdmin = me?.role === 'admin' || isAdminEmail(me?.email);
+            if (level >= CAPTAIN_LEVEL && !iAmAdmin) {
+                showToast('LV30 為艦長專屬，僅管理員可任命', 'error');
+                return;
+            }
 
             saveMemberBtn.disabled = true;
             saveMemberBtn.textContent = '儲存中…';
             try {
-                const updates = { displayName, level, exp, coins };
-                // 角色：若 email 屬於白名單，強制 admin；否則依選擇
-                const member = allMembers.find(m => m.uid === uid);
-                if (!isAdminEmail(member?.email)) {
-                    updates.role = role;
-                } else {
-                    updates.role = 'admin';
+                const updates = { displayName: finalDisplayName };
+                // 管理員帳號不持有位階/EXP/星幣，略過更新
+                if (!isAdminOnly) {
+                    updates.level = level;
+                    updates.exp = exp;
+                    updates.coins = coins;
                 }
+                // 艦長帳號角色固定為「會員」；其餘會員依選單值儲存
+                updates.role = isCaptain ? 'member' : role;
                 await db.collection('users').doc(uid).update(updates);
 
                 // 若有輸入新密碼，嘗試變更（需該用戶最近登入，失敗則發重設郵件）
@@ -1793,7 +2332,8 @@
 
         // ===== 通用：關閉指定彈窗 =====
         function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            const el = document.getElementById(modalId);
+            if (el) el.classList.remove('active');
         }
         document.querySelectorAll('[data-close-modal]').forEach(btn => {
             btn.addEventListener('click', () => closeModal(btn.dataset.closeModal));
@@ -1857,12 +2397,15 @@
         const cockpitPreview = document.getElementById('cockpitPreview');
         const cpBg = document.getElementById('cpBg');
         const cpYuwei = document.getElementById('cpYuwei');
+        const cpYuweiWrap = document.getElementById('cpYuweiWrap');
+        const cpYuweiResize = document.getElementById('cpYuweiResize');
         const cpBgUrl = document.getElementById('cpBgUrl');
         const cpYuweiUrl = document.getElementById('cpYuweiUrl');
         const cpBgFile = document.getElementById('cpBgFile');
         const cpYuweiFile = document.getElementById('cpYuweiFile');
         const saveCockpitBtn = document.getElementById('saveCockpitBtn');
         const cpResetPosBtn = document.getElementById('cpResetPosBtn');
+        const cpAddImgFile = document.getElementById('cpAddImgFile');
         // 圖片設定小視窗
         const cpImageModal = document.getElementById('cpImageModal');
         const cpImageSettingsBtn = document.getElementById('cpImageSettingsBtn');
@@ -1884,6 +2427,144 @@
             hero:    { top: 93, left: 76 }
         };
         let cockpitHotspots = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS));
+
+        // 語薇圖片位置（null = 預設置中底部），自訂圖片陣列
+        const YUWEI_DEFAULT_HEIGHT = 72; // 預設高度百分比
+        const COCKPIT_DEFAULT_TITLE = '駕駛艙';
+        let cockpitYuweiPos = null;
+        let cockpitCustomImages = [];
+        let cockpitTitle = COCKPIT_DEFAULT_TITLE;
+        const cpTitleLabel = document.getElementById('cpTitleLabel');
+        const cpRenameBtn = document.getElementById('cpRenameBtn');
+        const cpSubtabBtn = document.querySelector('.subtab-btn[data-subtab="cockpit"]');
+
+        function applyCockpitTitle() {
+            const label = document.getElementById('cpTitleLabel');
+            const btn = document.querySelector('.subtab-btn[data-subtab="cockpit"]');
+            const textEl = btn ? btn.querySelector('.subtab-btn-text') : null;
+            if (label) label.textContent = cockpitTitle || COCKPIT_DEFAULT_TITLE;
+            if (textEl) textEl.textContent = cockpitTitle || COCKPIT_DEFAULT_TITLE;
+        }
+
+        // 居住艙標題
+        const HABITAT_DEFAULT_TITLE = '居住艙';
+        let habitatTitle = HABITAT_DEFAULT_TITLE;
+        const habitatRenameBtn = document.getElementById('habitatRenameBtn');
+
+        function applyHabitatTitle() {
+            const btn = document.querySelector('.subtab-btn[data-subtab="habitat"]');
+            const textEl = btn ? btn.querySelector('.subtab-btn-text') : null;
+            if (textEl) textEl.textContent = habitatTitle || HABITAT_DEFAULT_TITLE;
+        }
+
+        function applyYuweiPosition() {
+            const h = (cockpitYuweiPos && typeof cockpitYuweiPos.height === 'number') ? cockpitYuweiPos.height : YUWEI_DEFAULT_HEIGHT;
+            cpYuweiWrap.style.height = h + '%';
+            if (cockpitYuweiPos && typeof cockpitYuweiPos.top === 'number' && typeof cockpitYuweiPos.left === 'number') {
+                cpYuweiWrap.style.top = cockpitYuweiPos.top + '%';
+                cpYuweiWrap.style.left = cockpitYuweiPos.left + '%';
+                cpYuweiWrap.style.bottom = 'auto';
+                cpYuweiWrap.style.transform = 'translate(-50%, -50%)';
+            } else {
+                cpYuweiWrap.style.top = '';
+                cpYuweiWrap.style.left = '';
+                cpYuweiWrap.style.bottom = '0';
+                cpYuweiWrap.style.transform = 'translateX(-50%)';
+            }
+        }
+
+        function renderCustomImages() {
+            // 清除舊的自訂圖片
+            cockpitPreview.querySelectorAll('.cp-custom-img').forEach(el => el.remove());
+            cockpitCustomImages.forEach(img => {
+                const wrap = document.createElement('div');
+                wrap.className = 'cp-custom-img';
+                wrap.dataset.imgId = img.id;
+                wrap.style.top = img.top + '%';
+                wrap.style.left = img.left + '%';
+                wrap.style.width = (img.width || 15) + '%';
+                const pic = document.createElement('img');
+                pic.src = img.url;
+                pic.alt = '自訂圖片';
+                pic.draggable = false;
+                wrap.appendChild(pic);
+                const delBtn = document.createElement('button');
+                delBtn.className = 'cp-img-delete';
+                delBtn.type = 'button';
+                delBtn.textContent = '×';
+                delBtn.title = '刪除圖片';
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    cockpitCustomImages = cockpitCustomImages.filter(i => i.id !== img.id);
+                    renderCustomImages();
+                });
+                wrap.appendChild(delBtn);
+                const resizeBtn = document.createElement('button');
+                resizeBtn.className = 'cp-resize-handle';
+                resizeBtn.type = 'button';
+                resizeBtn.title = '拖曳縮放大小';
+                wrap.appendChild(resizeBtn);
+                cockpitPreview.appendChild(wrap);
+                // 綁定拖曳與縮放
+                bindCustomImageDrag(wrap, img.id);
+            });
+        }
+
+        function bindCustomImageDrag(wrap, id) {
+            let startX = 0, startY = 0, orig = null;
+            let resizing = false, resizeStartX = 0, resizeOrigW = 0;
+            wrap.addEventListener('pointerdown', (e) => {
+                if (e.target.classList.contains('cp-img-delete')) return;
+                if (e.target.classList.contains('cp-resize-handle')) {
+                    // 縮放模式
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resizing = true;
+                    resizeStartX = e.clientX;
+                    const img = cockpitCustomImages.find(i => i.id === id);
+                    resizeOrigW = img ? (img.width || 15) : 15;
+                    e.target.setPointerCapture(e.pointerId);
+                    return;
+                }
+                e.preventDefault();
+                wrap.classList.add('dragging');
+                const rect = cockpitPreview.getBoundingClientRect();
+                startX = e.clientX;
+                startY = e.clientY;
+                const img = cockpitCustomImages.find(i => i.id === id);
+                orig = img ? { ...img } : null;
+                wrap.setPointerCapture(e.pointerId);
+            });
+            wrap.addEventListener('pointermove', (e) => {
+                if (resizing) {
+                    const rect = cockpitPreview.getBoundingClientRect();
+                    const dxPct = ((e.clientX - resizeStartX) / rect.width) * 100;
+                    const img = cockpitCustomImages.find(i => i.id === id);
+                    if (!img) return;
+                    img.width = Math.max(3, Math.min(80, resizeOrigW + dxPct));
+                    wrap.style.width = img.width + '%';
+                    return;
+                }
+                if (!orig) return;
+                const rect = cockpitPreview.getBoundingClientRect();
+                const dxPct = ((e.clientX - startX) / rect.width) * 100;
+                const dyPct = ((e.clientY - startY) / rect.height) * 100;
+                const img = cockpitCustomImages.find(i => i.id === id);
+                if (!img) return;
+                img.left = Math.max(0, Math.min(100, orig.left + dxPct));
+                img.top = Math.max(0, Math.min(100, orig.top + dyPct));
+                wrap.style.left = img.left + '%';
+                wrap.style.top = img.top + '%';
+            });
+            const end = (e) => {
+                wrap.classList.remove('dragging');
+                orig = null;
+                resizing = false;
+                try { wrap.releasePointerCapture(e.pointerId); } catch(_) {}
+            };
+            wrap.addEventListener('pointerup', end);
+            wrap.addEventListener('pointercancel', end);
+        }
 
         function applyHotspotPositions() {
             Object.keys(cockpitHotspots).forEach(key => {
@@ -1914,11 +2595,31 @@
                         cpYuweiPreview.style.backgroundImage = `url("${d.yuweiUrl}")`;
                     }
                     if (d.hotspots) cockpitHotspots = { ...DEFAULT_HOTSPOTS, ...d.hotspots };
+                    if (d.yuweiPos) cockpitYuweiPos = d.yuweiPos;
+                    if (Array.isArray(d.customImages)) cockpitCustomImages = d.customImages;
+                    if (d.title) cockpitTitle = d.title;
                 }
             } catch (e) {
                 console.error('載入駕駛艙設定失敗', e);
             }
             applyHotspotPositions();
+            applyYuweiPosition();
+            renderCustomImages();
+            applyCockpitTitle();
+        }
+
+        // 載入居住艙設定
+        async function loadHabitatConfig() {
+            try {
+                const snap = await db.collection('config').doc('habitat').get();
+                if (snap.exists) {
+                    const d = snap.data();
+                    if (d.title) habitatTitle = d.title;
+                }
+            } catch (e) {
+                console.error('載入居住艙設定失敗', e);
+            }
+            applyHabitatTitle();
         }
 
         // 拖曳邏輯
@@ -1962,6 +2663,103 @@
             };
             btn.addEventListener('pointerup', endDrag);
             btn.addEventListener('pointercancel', endDrag);
+        });
+
+        // 語薇圖片拖曳（操作 wrapper）
+        let ywDrag = false, ywStartX = 0, ywStartY = 0, ywOrig = null;
+        cpYuweiWrap.addEventListener('pointerdown', (e) => {
+            if (e.target === cpYuweiResize) return; // 縮放把手不觸發拖曳
+            e.preventDefault();
+            ywDrag = true;
+            cpYuweiWrap.classList.add('dragging');
+            const rect = cockpitPreview.getBoundingClientRect();
+            ywStartX = e.clientX;
+            ywStartY = e.clientY;
+            // 若目前是預設位置，先轉換為 top/left 百分比
+            if (!cockpitYuweiPos || typeof cockpitYuweiPos.top !== 'number') {
+                const ywRect = cpYuweiWrap.getBoundingClientRect();
+                const centerX = ywRect.left + ywRect.width / 2 - rect.left;
+                const centerY = ywRect.top + ywRect.height / 2 - rect.top;
+                cockpitYuweiPos = {
+                    top: (centerY / rect.height) * 100,
+                    left: (centerX / rect.width) * 100,
+                    height: (cockpitYuweiPos && typeof cockpitYuweiPos.height === 'number') ? cockpitYuweiPos.height : YUWEI_DEFAULT_HEIGHT
+                };
+                applyYuweiPosition();
+            }
+            ywOrig = { ...cockpitYuweiPos };
+            cpYuweiWrap.setPointerCapture(e.pointerId);
+        });
+        cpYuweiWrap.addEventListener('pointermove', (e) => {
+            if (!ywDrag) return;
+            const rect = cockpitPreview.getBoundingClientRect();
+            const dxPct = ((e.clientX - ywStartX) / rect.width) * 100;
+            const dyPct = ((e.clientY - ywStartY) / rect.height) * 100;
+            cockpitYuweiPos.left = Math.max(0, Math.min(100, ywOrig.left + dxPct));
+            cockpitYuweiPos.top = Math.max(0, Math.min(100, ywOrig.top + dyPct));
+            cpYuweiWrap.style.left = cockpitYuweiPos.left + '%';
+            cpYuweiWrap.style.top = cockpitYuweiPos.top + '%';
+        });
+        const endYwDrag = (e) => {
+            if (!ywDrag) return;
+            ywDrag = false;
+            cpYuweiWrap.classList.remove('dragging');
+            ywOrig = null;
+            try { cpYuweiWrap.releasePointerCapture(e.pointerId); } catch(_) {}
+        };
+        cpYuweiWrap.addEventListener('pointerup', endYwDrag);
+        cpYuweiWrap.addEventListener('pointercancel', endYwDrag);
+
+        // 語薇圖片縮放（拖曳右下角把手改變高度）
+        let ywResizing = false, ywResizeStartY = 0, ywResizeOrigH = 0;
+        cpYuweiResize.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            ywResizing = true;
+            const curH = (cockpitYuweiPos && typeof cockpitYuweiPos.height === 'number') ? cockpitYuweiPos.height : YUWEI_DEFAULT_HEIGHT;
+            ywResizeStartY = e.clientY;
+            ywResizeOrigH = curH;
+            cpYuweiResize.setPointerCapture(e.pointerId);
+        });
+        cpYuweiResize.addEventListener('pointermove', (e) => {
+            if (!ywResizing) return;
+            const rect = cockpitPreview.getBoundingClientRect();
+            const dyPct = ((e.clientY - ywResizeStartY) / rect.height) * 100;
+            let newH = Math.max(10, Math.min(100, ywResizeOrigH + dyPct));
+            if (!cockpitYuweiPos) {
+                cockpitYuweiPos = { top: 0, left: 50, height: newH };
+            } else {
+                cockpitYuweiPos.height = newH;
+            }
+            cpYuweiWrap.style.height = newH + '%';
+        });
+        const endYwResize = (e) => {
+            if (!ywResizing) return;
+            ywResizing = false;
+            try { cpYuweiResize.releasePointerCapture(e.pointerId); } catch(_) {}
+        };
+        cpYuweiResize.addEventListener('pointerup', endYwResize);
+        cpYuweiResize.addEventListener('pointercancel', endYwResize);
+
+        // 新增自訂圖片
+        cpAddImgFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                const url = await fileToDataUrl(file);
+                const id = 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+                cockpitCustomImages.push({
+                    id, url,
+                    top: 50,
+                    left: 50,
+                    width: 15
+                });
+                renderCustomImages();
+                showToast('圖片已新增，可拖曳移動位置', 'success');
+            } catch (err) {
+                showToast('圖片上傳失敗', 'error');
+            }
+            e.target.value = '';
         });
 
         // 圖片設定小視窗：網址輸入即時更新預覽框
@@ -2025,11 +2823,43 @@
             showToast('圖片設定已套用至預覽，請按「儲存佈局」寫入資料庫', 'success');
         });
 
+        // 更名駕駛艙標題
+        cpRenameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrompt('更名標題', '請輸入新的標題名稱（最多 20 字）', cockpitTitle, (val) => {
+                if (!val) return;
+                cockpitTitle = val;
+                applyCockpitTitle();
+                showToast('標題已更新，請按「儲存佈局」寫入資料庫', 'success');
+            });
+        });
+
+        // 居住艙更名（直接儲存）
+        habitatRenameBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showPrompt('更名標題', '請輸入新的標題名稱（最多 20 字）', habitatTitle, async (val) => {
+                if (!val) return;
+                habitatTitle = val;
+                applyHabitatTitle();
+                try {
+                    await db.collection('config').doc('habitat').set({ title: habitatTitle });
+                    showToast('居住艙標題已儲存', 'success');
+                } catch (err) {
+                    console.error('儲存居住艙標題失敗', err);
+                    showToast('儲存失敗：' + err.message, 'error');
+                }
+            });
+        });
+
         // 重置位置
         cpResetPosBtn.addEventListener('click', () => {
-            showConfirm('重置位置', '確定要將所有主題按鈕位置重置為預設嗎？', () => {
+            showConfirm('重置位置', '確定要將所有按鈕、語薇圖片與自訂圖片位置重置為預設嗎？（自訂圖片將被刪除）', () => {
                 cockpitHotspots = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS));
+                cockpitYuweiPos = null;
+                cockpitCustomImages = [];
                 applyHotspotPositions();
+                applyYuweiPosition();
+                renderCustomImages();
                 showToast('已重置為預設位置', 'success');
             });
         });
@@ -2040,9 +2870,12 @@
             saveCockpitBtn.textContent = '儲存中…';
             try {
                 await db.collection('config').doc('cockpit').set({
+                    title: cockpitTitle,
                     bgUrl: cpBgUrl.value.trim(),
                     yuweiUrl: cpYuweiUrl.value.trim(),
-                    hotspots: cockpitHotspots
+                    yuweiPos: cockpitYuweiPos,
+                    hotspots: cockpitHotspots,
+                    customImages: cockpitCustomImages
                 });
                 showToast('駕駛艙佈局已儲存', 'success');
             } catch (e) {
@@ -2067,12 +2900,29 @@
                 const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
                 return '#' + [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
             };
-            return LEVEL_NAMES.map((name, i) => ({
-                level: i + 1,
-                name,
-                minExp: i === 0 ? 0 : Math.round(i * i * 50),
-                color: hslToHex(220 - i * (220 / 29), 65, 52)
-            }));
+            // 位階所需 EXP：LV1~24 自動升級曲線；LV25=500000（申請門檻）；LV29=10000000（副艦長門檻）
+            const levelMinExp = {
+                25: 500000, 26: 700000, 27: 1000000, 28: 1500000,
+                29: 10000000, 30: 10000000
+            };
+            return LEVEL_NAMES.map((name, i) => {
+                const lv = i + 1;
+                let minExp;
+                if (levelMinExp[lv] !== undefined) {
+                    minExp = levelMinExp[lv];
+                } else if (lv === 1) {
+                    minExp = 0;
+                } else {
+                    // LV2~24 平滑成長曲線，LV24 約 380000
+                    minExp = Math.round(Math.pow(lv, 2.6) * 22);
+                }
+                return {
+                    level: lv,
+                    name,
+                    minExp,
+                    color: hslToHex(220 - i * (220 / 29), 65, 52)
+                };
+            });
         }
 
         async function loadLevels() {
@@ -2081,6 +2931,18 @@
                 const snap = await db.collection('config').doc('levels').get();
                 if (snap.exists && snap.data().items) {
                     allLevels = snap.data().items.slice().sort((a, b) => a.level - b.level);
+                    // 遷移：確保關鍵位階的 minExp 符合新規則（LV25=500000、LV29=10000000）
+                    const EXPECTED = { 25: 500000, 26: 700000, 27: 1000000, 28: 1500000, 29: 10000000, 30: 10000000 };
+                    let needMigrate = false;
+                    for (const lv of allLevels) {
+                        if (EXPECTED[lv.level] !== undefined && Number(lv.minExp) !== EXPECTED[lv.level]) {
+                            lv.minExp = EXPECTED[lv.level];
+                            needMigrate = true;
+                        }
+                    }
+                    if (needMigrate) {
+                        await db.collection('config').doc('levels').set({ items: allLevels }).catch(() => {});
+                    }
                 } else {
                     // 預設位階
                     allLevels = getDefaultLevels();
@@ -2101,12 +2963,13 @@
             }
             levelsListEl.innerHTML = allLevels.map(lv => {
                 const imgSrc = lv.imageUrl || getDefaultLevelImage(lv.level);
+                const color = lv.color || '#d32f2f';
                 return `
                 <div class="editable-row" data-level="${lv.level}">
                     <div class="row-info">
                         <img class="level-img" src="${escapeHtml(imgSrc)}" alt="LV${lv.level}" onerror="this.src='${getDefaultLevelImage(lv.level)}'">
                         <div class="row-text">
-                            <div class="row-name">LV${lv.level} ${escapeHtml(lv.name)}</div>
+                            <div class="row-name"><span class="level-color-dot" style="background:${escapeHtml(color)}"></span>LV${lv.level} ${escapeHtml(lv.name)}</div>
                             <div class="row-desc">所需 EXP：${lv.minExp} 以上</div>
                         </div>
                     </div>
@@ -2400,7 +3263,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v17')
+                navigator.serviceWorker.register('./service-worker.js?v=v31')
                     .then(registration => console.log('Service Worker 註冊成功:', registration))
                     .catch(error => console.log('Service Worker 註冊失敗:', error));
             });
