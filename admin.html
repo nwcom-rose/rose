@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#d32f2f">
     <title>西北語薇 · 管理後台</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261013-safearea">
+    <link rel="stylesheet" href="css/styles.css?v=20261013-appheight">
     <link rel="manifest" href="manifest.json">
     <style>
         /* ===== admin.html 版面：頁首 8% / 頁中 84% / 頁尾 8%，單頁不捲動 ===== */
@@ -17,7 +17,7 @@
         .admin-app {
             width: 100%;
             height: 100vh;
-            height: 100dvh;
+            height: var(--app-height, 100dvh);
             display: flex;
             flex-direction: column;
             background: radial-gradient(ellipse at 20% 10%, rgba(211,47,47,0.22) 0%, transparent 55%),
@@ -44,7 +44,7 @@
         /* ===== 頁首 8% ===== */
         .admin-header {
             flex: 0 0 auto;
-            height: calc(8vh + env(safe-area-inset-top, 0px));
+            height: calc(8% + env(safe-area-inset-top, 0px));
             min-height: 48px;
             position: relative;
             display: flex;
@@ -111,7 +111,8 @@
 
         /* ===== 頁中 84% ===== */
         .admin-main {
-            flex: 1 1 84%;
+            flex: 1 1 0;
+            min-height: 0;
             position: relative;
             z-index: 1;
             padding: 2vh 3vw;
@@ -215,7 +216,7 @@
         /* ===== 頁尾 8% — 分頁按鈕 ===== */
         .admin-footer {
             flex: 0 0 auto;
-            height: calc(8vh + env(safe-area-inset-bottom, 0px));
+            height: calc(8% + env(safe-area-inset-bottom, 0px));
             min-height: 48px;
             position: relative;
             display: flex;
@@ -1134,6 +1135,18 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script>
+        // PWA 重新整理時 100dvh 可能計算錯誤，用 window.innerHeight 強制正確高度
+        (function () {
+            function setAppHeight() {
+                document.documentElement.style.setProperty('--app-height', window.innerHeight + 'px');
+            }
+            setAppHeight();
+            window.addEventListener('resize', setAppHeight);
+            window.addEventListener('orientationchange', setAppHeight);
+            window.addEventListener('load', function () { setTimeout(setAppHeight, 100); setTimeout(setAppHeight, 500); });
+        })();
+    </script>
 
     <!-- 編輯會員彈窗 -->
     <div class="modal-overlay" id="editMemberModal">
@@ -2387,7 +2400,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v16')
+                navigator.serviceWorker.register('./service-worker.js?v=v17')
                     .then(registration => console.log('Service Worker 註冊成功:', registration))
                     .catch(error => console.log('Service Worker 註冊失敗:', error));
             });
