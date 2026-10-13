@@ -305,7 +305,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ============ ROLE CONFIG ============
   // 預設管理員帳號（不分大小寫）。登入後自動導向 admin.html。
-  const ADMIN_EMAILS = ['istage.eason@gmail.com', 'nwcom.rose@gmail.com'];
+  // 注意：艦長帳號（nwcom.rose@gmail.com）雖為 CAPTAIN_EMAIL，但角色為 member，無後台權限。
+  const ADMIN_EMAILS = ['istage.eason@gmail.com'];
   // 艦長（LV30）固定帳號與名稱，永不變更
   const CAPTAIN_EMAIL = 'nwcom.rose@gmail.com';
   const CAPTAIN_NAME = '西北語薇';
@@ -915,6 +916,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalTitle = document.getElementById('authModalTitle');
   const modalSubtitle = document.getElementById('authModalSubtitle');
   const nameGroup = document.getElementById('nameGroup');
+  const photoGroup = document.getElementById('photoGroup');
+  const photoPreview = document.getElementById('photoPreview');
+  const inputPhoto = document.getElementById('inputPhoto');
+  const photoClearBtn = document.getElementById('photoClearBtn');
+  let selectedPhotoDataUrl = ''; // 暫存大頭照 base64
   const authSubmit = document.getElementById('authSubmitBtn');
   const authSwitch = document.getElementById('authModeSwitch');
   const authForm = document.getElementById('authForm');
@@ -938,18 +944,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ===== 大頭照上傳處理 =====
+  function resetPhotoUpload() {
+    selectedPhotoDataUrl = '';
+    if (inputPhoto) inputPhoto.value = '';
+    if (photoPreview) {
+      photoPreview.innerHTML = `<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+      photoPreview.style.backgroundImage = '';
+    }
+    if (photoClearBtn) photoClearBtn.style.display = 'none';
+  }
+  if (inputPhoto && photoPreview) {
+    // 點擊預覽區開啟檔案選擇器
+    photoPreview.addEventListener('click', () => inputPhoto.click());
+    photoPreview.style.cursor = 'pointer';
+    inputPhoto.addEventListener('change', e => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('請選擇圖片檔案', 'error');
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('圖片大小請勿超過 2MB', 'error');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = ev => {
+        // 壓縮圖片至最大 256px，避免 base64 過大
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const max = 256;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > max) { h = h * max / w; w = max; } }
+          else { if (h > max) { w = w * max / h; h = max; } }
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          selectedPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          photoPreview.innerHTML = '';
+          photoPreview.style.backgroundImage = `url(${selectedPhotoDataUrl})`;
+          if (photoClearBtn) photoClearBtn.style.display = 'inline-block';
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  if (photoClearBtn) {
+    photoClearBtn.addEventListener('click', resetPhotoUpload);
+  }
+
   function openAuthModal(mode = 'login', subtitle = null) {
     state.authMode = mode;
     if (mode === 'register') {
       modalTitle.textContent = '註冊星光證';
       modalSubtitle.textContent = subtitle || '建立你的專屬星際身分';
       nameGroup.style.display = 'block';
+      if (photoGroup) photoGroup.style.display = 'block';
       authSubmit.textContent = '註冊並登入';
       authSwitch.textContent = '已有星光證？前往登入';
     } else {
       modalTitle.textContent = '登入星光號';
       modalSubtitle.textContent = subtitle || '與語薇一起展開星際冒險';
       nameGroup.style.display = 'none';
+      if (photoGroup) photoGroup.style.display = 'none';
       authSubmit.textContent = '登入';
       authSwitch.textContent = '還沒有星光證？立即註冊';
     }
@@ -963,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     authModal.classList.add('active');
   }
-  function closeAuthModal() { authModal.classList.remove('active'); }
+  function closeAuthModal() { authModal.classList.remove('active'); resetPhotoUpload(); }
   authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
 
   // ===== 登出確認 Modal =====
@@ -1018,13 +1078,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = inputEmail.value.trim();
     const password = inputPassword.value;
     const name = document.getElementById('inputName').value.trim();
+    const photoURL = selectedPhotoDataUrl;
     authSubmit.disabled = true;
     try {
       if (state.authMode === 'register') {
         const uc = await auth.createUserWithEmailAndPassword(email, password);
         const displayName = name || uc.user.email.split('@')[0];
-        await uc.user.updateProfile({ displayName });
-        await ensureUserDoc(uc.user, displayName);
+        const profileUpdate = { displayName };
+        if (photoURL) profileUpdate.photoURL = photoURL;
+        await uc.user.updateProfile(profileUpdate);
+        await ensureUserDoc(uc.user, displayName, photoURL);
       } else {
         await auth.signInWithEmailAndPassword(email, password);
       }
@@ -1055,7 +1118,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  async function ensureUserDoc(user, displayNameOverride) {
+  // 防止 ensureUserDoc 重複執行造成 memberNo 重複配發
+  let ensureUserDocRunning = false;
+
+  async function ensureUserDoc(user, displayNameOverride, photoURLOverride) {
     const isCaptain = String(user.email || '').toLowerCase() === CAPTAIN_EMAIL;
     const snap = await db.collection('users').doc(user.uid).get();
     if (snap.exists) {
@@ -1077,10 +1143,25 @@ document.addEventListener('DOMContentLoaded', () => {
           await db.collection('users').doc(user.uid).update(forced).catch(() => {});
           state.userData = { ...state.userData, ...forced };
         }
-      } else if (!state.userData.role) {
-        const role = resolveRole(user.email);
-        state.userData.role = role;
-        await db.collection('users').doc(user.uid).update({ role }).catch(() => {});
+      } else {
+        // 補填 role
+        if (!state.userData.role) {
+          const role = resolveRole(user.email);
+          state.userData.role = role;
+          await db.collection('users').doc(user.uid).update({ role }).catch(() => {});
+        }
+        // 補填 displayName（若註冊時有傳入 override 但文件中不是該值）
+        if (displayNameOverride && state.userData.displayName !== displayNameOverride) {
+          state.userData.displayName = displayNameOverride;
+          await db.collection('users').doc(user.uid).update({ displayName: displayNameOverride }).catch(() => {});
+          // 同步更新 Firebase Auth profile
+          if (user.updateProfile) user.updateProfile({ displayName: displayNameOverride }).catch(() => {});
+        }
+        // 補填 photoURL（若註冊時有上傳大頭照）
+        if (photoURLOverride && state.userData.photoURL !== photoURLOverride) {
+          state.userData.photoURL = photoURLOverride;
+          await db.collection('users').doc(user.uid).update({ photoURL: photoURLOverride }).catch(() => {});
+        }
       }
       // 補填：非管理員用戶若缺少 memberNo，自動配發序號
       if (!isCaptain && !isExcludedFromNumbering(user.email) && !state.userData.memberNo) {
@@ -1097,36 +1178,68 @@ document.addEventListener('DOMContentLoaded', () => {
       handleRoleRedirect();
       return;
     }
-    const displayName = isCaptain ? CAPTAIN_NAME : (displayNameOverride || user.displayName || user.email.split('@')[0]);
-    const excluded = isExcludedFromNumbering(user.email);
-    let memberNo = '';
-    let referralCode = '';
-    if (isCaptain) {
-      memberNo = '1';
-      referralCode = makeReferralCode('1');
-    } else if (!excluded) {
-      memberNo = await getNextMemberNo();
-      referralCode = makeReferralCode(memberNo);
+    // 新用戶：建立文件
+    // 若已有 ensureUserDoc 正在執行，等待其完成後重新檢查，避免 displayName 補填被略過
+    if (ensureUserDocRunning) {
+      await new Promise(resolve => {
+        const check = setInterval(() => {
+          if (!ensureUserDocRunning) { clearInterval(check); resolve(); }
+        }, 30);
+      });
+      const snap2 = await db.collection('users').doc(user.uid).get();
+      if (snap2.exists) {
+        // 文件已由另一個 ensureUserDoc 建立，走補填邏輯
+        state.userData = snap2.data();
+        if (!isCaptain) {
+          if (displayNameOverride && state.userData.displayName !== displayNameOverride) {
+            state.userData.displayName = displayNameOverride;
+            await db.collection('users').doc(user.uid).update({ displayName: displayNameOverride }).catch(() => {});
+          }
+          if (photoURLOverride && state.userData.photoURL !== photoURLOverride) {
+            state.userData.photoURL = photoURLOverride;
+            await db.collection('users').doc(user.uid).update({ photoURL: photoURLOverride }).catch(() => {});
+          }
+        }
+        renderUserCard();
+        handleRoleRedirect();
+        return;
+      }
     }
-    const data = {
-      uid: user.uid,
-      displayName,
-      photoURL: user.photoURL || '',
-      email: user.email || '',
-      role: isCaptain ? 'member' : resolveRole(user.email),
-      level: isCaptain ? CAPTAIN_LEVEL : 1,
-      exp: 0,
-      coins: 0,
-      createdAt: Date.now(),
-      interactions: [],
-      memberNo,
-      referralCode
-    };
-    await db.collection('users').doc(user.uid).set(data);
-    state.userData = data;
-    renderUserCard();
-    if (!isCaptain) await grantReward('DAILY_LOGIN').catch(()=>{});
-    handleRoleRedirect();
+    ensureUserDocRunning = true;
+    try {
+      const displayName = isCaptain ? CAPTAIN_NAME : (displayNameOverride || user.displayName || user.email.split('@')[0]);
+      const excluded = isExcludedFromNumbering(user.email);
+      let memberNo = '';
+      let referralCode = '';
+      if (isCaptain) {
+        memberNo = '1';
+        referralCode = makeReferralCode('1');
+      } else if (!excluded) {
+        memberNo = await getNextMemberNo();
+        referralCode = makeReferralCode(memberNo);
+      }
+      const data = {
+        uid: user.uid,
+        displayName,
+        photoURL: photoURLOverride || user.photoURL || '',
+        email: user.email || '',
+        role: isCaptain ? 'member' : resolveRole(user.email),
+        level: isCaptain ? CAPTAIN_LEVEL : 1,
+        exp: 0,
+        coins: 0,
+        createdAt: Date.now(),
+        interactions: [],
+        memberNo,
+        referralCode
+      };
+      await db.collection('users').doc(user.uid).set(data);
+      state.userData = data;
+      renderUserCard();
+      if (!isCaptain) await grantReward('DAILY_LOGIN').catch(()=>{});
+      handleRoleRedirect();
+    } finally {
+      ensureUserDocRunning = false;
+    }
   }
 
   if (window.auth) {

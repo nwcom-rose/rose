@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="語薇星光號">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <title>西北語薇星光號</title>
-    <link rel="stylesheet" href="css/styles.css?v=20261013-boarding2">
+    <link rel="stylesheet" href="css/styles.css?v=20261013-register2">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -185,6 +185,16 @@
               <label>艙員暱稱</label>
               <input type="text" id="inputName" placeholder="輸入你的星際名號" maxlength="20"/>
             </div>
+            <div class="form-group" id="photoGroup" style="display:none;">
+              <label>大頭照（選填）</label>
+              <div class="photo-upload-wrapper">
+                <div class="photo-preview" id="photoPreview">
+                  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                </div>
+                <input type="file" id="inputPhoto" accept="image/*" class="photo-file-input"/>
+                <button type="button" class="btn btn-ghost btn-small" id="photoClearBtn" style="display:none;">移除</button>
+              </div>
+            </div>
             <div class="form-group">
               <label>電子郵件</label>
               <input type="email" id="inputEmail" placeholder="star@nwrose.tw" required/>
@@ -328,7 +338,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js?v=v33')
+                navigator.serviceWorker.register('./service-worker.js?v=v34')
                     .then(registration => {
                         console.log('Service Worker 註冊成功:', registration);
                     })
@@ -338,6 +348,6 @@
             });
         }
     </script>
-    <script src="js/app.js?v=20261013-boarding2"></script>
+    <script src="js/app.js?v=20261013-register2"></script>
 </body>
 </html>

@@ -705,6 +705,39 @@ html, body {
     background: rgba(211,47,47,0.12);
 }
 
+/* ===== 大頭照上傳 ===== */
+.photo-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.photo-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(211,47,47,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.4);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.photo-file-input {
+    display: none;
+}
+
+.photo-upload-wrapper .btn-small {
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
 /* ===== 表單選項列（記住我） ===== */
 .form-options {
     display: flex;
